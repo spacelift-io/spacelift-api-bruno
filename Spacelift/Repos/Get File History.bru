@@ -1,0 +1,47 @@
+meta {
+  name: Get File History
+  type: graphql
+  seq: 10
+}
+
+docs {
+  Get the revision history of a specific file in a Repo
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetFileHistory($repoID: ID!, $filePath: String!, $first: Int, $after: String) {
+    repoFileHistory(repoID: $repoID, filePath: $filePath, first: $first, after: $after) {
+      edges {
+        node {
+          filePath
+          isDeleted
+          sizeBytes
+          fileMode
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "repoID": "REPO_ID_HERE",
+    "filePath": "main.tf",
+    "first": 20,
+    "after": null
+  }
+}

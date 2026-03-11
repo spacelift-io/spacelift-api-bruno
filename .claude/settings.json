@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s https://demo.app.spacelift.io/graphql:*)",
+      "Bash(node scripts/coverage.js:*)",
+      "Bash(node scripts/validate-schema.js:*)",
+      "Bash(npm install:*)",
+      "WebFetch(domain:demo.app.spacelift.io)",
+      "WebFetch(domain:docs.spacelift.io)"
+    ]
+  }
+}

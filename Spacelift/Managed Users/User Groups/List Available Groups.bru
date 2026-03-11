@@ -1,0 +1,25 @@
+meta {
+  name: List Available Groups
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Returns all user groups that are reported by the identity provider when users log in to Spacelift.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    availableUserGroups
+  }
+}

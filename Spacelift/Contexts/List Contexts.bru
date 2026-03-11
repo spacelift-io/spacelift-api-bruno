@@ -1,0 +1,33 @@
+meta {
+  name: List Contexts
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the contexts in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    contexts {
+      id
+      name
+      description
+      labels
+      space
+      createdAt
+      updatedAt
+    }
+  }
+}

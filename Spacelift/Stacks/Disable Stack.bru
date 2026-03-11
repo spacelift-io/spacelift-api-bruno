@@ -1,0 +1,35 @@
+meta {
+  name: Disable Stack
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Disable the stack, so it cannot create new runs.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DisableStack($id: ID!) {
+    stackDisable(id: $id) {
+      id
+      name
+      isDisabled
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE"
+  }
+}

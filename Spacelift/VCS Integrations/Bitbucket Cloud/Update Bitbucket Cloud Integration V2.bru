@@ -1,0 +1,44 @@
+meta {
+  name: Update Bitbucket Cloud Integration V2
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Updates the Bitbucket Cloud integration with new properties.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateBitbucketCloudIntegrationV2($input: BitbucketCloudIntegrationUpdateInput!) {
+    bitbucketCloudIntegrationUpdateV2(input: $input) {
+      id
+      name
+      username
+      description
+      labels
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "email": "user@example.com",
+      "apiToken": "APP_PASSWORD_HERE"
+    }
+  }
+}

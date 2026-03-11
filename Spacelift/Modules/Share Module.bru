@@ -1,0 +1,50 @@
+meta {
+  name: Share Module
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Share a module with another account or another space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ShareModule($id: ID!, $input: ModuleShareInput!) {
+    moduleShare(id: $id, input: $input) {
+      id
+      from {
+        account {
+          subdomain
+        }
+      }
+      to {
+        account {
+          subdomain
+        }
+      }
+      module {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "MODULE_ID_HERE",
+    "input": {
+      "space": "TARGET_SPACE_ID_HERE"
+    }
+  }
+}

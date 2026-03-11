@@ -1,0 +1,38 @@
+meta {
+  name: Create Provider Version
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Create a new Terraform provider version.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateTerraformProviderVersion($provider: ID!, $input: TerraformProviderVersionInput!) {
+    terraformProviderVersionCreate(provider: $provider, input: $input) {
+      sha256SumsUploadURL
+      sha256SumsSigUploadURL
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "provider": "PROVIDER_ID_HERE",
+    "input": {
+      "number": "0.1.0",
+      "description": "Initial version"
+    }
+  }
+}

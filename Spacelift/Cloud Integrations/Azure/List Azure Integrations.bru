@@ -1,0 +1,32 @@
+meta {
+  name: List Azure Integrations
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Lists any Azure integrations connected to the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    azureIntegrations {
+      id
+      name
+      tenantId
+      labels
+      space
+      createdAt
+    }
+  }
+}

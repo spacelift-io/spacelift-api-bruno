@@ -1,0 +1,55 @@
+meta {
+  name: Create Stack
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a new stack. The third argument (stackObjectID) is optional, and
+  should only be used when creating a Stack with pre-existing state that is
+  handed over to Spacelift for further management.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateStack($input: StackInput!, $manageState: Boolean!) {
+    stackCreate(input: $input, manageState: $manageState) {
+      id
+      name
+      description
+      space
+      repository
+      branch
+      projectRoot
+      administrative
+      autodeploy
+      labels
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-stack",
+      "description": "My new stack",
+      "space": "root",
+      "repository": "my-repo",
+      "branch": "main",
+      "projectRoot": "",
+      "administrative": false,
+      "autodeploy": false,
+      "labels": []
+    },
+    "manageState": false
+  }
+}

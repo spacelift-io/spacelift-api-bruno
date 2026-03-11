@@ -1,0 +1,30 @@
+meta {
+  name: Get GitHub Integration
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Build-in GitHub Integration settings.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    githubIntegration {
+      vcsChecks
+      useGitCheckout
+      apiHost
+      isEnterprise
+    }
+  }
+}

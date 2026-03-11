@@ -1,0 +1,35 @@
+meta {
+  name: Get Run Stack
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Return the stack the run belongs to.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetRunStack($runId: ID!) {
+    runStack(runId: $runId) {
+      id
+      name
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "runId": "RUN_ID_HERE"
+  }
+}

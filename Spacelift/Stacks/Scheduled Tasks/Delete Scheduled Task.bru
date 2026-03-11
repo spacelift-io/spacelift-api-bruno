@@ -1,0 +1,35 @@
+meta {
+  name: Delete Scheduled Task
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Delete ScheduledTask for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteScheduledTask($scheduledTask: ID!, $stack: ID!) {
+    stackScheduledTaskDelete(scheduledTask: $scheduledTask, stack: $stack) {
+      id
+      command
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "scheduledTask": "SCHEDULED_TASK_ID_HERE",
+    "stack": "STACK_ID_HERE"
+  }
+}

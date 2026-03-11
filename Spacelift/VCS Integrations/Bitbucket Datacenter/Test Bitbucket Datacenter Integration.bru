@@ -1,0 +1,31 @@
+meta {
+  name: Test Bitbucket Datacenter Integration
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Tests the Bitbucket Datacenter integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TestBitbucketDatacenterIntegration($id: ID) {
+    bitbucketDatacenterIntegrationTest(id: $id)
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

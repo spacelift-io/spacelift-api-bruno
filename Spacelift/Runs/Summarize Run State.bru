@@ -1,0 +1,38 @@
+meta {
+  name: Summarize Run State
+  type: graphql
+  seq: 19
+}
+
+docs {
+  Summarizes the run state for a given run
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SummarizeRunState($stack: ID!, $run: ID!, $stateVersion: Int!) {
+    summarizeRunState(stack: $stack, run: $run, stateVersion: $stateVersion) {
+      summary
+      createdAt
+      processingStatus
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "stateVersion": 1
+  }
+}

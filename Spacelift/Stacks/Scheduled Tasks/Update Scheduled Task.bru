@@ -1,0 +1,44 @@
+meta {
+  name: Update Scheduled Task
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Update ScheduledTask for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateScheduledTask($scheduledTask: ID!, $stack: ID!, $input: ScheduledTaskInput!) {
+    stackScheduledTaskUpdate(scheduledTask: $scheduledTask, stack: $stack, input: $input) {
+      id
+      command
+      timezone
+      cronSchedule
+      timestampSchedule
+      nextSchedule
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "scheduledTask": "SCHEDULED_TASK_ID_HERE",
+    "stack": "STACK_ID_HERE",
+    "input": {
+      "command": "echo updated",
+      "timezone": "UTC",
+      "cronSchedule": "0 10 * * 1"
+    }
+  }
+}

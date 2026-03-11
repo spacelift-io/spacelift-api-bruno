@@ -1,0 +1,37 @@
+meta {
+  name: Comment Run
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Comment on the run.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CommentRun($stack: ID!, $run: ID!, $body: String!) {
+    runComment(stack: $stack, run: $run, body: $body) {
+      body
+      createdAt
+      username
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "body": "This run looks good."
+  }
+}

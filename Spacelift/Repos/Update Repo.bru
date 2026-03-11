@@ -1,0 +1,49 @@
+meta {
+  name: Update Repo
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing Repo
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateRepo($id: ID!, $input: RepoUpdateInput!) {
+    repoUpdate(id: $id, input: $input) {
+      id
+      name
+      slug
+      description
+      labels
+      isDefault
+      space {
+        id
+        name
+      }
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "REPO_ID_HERE",
+    "input": {
+      "name": "my-repo-updated",
+      "description": "Updated description",
+      "labels": [],
+      "isDefault": false
+    }
+  }
+}

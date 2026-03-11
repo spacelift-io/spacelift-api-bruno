@@ -1,0 +1,41 @@
+meta {
+  name: Update GitLab Integration
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Updates the GitLab integration with a new access token and (optionally) API host or User Facing Host.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateGitlabIntegration($privateToken: String, $apiHost: String, $userFacingHost: String, $customInput: CustomVCSUpdateInput) {
+    gitlabIntegrationUpdate(privateToken: $privateToken, apiHost: $apiHost, userFacingHost: $userFacingHost, customInput: $customInput) {
+      id
+      name
+      apiHost
+      userFacingHost
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "apiHost": "https://gitlab.example.com",
+    "userFacingHost": "https://gitlab.example.com",
+    "privateToken": null
+  }
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Get Azure DevOps Integration
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Shows Azure DevOps Repos integration details.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetAzureDevOpsIntegration($id: ID) {
+    azureDevOpsRepoIntegration(id: $id) {
+      id
+      name
+      organizationURL
+      userFacingHost
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

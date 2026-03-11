@@ -1,0 +1,25 @@
+meta {
+  name: List Terragrunt Versions
+  type: graphql
+  seq: 6
+}
+
+docs {
+  List of all supported Terragrunt versions.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    terragruntVersions
+  }
+}

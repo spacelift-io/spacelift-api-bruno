@@ -1,0 +1,8 @@
+vars {
+  SPACELIFT_ENDPOINT: https://myaccount.app.spacelift.io/graphql
+  SPACELIFT_API_KEY_ID:
+  jwt:
+}
+vars:secret [
+  SPACELIFT_API_KEY_SECRET
+]

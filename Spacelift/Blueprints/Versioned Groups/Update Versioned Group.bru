@@ -1,0 +1,39 @@
+meta {
+  name: Update Versioned Group
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateBlueprintVersionedGroup($id: ID!, $input: BlueprintVersionedGroupUpdateInput!) {
+    blueprintVersionedGroupUpdate(id: $id, input: $input) {
+      id
+      name
+      description
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSIONED_GROUP_ID_HERE",
+    "input": {
+      "name": "my-versioned-group-updated",
+      "description": "Updated description"
+    }
+  }
+}

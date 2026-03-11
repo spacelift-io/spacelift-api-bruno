@@ -1,0 +1,35 @@
+meta {
+  name: Delete Azure DevOps Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Deletes the Azure DevOps Repo integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteAzureDevOpsIntegration($id: ID) {
+    azureDevOpsRepoIntegrationDelete(id: $id) {
+      id
+      name
+      organizationURL
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

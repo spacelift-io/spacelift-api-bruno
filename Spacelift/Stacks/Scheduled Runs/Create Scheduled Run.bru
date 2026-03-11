@@ -1,0 +1,42 @@
+meta {
+  name: Create Scheduled Run
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Create a new ScheduledRun for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateScheduledRun($stack: ID!, $input: ScheduledRunInput!) {
+    stackScheduledRunCreate(stack: $stack, input: $input) {
+      id
+      name
+      timezone
+      timestampSchedule
+      nextSchedule
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "input": {
+      "name": "Nightly run",
+      "timezone": "UTC",
+      "cronSchedule": ["0 2 * * *"]
+    }
+  }
+}

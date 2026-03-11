@@ -1,0 +1,41 @@
+meta {
+  name: Set Audit Trail Webhook
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Set audit trail webhook for the Account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SetAuditTrailWebhook($input: AuditTrailWebhookInput!) {
+    auditTrailSetWebhook(input: $input) {
+      enabled
+      endpoint
+      includeRuns
+      retryOnFailure
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "enabled": true,
+      "endpoint": "https://example.com/audit-webhook",
+      "includeRuns": true,
+      "secret": "WEBHOOK_SECRET_HERE"
+    }
+  }
+}

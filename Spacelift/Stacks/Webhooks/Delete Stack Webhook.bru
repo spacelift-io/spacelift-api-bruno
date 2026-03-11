@@ -1,0 +1,36 @@
+meta {
+  name: Delete Stack Webhook
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Delete WebhooksIntegration for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteStackWebhook($stack: ID!, $id: ID!) {
+    webhooksIntegrationDelete(stack: $stack, id: $id) {
+      id
+      endpoint
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "id": "WEBHOOK_ID_HERE"
+  }
+}

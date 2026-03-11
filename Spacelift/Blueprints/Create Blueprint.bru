@@ -1,0 +1,48 @@
+meta {
+  name: Create Blueprint
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a blueprint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateBlueprint($input: BlueprintCreateInput!) {
+    blueprintCreate(input: $input) {
+      id
+      name
+      description
+      state
+      labels
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-blueprint",
+      "description": "My blueprint",
+      "state": "DRAFT",
+      "labels": [],
+      "space": "root",
+      "template": "inputs:\n  - id: stack_name\n    name: Stack Name\n    type: SHORT_STRING\n"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+meta {
+  name: Create API Key
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create an API key.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateApiKey($input: ApiKeyInput!) {
+    apiKeyCreate(input: $input) {
+      id
+      name
+      admin
+      description
+      isMachineUser
+      expiresAt
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-api-key",
+      "admin": false,
+      "machine": true,
+      "description": "My API key",
+      "teams": [],
+      "expiresAt": null
+    }
+  }
+}

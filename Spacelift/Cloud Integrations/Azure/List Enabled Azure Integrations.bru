@@ -1,0 +1,25 @@
+meta {
+  name: List Enabled Azure Integrations
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Indicates whether the managed Azure integration functionality is enabled.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    azureIntegrationsEnabled
+  }
+}

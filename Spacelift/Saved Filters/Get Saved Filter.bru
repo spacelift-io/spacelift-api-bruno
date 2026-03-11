@@ -1,0 +1,38 @@
+meta {
+  name: Get Saved Filter
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single saved filter
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetSavedFilter($id: ID!) {
+    savedFilter(id: $id) {
+      id
+      name
+      type
+      isPublic
+      createdBy
+      data
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "FILTER_ID_HERE"
+  }
+}

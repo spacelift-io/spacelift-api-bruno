@@ -1,0 +1,45 @@
+meta {
+  name: Update AWS Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Updates the integration with the specified ID.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateAwsIntegration($id: ID!, $name: String!, $roleArn: String!, $generateCredentialsInWorker: Boolean!, $externalID: String!, $durationSeconds: Int!, $labels: [String!]!, $space: ID) {
+    awsIntegrationUpdate(id: $id, name: $name, roleArn: $roleArn, generateCredentialsInWorker: $generateCredentialsInWorker, externalID: $externalID, durationSeconds: $durationSeconds, labels: $labels, space: $space) {
+      id
+      name
+      roleArn
+      generateCredentialsInWorker
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AWS_INTEGRATION_ID_HERE",
+    "name": "my-aws-integration-updated",
+    "roleArn": "arn:aws:iam::123456789012:role/spacelift-role",
+    "generateCredentialsInWorker": false,
+    "externalID": "",
+    "durationSeconds": 3600,
+    "labels": [],
+    "space": "root"
+  }
+}

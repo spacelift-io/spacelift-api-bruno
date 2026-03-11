@@ -1,0 +1,53 @@
+meta {
+  name: Create Revision
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Create a revision (commit files) in a Repo
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateRevision($input: RevisionCreateInput!) {
+    revisionCreate(input: $input) {
+      id
+      sha
+      message
+      description
+      authorName
+      authorEmail
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "repoID": "REPO_ID_HERE",
+      "message": "Add configuration",
+      "description": "Adds initial Terraform configuration",
+      "authorName": "Your Name",
+      "authorEmail": "you@example.com",
+      "files": [
+        {
+          "path": "main.tf",
+          "content": "# Terraform configuration",
+          "encrypt": false,
+          "action": "ADDED"
+        }
+      ]
+    }
+  }
+}

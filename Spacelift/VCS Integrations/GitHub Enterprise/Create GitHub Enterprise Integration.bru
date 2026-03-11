@@ -1,0 +1,44 @@
+meta {
+  name: Create GitHub Enterprise Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Creates the GitHub Enterprise integration
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateGithubEnterpriseIntegration($apiHost: String!, $userFacingHost: String, $appID: String!, $privateKey: String!, $webhookSecret: String, $customInput: CustomVCSInput) {
+    githubEnterpriseIntegrationCreate(apiHost: $apiHost, userFacingHost: $userFacingHost, appID: $appID, privateKey: $privateKey, webhookSecret: $webhookSecret, customInput: $customInput) {
+      id
+      name
+      apiHost
+      userFacingHost
+      appID
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "apiHost": "https://github.example.com",
+    "userFacingHost": "https://github.example.com",
+    "appID": "12345",
+    "privateKey": "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
+    "webhookSecret": "my-webhook-secret"
+  }
+}

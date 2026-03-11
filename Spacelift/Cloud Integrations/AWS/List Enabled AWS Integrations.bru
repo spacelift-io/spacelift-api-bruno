@@ -1,0 +1,25 @@
+meta {
+  name: List Enabled AWS Integrations
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Indicates whether the managed AWS integration functionality is enabled.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    awsIntegrationsEnabled
+  }
+}

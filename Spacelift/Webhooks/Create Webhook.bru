@@ -1,0 +1,50 @@
+meta {
+  name: Create Webhook
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a new NamedWebhooksIntegration for a space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateWebhook($input: NamedWebhooksIntegrationInput!) {
+    namedWebhooksIntegrationCreate(input: $input) {
+      id
+      name
+      endpoint
+      enabled
+      labels
+      space {
+        id
+        name
+      }
+      retryOnFailure
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-webhook",
+      "endpoint": "https://example.com/webhook",
+      "enabled": true,
+      "secret": "my-secret",
+      "labels": [],
+      "space": "root",
+      "retryOnFailure": false
+    }
+  }
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Set Run Priority
+  type: graphql
+  seq: 15
+}
+
+docs {
+  Sets the priority preset of a run.
+  Controls run scheduling priority with named presets.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SetRunPriority($stack: ID!, $run: ID!, $preset: RunPriorityPreset!) {
+    runPrioritySet(stack: $stack, run: $run, preset: $preset) {
+      id
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "preset": "HIGH"
+  }
+}

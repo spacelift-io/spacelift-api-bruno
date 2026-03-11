@@ -1,0 +1,34 @@
+meta {
+  name: Delete Saved Filter
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Delete a saved filter.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteSavedFilter($id: ID!) {
+    savedFilterDelete(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "FILTER_ID_HERE"
+  }
+}

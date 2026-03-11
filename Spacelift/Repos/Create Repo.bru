@@ -1,0 +1,49 @@
+meta {
+  name: Create Repo
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a new Repo
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateRepo($input: RepoCreateInput!) {
+    repoCreate(input: $input) {
+      id
+      name
+      slug
+      description
+      labels
+      isDefault
+      space {
+        id
+        name
+      }
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "spaceID": "root",
+      "name": "my-repo",
+      "description": "My repo",
+      "labels": [],
+      "isDefault": false
+    }
+  }
+}

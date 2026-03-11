@@ -1,0 +1,46 @@
+meta {
+  name: Update Policy
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update a Policy (v2 API).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdatePolicy($id: ID!, $input: PolicyUpdateInput!) {
+    policyUpdatev2(id: $id, input: $input) {
+      id
+      name
+      body
+      type
+      description
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "POLICY_ID_HERE",
+    "input": {
+      "name": "my-policy-updated",
+      "body": "package spacelift\n\nallow = true",
+      "description": "Updated description",
+      "labels": [],
+      "space": "root"
+    }
+  }
+}

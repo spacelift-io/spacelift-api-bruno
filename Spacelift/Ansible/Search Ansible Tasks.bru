@@ -1,0 +1,54 @@
+meta {
+  name: Search Ansible Tasks
+  type: graphql
+  seq: 5
+}
+
+docs {
+  searchAnsibleTasks allows to search AnsibleTasks.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchAnsibleTasks($input: SearchInput!) {
+    searchAnsibleTasks(input: $input) {
+      edges {
+        node {
+          name
+          path
+          action
+          resolvedAction
+          role {
+            name
+            path
+          }
+          playbook {
+            name
+            path
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

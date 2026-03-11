@@ -1,0 +1,34 @@
+meta {
+  name: Delete Terraform Provider
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Deletes a Terraform Provider
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteTerraformProvider($id: ID!) {
+    terraformProviderDelete(id: $id) {
+      id
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PROVIDER_ID_HERE"
+  }
+}

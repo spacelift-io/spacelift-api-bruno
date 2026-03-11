@@ -1,0 +1,36 @@
+meta {
+  name: Delete Drift Detection
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Delete DriftDetectionIntegration for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteDriftDetection($stack: ID!) {
+    stackIntegrationDriftDetectionDelete(stack: $stack) {
+      reconcile
+      ignoreState
+      timezone
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE"
+  }
+}

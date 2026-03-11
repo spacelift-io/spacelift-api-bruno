@@ -1,0 +1,39 @@
+meta {
+  name: Get Plugin Template
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Plugin Template.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetPluginTemplate($id: ID!) {
+    pluginTemplate(id: $id) {
+      id
+      name
+      description
+      slug
+      isGlobal
+      labels
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PLUGIN_TEMPLATE_ID_HERE"
+  }
+}

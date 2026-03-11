@@ -1,0 +1,34 @@
+meta {
+  name: List Branches
+  type: graphql
+  seq: 5
+}
+
+docs {
+  List of branches for a given repository.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListBranches($provider: VCSProvider!, $namespace: String!, $repository: String!, $vcsIntegrationID: ID) {
+    branches(provider: $provider, namespace: $namespace, repository: $repository, vcsIntegrationID: $vcsIntegrationID)
+  }
+}
+
+body:graphql:vars {
+  {
+    "provider": "GITHUB_ENTERPRISE",
+    "namespace": "my-org",
+    "repository": "my-repo",
+    "vcsIntegrationID": "VCS_INTEGRATION_ID_HERE"
+  }
+}

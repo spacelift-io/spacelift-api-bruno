@@ -1,0 +1,41 @@
+meta {
+  name: Update Deployment
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Upgrade a blueprint deployment to a new version and update deployment metadata
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateBlueprintDeployment($id: ID!, $blueprintID: ID!, $input: BlueprintDeploymentUpdateInput!) {
+    blueprintDeploymentUpdate(id: $id, blueprintID: $blueprintID, input: $input) {
+      id
+      name
+      description
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "DEPLOYMENT_ID_HERE",
+    "blueprintID": "BLUEPRINT_ID_HERE",
+    "input": {
+      "name": "my-deployment-updated",
+      "description": "Updated description"
+    }
+  }
+}

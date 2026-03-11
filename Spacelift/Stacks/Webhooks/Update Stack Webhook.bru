@@ -1,0 +1,42 @@
+meta {
+  name: Update Stack Webhook
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Update WebhooksIntegration for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateStackWebhook($stack: ID!, $id: ID!, $input: WebhooksIntegrationInput!) {
+    webhooksIntegrationUpdate(stack: $stack, id: $id, input: $input) {
+      id
+      endpoint
+      enabled
+      retryOnFailure
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "id": "WEBHOOK_ID_HERE",
+    "input": {
+      "endpoint": "https://example.com/webhook",
+      "enabled": true,
+      "secret": "WEBHOOK_SECRET_HERE"
+    }
+  }
+}

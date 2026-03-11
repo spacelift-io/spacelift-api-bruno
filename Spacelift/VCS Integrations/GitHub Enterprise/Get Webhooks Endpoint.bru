@@ -1,0 +1,31 @@
+meta {
+  name: Get Webhooks Endpoint
+  type: graphql
+  seq: 7
+}
+
+docs {
+  The webhooks endpoint to use in your GitHub Enterprise App
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetGitHubEnterpriseWebhooksEndpoint($id: ID) {
+    githubEnterpriseWebhooksEndpoint(id: $id)
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": null
+  }
+}

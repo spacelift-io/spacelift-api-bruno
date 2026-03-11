@@ -1,0 +1,39 @@
+meta {
+  name: Get Azure Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Azure integration. If the id is not provided, it will return
+  the default Azure Integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetAzureIntegration($id: ID!) {
+    azureIntegration(id: $id) {
+      id
+      name
+      tenantId
+      labels
+      space
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AZURE_INTEGRATION_ID_HERE"
+  }
+}

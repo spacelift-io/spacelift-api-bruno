@@ -1,0 +1,37 @@
+meta {
+  name: Detach Context
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Detach context from a a Stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DetachContext($id: ID!) {
+    contextDetach(id: $id) {
+      id
+      stackId
+      stackName
+      isModule
+      isAutoattached
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "CONTEXT_ID_HERE"
+  }
+}

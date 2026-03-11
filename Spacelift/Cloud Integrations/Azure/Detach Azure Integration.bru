@@ -1,0 +1,39 @@
+meta {
+  name: Detach Azure Integration
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Detaches an Azure integration from a Stack, using the unique ID of the attachment.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DetachAzureIntegration($id: ID!) {
+    azureIntegrationDetach(id: $id) {
+      id
+      stackId
+      stackName
+      read
+      write
+      subscriptionId
+      isAutoattached
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AZURE_INTEGRATION_ID_HERE"
+  }
+}

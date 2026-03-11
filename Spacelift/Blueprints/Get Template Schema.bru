@@ -1,0 +1,25 @@
+meta {
+  name: Get Template Schema
+  type: graphql
+  seq: 10
+}
+
+docs {
+  The json schema of a template.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    templateSchema
+  }
+}

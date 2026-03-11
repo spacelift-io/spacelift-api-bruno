@@ -1,0 +1,40 @@
+meta {
+  name: Get Bitbucket Datacenter Integration
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Shows Bitbucket Datacenter integration details.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetBitbucketDatacenterIntegration($id: ID) {
+    bitbucketDatacenterIntegration(id: $id) {
+      id
+      name
+      apiHost
+      userFacingHost
+      username
+      webhookURL
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

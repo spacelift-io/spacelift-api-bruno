@@ -1,0 +1,38 @@
+meta {
+  name: Update Terraform Provider
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Updates an existing Terraform Provider
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateTerraformProvider($id: ID!, $space: ID!, $description: String) {
+    terraformProviderUpdate(id: $id, space: $space, description: $description) {
+      id
+      description
+      labels
+      public
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PROVIDER_ID_HERE",
+    "space": "root",
+    "description": "Updated description"
+  }
+}

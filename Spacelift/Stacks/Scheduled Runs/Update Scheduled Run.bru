@@ -1,0 +1,43 @@
+meta {
+  name: Update Scheduled Run
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Update ScheduledRun for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateScheduledRun($stack: ID!, $scheduledRun: ID!, $input: ScheduledRunInput!) {
+    stackScheduledRunUpdate(stack: $stack, scheduledRun: $scheduledRun, input: $input) {
+      id
+      name
+      timezone
+      timestampSchedule
+      nextSchedule
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "scheduledRun": "SCHEDULED_RUN_ID_HERE",
+    "input": {
+      "name": "Nightly run updated",
+      "timezone": "UTC",
+      "cronSchedule": ["0 3 * * *"]
+    }
+  }
+}

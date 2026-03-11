@@ -1,0 +1,35 @@
+meta {
+  name: Attachable AWS Integrations
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of aws integrations that can be attached Stacks/Modules in given space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AttachableAwsIntegrationsInSpace($id: ID!) {
+    attachableAwsIntegrationsInSpace(id: $id) {
+      id
+      name
+      roleArn
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SPACE_ID_HERE"
+  }
+}

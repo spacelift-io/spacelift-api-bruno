@@ -1,0 +1,36 @@
+meta {
+  name: Migrate Vendor
+  type: graphql
+  seq: 19
+}
+
+docs {
+  Migrate stack vendor configuration.
+  Supports bidirectional migration between Terraform stacks with 'terragrunt' label and native Terragrunt.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation MigrateStackVendor($id: ID!, $targetVendor: StackVendor!) {
+    stackMigrateVendor(id: $id, targetVendor: $targetVendor) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE",
+    "targetVendor": "OPEN_TOFU"
+  }
+}

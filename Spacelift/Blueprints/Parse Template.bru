@@ -1,0 +1,35 @@
+meta {
+  name: Parse Template
+  type: graphql
+  seq: 8
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ParseBlueprintTemplate($template: String!) {
+    blueprintParseTemplate(template: $template) {
+      inputs {
+        id
+        name
+        description
+        type
+      }
+      errors
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "template": "inputs:\n  - id: stack_name\n    name: Stack Name\n    type: SHORT_STRING\n"
+  }
+}

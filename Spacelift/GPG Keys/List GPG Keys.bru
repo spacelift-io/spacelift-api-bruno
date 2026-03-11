@@ -1,0 +1,32 @@
+meta {
+  name: List GPG Keys
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List the GPG keys used to sign binaries.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    gpgKeys {
+      id
+      name
+      description
+      createdAt
+      updatedAt
+      revokedAt
+    }
+  }
+}

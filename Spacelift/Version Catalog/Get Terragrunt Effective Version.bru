@@ -1,0 +1,39 @@
+meta {
+  name: Get Terragrunt Effective Version
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Given version constraints, calculate the latest version that satisfies it. NOTE: the only
+  valid values for the "tool" parameter are TERRAFORM_FOSS or OPEN_TOFU, and when no tool
+  is specified it defaults to TERRAFORM_FOSS.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetTerragruntEffectiveVersion($terragruntConstraints: String!, $terraformConstraints: String!, $tool: TerragruntTool) {
+    terragruntEffectiveVersion(terragruntConstraints: $terragruntConstraints, terraformConstraints: $terraformConstraints, tool: $tool) {
+      effectiveTerragruntVersion
+      effectiveTerraformVersion
+      tool
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "terragruntConstraints": ">= 0.50.0",
+    "terraformConstraints": ">= 1.5.0",
+    "tool": null
+  }
+}

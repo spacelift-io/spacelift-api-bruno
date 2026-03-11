@@ -1,0 +1,42 @@
+meta {
+  name: Get Stack
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetStack($id: ID!) {
+    stack(id: $id) {
+      id
+      name
+      description
+      space
+      repository
+      branch
+      projectRoot
+      administrative
+      autodeploy
+      labels
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE"
+  }
+}

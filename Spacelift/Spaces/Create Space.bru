@@ -1,0 +1,44 @@
+meta {
+  name: Create Space
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Creates a new space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateSpace($input: SpaceInput!) {
+    spaceCreate(input: $input) {
+      id
+      name
+      description
+      parentSpace
+      inheritEntities
+      labels
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-space",
+      "description": "My new space",
+      "parentSpace": "root",
+      "inheritEntities": false,
+      "labels": []
+    }
+  }
+}

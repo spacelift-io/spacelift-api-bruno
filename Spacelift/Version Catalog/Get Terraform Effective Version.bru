@@ -1,0 +1,31 @@
+meta {
+  name: Get Terraform Effective Version
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Given version constraints, calculate the latest version that satisfies it.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetTerraformEffectiveVersion($constraints: String!) {
+    terraformEffectiveVersion(constraints: $constraints)
+  }
+}
+
+body:graphql:vars {
+  {
+    "constraints": ">= 1.5.0"
+  }
+}

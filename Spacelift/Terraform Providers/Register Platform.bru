@@ -1,0 +1,41 @@
+meta {
+  name: Register Platform
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Register a platform supported by the version. The result is presigned
+  upload URL that can be used to upload the platform binary.
+  This call is idempotent so registering the same platform multiple times will
+  not create multiple copies, but once a platform is registered, the binary
+  must be uploaded.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RegisterTerraformProviderPlatform($version: ID!, $input: TerraformProviderVersionPlatformInput!) {
+    terraformProviderVersionRegisterPlatform(version: $version, input: $input)
+  }
+}
+
+body:graphql:vars {
+  {
+    "version": "PROVIDER_VERSION_ID_HERE",
+    "input": {
+      "os": "linux",
+      "arch": "amd64",
+      "filename": "terraform-provider-mycloud_0.1.0_linux_amd64.zip",
+      "shasum": "abc123"
+    }
+  }
+}

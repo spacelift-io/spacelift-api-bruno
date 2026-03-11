@@ -1,0 +1,47 @@
+meta {
+  name: Update Blueprint With Group
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Update an existing blueprint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateBlueprintWithGroup($id: ID!, $input: BlueprintWithGroupUpdateInput!) {
+    blueprintWithGroupUpdate(id: $id, input: $input) {
+      id
+      name
+      state
+      description
+      labels
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLUEPRINT_ID_HERE",
+    "input": {
+      "state": "PUBLISHED",
+      "description": "Updated description",
+      "labels": [],
+      "template": "{}"
+    }
+  }
+}

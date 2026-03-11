@@ -1,0 +1,34 @@
+meta {
+  name: Delete Space
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Deletes space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteSpace($space: ID!) {
+    spaceDelete(space: $space) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE"
+  }
+}

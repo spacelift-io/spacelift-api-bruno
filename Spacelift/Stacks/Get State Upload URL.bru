@@ -1,0 +1,28 @@
+meta {
+  name: Get State Upload URL
+  type: graphql
+  seq: 22
+}
+
+docs {
+  Generate pre-signed state upload URL.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation GetStateUploadURL {
+    stateUploadUrl {
+      objectId
+      url
+    }
+  }
+}

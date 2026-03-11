@@ -1,0 +1,45 @@
+meta {
+  name: Search Resources by Stack
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Search managed entities grouped by stacks with a set of predicates, ordering and paging.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchResourcesByStack($input: SearchInput!) {
+    searchManagedEntitiesGroupByStacks(input: $input) {
+      edges {
+        node {
+          id
+          stackName
+          count
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

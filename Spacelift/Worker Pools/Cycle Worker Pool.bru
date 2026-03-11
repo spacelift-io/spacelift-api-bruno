@@ -1,0 +1,31 @@
+meta {
+  name: Cycle Worker Pool
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Cycles the workerpool
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CycleWorkerPool($id: ID!) {
+    workerPoolCycle(id: $id)
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WORKER_POOL_ID_HERE"
+  }
+}

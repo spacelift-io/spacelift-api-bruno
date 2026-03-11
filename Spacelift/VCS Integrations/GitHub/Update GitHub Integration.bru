@@ -1,0 +1,37 @@
+meta {
+  name: Update GitHub Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Updates the build-in GitHub integration
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateGithubIntegration($vcsChecks: VCSCheck!, $useGitCheckout: Boolean) {
+    githubIntegrationUpdate(vcsChecks: $vcsChecks, useGitCheckout: $useGitCheckout) {
+      vcsChecks
+      useGitCheckout
+      apiHost
+      isEnterprise
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "vcsChecks": "ALL_CHECKS",
+    "useGitCheckout": false
+  }
+}

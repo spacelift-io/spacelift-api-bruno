@@ -1,0 +1,37 @@
+meta {
+  name: List Repositories
+  type: graphql
+  seq: 4
+}
+
+docs {
+  List of repositories available to the account.
+  Optional filter param can be applied for the results returned from VCS.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListRepositories($provider: VCSProvider, $vcsIntegrationID: ID, $filter: String) {
+    repositories(provider: $provider, vcsIntegrationID: $vcsIntegrationID, filter: $filter) {
+      id
+      namespace
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "provider": null,
+    "vcsIntegrationID": "VCS_INTEGRATION_ID_HERE",
+    "filter": null
+  }
+}

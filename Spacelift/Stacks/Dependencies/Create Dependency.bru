@@ -1,0 +1,39 @@
+meta {
+  name: Create Dependency
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Create a new stack dependency.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateStackDependency($input: StackDependencyInput!) {
+    stackDependencyCreate(input: $input) {
+      id
+      referenceCount
+      triggerAlways
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "stackId": "STACK_ID_HERE",
+      "dependsOnStackId": "DEPENDENCY_STACK_ID_HERE",
+      "triggerAlways": false
+    }
+  }
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Delete Config
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Delete a context config element. Requires 'Context Update' permission on the context Space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteContextConfig($context: ID!, $id: ID!) {
+    contextConfigDelete(context: $context, id: $id) {
+      id
+      type
+      description
+      writeOnly
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "context": "CONTEXT_ID_HERE",
+    "id": "CONFIG_ID_HERE"
+  }
+}

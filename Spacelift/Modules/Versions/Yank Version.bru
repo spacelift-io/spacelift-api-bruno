@@ -1,0 +1,39 @@
+meta {
+  name: Yank Version
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Yank the version (mark it as bad). This action cannot be undone.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation YankModuleVersion($id: ID!, $module: ID!, $note: String) {
+    versionYank(id: $id, module: $module, note: $note) {
+      id
+      number
+      state
+      yanked
+      yankNote
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSION_ID_HERE",
+    "module": "MODULE_ID_HERE",
+    "note": "Critical bug found"
+  }
+}

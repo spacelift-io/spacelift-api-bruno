@@ -1,0 +1,31 @@
+meta {
+  name: Delete User Role Binding
+  type: graphql
+  seq: 5
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteUserRoleBinding($id: ID!) {
+    userRoleBindingDelete(id: $id) {
+      id
+      roleID
+      userID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ROLE_BINDING_ID_HERE"
+  }
+}

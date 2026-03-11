@@ -1,0 +1,36 @@
+meta {
+  name: Retry Run
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Retry a PR Run that has finished.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RetryRun($stack: ID!, $run: ID!) {
+    runRetry(stack: $stack, run: $run) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE"
+  }
+}

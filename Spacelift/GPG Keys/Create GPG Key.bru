@@ -1,0 +1,38 @@
+meta {
+  name: Create GPG Key
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Creates a new GPG key to be used for signing binaries.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateGPGKey($name: String!, $asciiArmor: String!, $description: String) {
+    gpgKeyCreate(name: $name, asciiArmor: $asciiArmor, description: $description) {
+      id
+      name
+      description
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "name": "my-gpg-key",
+    "asciiArmor": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n...\n-----END PGP PUBLIC KEY BLOCK-----",
+    "description": "My GPG signing key"
+  }
+}

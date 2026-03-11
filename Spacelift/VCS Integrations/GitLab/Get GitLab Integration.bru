@@ -1,0 +1,40 @@
+meta {
+  name: Get GitLab Integration
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Shows Gitlab integration details. If the id is not provided, it will return
+  the default Gitlab Integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetGitlabIntegration($id: ID) {
+    gitlabIntegration(id: $id) {
+      id
+      name
+      apiHost
+      userFacingHost
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

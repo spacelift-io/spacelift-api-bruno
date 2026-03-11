@@ -1,0 +1,37 @@
+meta {
+  name: Update VCS Agent Pool
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing VCSAgentPool.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateVcsAgentPool($id: ID!, $name: String!, $description: String) {
+    vcsAgentPoolUpdate(id: $id, name: $name, description: $description) {
+      id
+      name
+      description
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VCS_AGENT_POOL_ID_HERE",
+    "name": "my-vcs-agent-pool-updated",
+    "description": "Updated description"
+  }
+}

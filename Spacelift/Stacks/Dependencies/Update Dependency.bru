@@ -1,0 +1,38 @@
+meta {
+  name: Update Dependency
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Update an existing stack dependency.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateStackDependency($input: StackDependencyUpdateInput!) {
+    stackDependencyUpdate(input: $input) {
+      id
+      referenceCount
+      triggerAlways
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "id": "DEPENDENCY_ID_HERE",
+      "triggerAlways": true
+    }
+  }
+}

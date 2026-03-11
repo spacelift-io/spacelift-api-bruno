@@ -1,0 +1,43 @@
+meta {
+  name: Create Drift Detection
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Create a new DriftDetectionIntegration for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateDriftDetection($stack: ID!, $input: DriftDetectionIntegrationInput!) {
+    stackIntegrationDriftDetectionCreate(stack: $stack, input: $input) {
+      reconcile
+      ignoreState
+      timezone
+      nextSchedule
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "input": {
+      "reconcile": false,
+      "ignoreState": false,
+      "timezone": "UTC",
+      "schedule": ["0 * * * *"]
+    }
+  }
+}

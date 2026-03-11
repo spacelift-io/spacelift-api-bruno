@@ -1,0 +1,50 @@
+meta {
+  name: List Revisions
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Search Revisions with filtering, ordering, and pagination
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListRevisions($repoID: ID!, $input: SearchInput!) {
+    searchRevisions(repoID: $repoID, input: $input) {
+      edges {
+        node {
+          id
+          sha
+          message
+          description
+          authorName
+          authorEmail
+          createdAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "repoID": "REPO_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

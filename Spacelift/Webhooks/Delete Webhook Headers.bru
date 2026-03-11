@@ -1,0 +1,37 @@
+meta {
+  name: Delete Webhook Headers
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Remove secret headers for a named webhook
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteWebhookHeaders($id: ID!, $headerKeys: [String!]!) {
+    namedWebhooksIntegrationDeleteHeaders(id: $id, headerKeys: $headerKeys) {
+      id
+      name
+      enabled
+      endpoint
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WEBHOOK_ID_HERE",
+    "headerKeys": ["X-Custom-Header"]
+  }
+}

@@ -1,0 +1,36 @@
+meta {
+  name: Detach from Intent Project
+  type: graphql
+  seq: 14
+}
+
+docs {
+  Detach AWS integration from an intent project.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DetachAwsIntegrationFromIntentProject($intentProject: ID!, $integration: ID!) {
+    awsIntegrationIntentProjectDetach(intentProject: $intentProject, integration: $integration) {
+      id
+      read
+      write
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE",
+    "integration": "AWS_INTEGRATION_ID_HERE"
+  }
+}

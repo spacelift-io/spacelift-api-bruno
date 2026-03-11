@@ -1,0 +1,37 @@
+meta {
+  name: Propose Local Workspace Run
+  type: graphql
+  seq: 23
+}
+
+docs {
+  Create proposed run based on provided local workspace.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RunProposeLocalWorkspace($stack: ID!, $workspace: ID!, $environmentVarsOverrides: [EnvironmentVariable!]) {
+    runProposeLocalWorkspace(stack: $stack, workspace: $workspace, environmentVarsOverrides: $environmentVarsOverrides) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "workspace": "LOCAL_WORKSPACE_UPLOAD_ID_HERE",
+    "environmentVarsOverrides": null
+  }
+}

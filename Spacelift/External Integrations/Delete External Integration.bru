@@ -1,0 +1,31 @@
+meta {
+  name: Delete External Integration
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteExternalIntegration($id: ID!) {
+    externalIntegrationDelete(id: $id) {
+      id
+      name
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "EXTERNAL_INTEGRATION_ID_HERE"
+  }
+}

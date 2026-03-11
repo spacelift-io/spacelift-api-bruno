@@ -1,0 +1,31 @@
+meta {
+  name: List Shared Modules
+  type: graphql
+  seq: 11
+}
+
+docs {
+  List of all the Modules shared with this account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    sharedModules {
+      id
+      name
+      description
+      ownerSubdomain
+      terraformProvider
+    }
+  }
+}

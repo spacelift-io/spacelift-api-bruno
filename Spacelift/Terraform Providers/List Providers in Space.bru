@@ -1,0 +1,31 @@
+meta {
+  name: List Providers in Space
+  type: graphql
+  seq: 15
+}
+
+docs {
+  List of all the VCS providers available in a specific space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListProvidersInSpace($id: ID!) {
+    providersInSpace(id: $id)
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SPACE_ID_HERE"
+  }
+}

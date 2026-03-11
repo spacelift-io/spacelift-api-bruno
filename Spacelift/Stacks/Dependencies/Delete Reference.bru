@@ -1,0 +1,35 @@
+meta {
+  name: Delete Reference
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Deletes reference output/input from stack dependency
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteStackDependencyReference($id: ID!) {
+    stackDependenciesDeleteReference(id: $id) {
+      id
+      outputName
+      inputName
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "REFERENCE_ID_HERE"
+  }
+}

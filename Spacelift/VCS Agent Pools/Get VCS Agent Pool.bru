@@ -1,0 +1,35 @@
+meta {
+  name: Get VCS Agent Pool
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single VCSAgentPool.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetVcsAgentPool($id: ID!) {
+    vcsAgentPool(id: $id) {
+      id
+      name
+      description
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VCS_AGENT_POOL_ID_HERE"
+  }
+}

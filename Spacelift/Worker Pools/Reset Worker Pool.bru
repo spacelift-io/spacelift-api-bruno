@@ -1,0 +1,36 @@
+meta {
+  name: Reset Worker Pool
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Recreate the credentials necessary to connect WorkerPool's workers to the
+  control plane.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ResetWorkerPool($id: ID!, $certificateSigningRequest: String!) {
+    workerPoolReset(id: $id, certificateSigningRequest: $certificateSigningRequest) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WORKER_POOL_ID_HERE",
+    "certificateSigningRequest": "-----BEGIN CERTIFICATE REQUEST-----\nCSR_CONTENT_HERE\n-----END CERTIFICATE REQUEST-----"
+  }
+}

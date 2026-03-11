@@ -1,0 +1,37 @@
+meta {
+  name: Stop Run
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Stop a Run that's currently in progress.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StopRun($stack: ID!, $run: ID!, $note: String) {
+    runStop(stack: $stack, run: $run, note: $note) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "note": "Stopping run gracefully"
+  }
+}

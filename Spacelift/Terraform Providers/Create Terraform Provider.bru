@@ -1,0 +1,40 @@
+meta {
+  name: Create Terraform Provider
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Creates a new Terraform provider. Note that the type needs to be unique within
+  the account, and it can then be used as the provider's ID.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateTerraformProvider($type: ID!, $space: ID!, $description: String) {
+    terraformProviderCreate(type: $type, space: $space, description: $description) {
+      id
+      description
+      labels
+      public
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "type": "mycorp/mycloud",
+    "space": "root",
+    "description": "My custom provider"
+  }
+}

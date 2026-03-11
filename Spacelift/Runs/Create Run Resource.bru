@@ -1,0 +1,36 @@
+meta {
+  name: Create Run Resource
+  type: graphql
+  seq: 25
+}
+
+docs {
+  Stub for the Terraform provider for creating runs. The Terraform provider
+  only needs to be able to trigger a run but will not follow it, so we do not
+  expose anything else than the ID. By default, a tracked run is created, but
+  this can be overridden by setting the proposed argument to true.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RunResourceCreate($stack: ID!, $commitSha: String, $proposed: Boolean) {
+    runResourceCreate(stack: $stack, commitSha: $commitSha, proposed: $proposed)
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "commitSha": null,
+    "proposed": false
+  }
+}

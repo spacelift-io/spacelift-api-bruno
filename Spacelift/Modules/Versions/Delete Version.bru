@@ -1,0 +1,36 @@
+meta {
+  name: Delete Version
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Delete version. This action cannot be undone.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteModuleVersion($id: ID!, $module: ID!) {
+    versionDelete(id: $id, module: $module) {
+      id
+      number
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSION_ID_HERE",
+    "module": "MODULE_ID_HERE"
+  }
+}

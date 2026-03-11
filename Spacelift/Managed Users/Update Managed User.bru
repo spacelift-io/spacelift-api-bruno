@@ -1,0 +1,34 @@
+meta {
+  name: Update Managed User
+  type: graphql
+  seq: 6
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateManagedUser($input: ManagedUserUpdateInput!) {
+    managedUserUpdate(input: $input) {
+      id
+      username
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "id": "USER_ID_HERE",
+      "slackMemberID": "SLACK_MEMBER_ID_HERE"
+    }
+  }
+}

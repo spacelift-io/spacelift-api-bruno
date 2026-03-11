@@ -1,0 +1,41 @@
+meta {
+  name: Create GitLab Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Creates the GitLab integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateGitlabIntegration($apiHost: String!, $userFacingHost: String, $privateToken: String!, $customInput: CustomVCSInput) {
+    gitlabIntegrationCreate(apiHost: $apiHost, userFacingHost: $userFacingHost, privateToken: $privateToken, customInput: $customInput) {
+      id
+      name
+      apiHost
+      userFacingHost
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "apiHost": "https://gitlab.example.com",
+    "userFacingHost": "https://gitlab.example.com",
+    "privateToken": "glpat-xxxxxxxxxxxxxxxxxxxx"
+  }
+}

@@ -1,0 +1,43 @@
+meta {
+  name: Attach to Stack
+  type: graphql
+  seq: 10
+}
+
+docs {
+  Create a stack AWS integration by setting a role ARN.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AttachAwsIntegrationToStack($id: ID!, $roleArn: String!, $generateCredentialsInWorker: Boolean, $externalID: String, $durationSeconds: Int, $region: String) {
+    stackIntegrationAwsCreate(id: $id, roleArn: $roleArn, generateCredentialsInWorker: $generateCredentialsInWorker, externalID: $externalID, durationSeconds: $durationSeconds, region: $region) {
+      activated
+      assumedRoleArn
+      generateCredentialsInWorker
+      externalID
+      durationSeconds
+      region
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE",
+    "roleArn": "arn:aws:iam::123456789012:role/my-role",
+    "generateCredentialsInWorker": false,
+    "externalID": null,
+    "durationSeconds": 3600,
+    "region": null
+  }
+}

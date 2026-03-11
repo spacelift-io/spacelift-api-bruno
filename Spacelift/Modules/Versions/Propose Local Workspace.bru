@@ -1,0 +1,37 @@
+meta {
+  name: Propose Local Workspace
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Create Version test run based on provided local workspace.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation VersionProposeLocalWorkspace($module: ID!, $workspace: ID!, $testIds: [String!]) {
+    versionProposeLocalWorkspace(module: $module, workspace: $workspace, testIds: $testIds) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "module": "MODULE_ID_HERE",
+    "workspace": "LOCAL_WORKSPACE_UPLOAD_ID_HERE",
+    "testIds": null
+  }
+}

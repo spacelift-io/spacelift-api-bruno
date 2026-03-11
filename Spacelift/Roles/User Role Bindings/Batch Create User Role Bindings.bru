@@ -1,0 +1,33 @@
+meta {
+  name: Batch Create User Role Bindings
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation BatchCreateUserRoleBindings($input: UserRoleBindingBatchInput!) {
+    userRoleBindingBatchCreate(input: $input) {
+      id
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "bindings": [
+        { "userID": "USER_ID_HERE", "roleID": "ROLE_ID_HERE", "spaceID": "root" }
+      ]
+    }
+  }
+}

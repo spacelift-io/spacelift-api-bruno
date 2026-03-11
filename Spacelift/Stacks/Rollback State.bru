@@ -1,0 +1,35 @@
+meta {
+  name: Rollback State
+  type: graphql
+  seq: 15
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RollbackState($stackId: ID!, $managedStateVersionId: String!) {
+    stackManagedStateRollback(stackId: $stackId, managedStateVersionId: $managedStateVersionId) {
+      id
+      lastModified
+      rollback
+      rollbackUsername
+      size
+      imported
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stackId": "STACK_ID_HERE",
+    "managedStateVersionId": "STATE_VERSION_ID_HERE"
+  }
+}

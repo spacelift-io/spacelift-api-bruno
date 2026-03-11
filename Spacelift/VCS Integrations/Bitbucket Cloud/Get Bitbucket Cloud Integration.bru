@@ -1,0 +1,38 @@
+meta {
+  name: Get Bitbucket Cloud Integration
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Shows Bitbucket Cloud integration details.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetBitbucketCloudIntegration($id: ID) {
+    bitbucketCloudIntegration(id: $id) {
+      id
+      name
+      username
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

@@ -1,0 +1,41 @@
+meta {
+  name: Create Azure DevOps Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Creates the Azure DevOps Repo integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateAzureDevOpsIntegration($organizationURL: String!, $userFacingHost: String, $personalAccessToken: String!, $customInput: CustomVCSInput, $accessibleProjects: [String!]) {
+    azureDevOpsRepoIntegrationCreate(organizationURL: $organizationURL, userFacingHost: $userFacingHost, personalAccessToken: $personalAccessToken, customInput: $customInput, accessibleProjects: $accessibleProjects) {
+      id
+      name
+      organizationURL
+      userFacingHost
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "organizationURL": "https://dev.azure.com/my-org",
+    "personalAccessToken": "AZURE_PAT_HERE",
+    "accessibleProjects": []
+  }
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Cancel Run
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Cancel a Run that has not yet started.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CancelRun($stack: ID!, $run: ID!, $note: String) {
+    runCancel(stack: $stack, run: $run, note: $note) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "note": "Cancelling run"
+  }
+}

@@ -1,0 +1,42 @@
+meta {
+  name: Trigger Run
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Trigger a Run. By default, this mutation triggers a tracked run for the
+  commit currently tracked by a Stack or, if the Stack is not yet tracking any
+  commit, against the HEAD of the Stack's tracked branch. These defaults can
+  be overridden.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TriggerRun($stack: ID!, $commitSha: String, $runType: RunType) {
+    runTrigger(stack: $stack, commitSha: $commitSha, runType: $runType) {
+      id
+      state
+      type
+      createdAt
+      triggeredBy
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "commitSha": null,
+    "runType": "PROPOSED"
+  }
+}

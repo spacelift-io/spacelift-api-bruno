@@ -1,0 +1,44 @@
+meta {
+  name: Get Module
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Module.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetModule($id: ID!) {
+    module(id: $id) {
+      id
+      name
+      namespace
+      repository
+      provider
+      terraformProvider
+      space
+      description
+      labels
+      administrative
+      branch
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "MODULE_ID_HERE"
+  }
+}

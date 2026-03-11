@@ -1,0 +1,38 @@
+meta {
+  name: Attach to Intent Project
+  type: graphql
+  seq: 14
+}
+
+docs {
+  Attach Policy to a Intent Project
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation PolicyIntentProjectAttach($id: ID!, $intentProject: ID!) {
+    policyIntentProjectAttach(id: $id, intentProject: $intentProject) {
+      id
+      policyID
+      policyName
+      projectID
+      projectName
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "POLICY_ID_HERE",
+    "intentProject": "INTENT_PROJECT_ID_HERE"
+  }
+}

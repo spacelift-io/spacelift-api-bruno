@@ -1,0 +1,38 @@
+meta {
+  name: Detach AWS Integration
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Detaches an AWS integration from a Stack, using the unique ID of the attachment.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DetachAwsIntegration($id: ID!) {
+    awsIntegrationDetach(id: $id) {
+      id
+      stackId
+      stackName
+      read
+      write
+      isAutoattached
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AWS_INTEGRATION_ID_HERE"
+  }
+}

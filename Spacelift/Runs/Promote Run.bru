@@ -1,0 +1,36 @@
+meta {
+  name: Promote Run
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Promote a proposed Run to a tracked one.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation PromoteRun($stack: ID!, $run: ID!) {
+    runPromote(stack: $stack, run: $run) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE"
+  }
+}

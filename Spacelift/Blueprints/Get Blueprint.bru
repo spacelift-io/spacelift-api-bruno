@@ -1,0 +1,46 @@
+meta {
+  name: Get Blueprint
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns a single blueprint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetBlueprint($id: ID!) {
+    blueprint(id: $id) {
+      id
+      name
+      description
+      state
+      labels
+      space {
+        id
+        name
+      }
+      template {
+        template
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLUEPRINT_ID_HERE"
+  }
+}

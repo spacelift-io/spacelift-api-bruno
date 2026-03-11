@@ -1,0 +1,41 @@
+meta {
+  name: Review Run
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Add a run review.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ReviewRun($stack: ID!, $run: ID, $decision: RunReviewDecision!, $note: String) {
+    runReview(stack: $stack, run: $run, decision: $decision, note: $note) {
+      id
+      author
+      decision
+      note
+      state
+      timestamp
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "decision": "APPROVE",
+    "note": "Approved"
+  }
+}

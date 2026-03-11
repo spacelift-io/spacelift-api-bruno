@@ -1,0 +1,47 @@
+meta {
+  name: Create Blueprint With Group
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Create a blueprint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateBlueprintWithGroup($input: BlueprintWithGroupCreateInput!) {
+    blueprintWithGroupCreate(input: $input) {
+      id
+      name
+      state
+      description
+      labels
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "group": "GROUP_ID_HERE",
+      "state": "DRAFT",
+      "description": "Blueprint created with group",
+      "labels": [],
+      "template": "{}"
+    }
+  }
+}

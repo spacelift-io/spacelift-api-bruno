@@ -1,0 +1,36 @@
+meta {
+  name: Trigger Version
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Trigger failed Version.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TriggerModuleVersion($id: ID!, $module: ID!) {
+    versionTrigger(id: $id, module: $module) {
+      id
+      number
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSION_ID_HERE",
+    "module": "MODULE_ID_HERE"
+  }
+}

@@ -1,0 +1,52 @@
+meta {
+  name: Search Audit Trail Entries
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Searches for audit trail entries.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchAuditTrailEntries($input: SearchInput!) {
+    searchAuditTrailEntries(input: $input) {
+      edges {
+        node {
+          id
+          action
+          actor {
+            username
+          }
+          affectedResource {
+            resourceType
+            resourceId
+          }
+          createdAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

@@ -1,0 +1,43 @@
+meta {
+  name: Add References
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Adds multiple references output/input in a single request.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StackDependenciesAddReferences($stackDependencyID: ID!, $references: [StackDependencyReferenceInput!]!) {
+    stackDependenciesAddReferences(stackDependencyID: $stackDependencyID, references: $references) {
+      id
+      outputName
+      inputName
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stackDependencyID": "STACK_DEPENDENCY_ID_HERE",
+    "references": [
+      {
+        "outputName": "output_name",
+        "inputName": "input_name",
+        "type": "TRIGGER_ALWAYS",
+        "triggerAlways": false
+      }
+    ]
+  }
+}

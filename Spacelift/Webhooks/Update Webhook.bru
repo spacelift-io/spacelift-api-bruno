@@ -1,0 +1,51 @@
+meta {
+  name: Update Webhook
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update a NamedWebhooksIntegration for a space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateWebhook($id: ID!, $input: NamedWebhooksIntegrationInput!) {
+    namedWebhooksIntegrationUpdate(id: $id, input: $input) {
+      id
+      name
+      endpoint
+      enabled
+      labels
+      space {
+        id
+        name
+      }
+      retryOnFailure
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WEBHOOK_ID_HERE",
+    "input": {
+      "name": "my-webhook-updated",
+      "endpoint": "https://example.com/webhook",
+      "enabled": true,
+      "secret": "my-secret",
+      "labels": [],
+      "space": "root",
+      "retryOnFailure": true
+    }
+  }
+}

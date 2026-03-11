@@ -1,0 +1,35 @@
+meta {
+  name: Delete Bitbucket Datacenter Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Deletes the Bitbucket Datacenter integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteBitbucketDatacenterIntegration($id: ID) {
+    bitbucketDatacenterIntegrationDelete(id: $id) {
+      id
+      name
+      apiHost
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

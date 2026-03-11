@@ -1,0 +1,40 @@
+meta {
+  name: Get Versioned Group
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns a single blueprint group details.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetBlueprintVersionedGroup($id: ID!) {
+    blueprintVersionedGroup(id: $id) {
+      id
+      name
+      description
+      space {
+        id
+        name
+      }
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSIONED_GROUP_ID_HERE"
+  }
+}

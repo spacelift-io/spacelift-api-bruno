@@ -1,0 +1,38 @@
+meta {
+  name: Attach Policy
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Attach Policy to a Stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AttachPolicy($id: ID!, $stack: ID!) {
+    policyAttach(id: $id, stack: $stack) {
+      id
+      stackId
+      stackName
+      isModule
+      isAutoattached
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "POLICY_ID_HERE",
+    "stack": "STACK_ID_HERE"
+  }
+}

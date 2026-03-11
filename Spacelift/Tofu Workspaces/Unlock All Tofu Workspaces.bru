@@ -1,0 +1,36 @@
+meta {
+  name: Unlock All Tofu Workspaces
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Unlock all locked Tofu workspaces in a stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UnlockAllTofuWorkspaces($stack: ID!) {
+    tofuWorkspaceUnlockAll(stack: $stack) {
+      unlockedWorkspaces {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE"
+  }
+}

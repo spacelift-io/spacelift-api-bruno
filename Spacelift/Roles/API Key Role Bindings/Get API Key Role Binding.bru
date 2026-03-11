@@ -1,0 +1,30 @@
+meta {
+  name: Get API Key Role Binding
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetApiKeyRoleBinding($id: ID!) {
+    apiKeyRoleBinding(id: $id) {
+      id
+      apiKeyID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ROLE_BINDING_ID_HERE"
+  }
+}

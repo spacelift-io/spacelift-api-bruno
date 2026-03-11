@@ -1,0 +1,37 @@
+meta {
+  name: Batch Create Dependencies
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Creates multiple stack dependencies in a single request.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation BatchCreateStackDependencies($input: StackDependencyBatchInput!) {
+    stackDependenciesCreateInBatch(input: $input) {
+      id
+      dependsOnStackId
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "stackID": "STACK_ID_HERE",
+      "dependsOnStackIDs": ["DEPENDENCY_STACK_ID_HERE"]
+    }
+  }
+}

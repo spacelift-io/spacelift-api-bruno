@@ -1,0 +1,38 @@
+meta {
+  name: Get Worker Pool
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single WorkerPool.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetWorkerPool($id: ID!) {
+    workerPool(id: $id) {
+      id
+      name
+      description
+      labels
+      space
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WORKER_POOL_ID_HERE"
+  }
+}

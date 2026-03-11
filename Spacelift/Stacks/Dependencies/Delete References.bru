@@ -1,0 +1,35 @@
+meta {
+  name: Delete References
+  type: graphql
+  seq: 10
+}
+
+docs {
+  Deletes multiple references from stack dependency.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StackDependenciesDeleteReferences($ids: [ID!]!) {
+    stackDependenciesDeleteReferences(ids: $ids) {
+      id
+      outputName
+      inputName
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "ids": ["REFERENCE_ID_HERE"]
+  }
+}

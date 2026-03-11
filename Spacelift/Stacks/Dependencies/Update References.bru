@@ -1,0 +1,43 @@
+meta {
+  name: Update References
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Updates multiple references output/input in a single request.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StackDependenciesUpdateReferences($references: [StackDependencyReferenceUpdateInput!]!) {
+    stackDependenciesUpdateReferences(references: $references) {
+      id
+      outputName
+      inputName
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "references": [
+      {
+        "id": "REFERENCE_ID_HERE",
+        "outputName": "output_name",
+        "inputName": "input_name",
+        "type": "TRIGGER_ALWAYS",
+        "triggerAlways": false
+      }
+    ]
+  }
+}

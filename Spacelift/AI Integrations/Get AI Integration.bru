@@ -1,0 +1,38 @@
+meta {
+  name: Get AI Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns all AI integrations for the current account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetAIIntegration($id: ID!) {
+    aiIntegration(id: $id) {
+      id
+      name
+      description
+      provider
+      labels
+      isSpaceliftProvided
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AI_INTEGRATION_ID_HERE"
+  }
+}

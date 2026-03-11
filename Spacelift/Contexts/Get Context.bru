@@ -1,0 +1,45 @@
+meta {
+  name: Get Context
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Context.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetContext($id: ID!) {
+    context(id: $id) {
+      id
+      name
+      description
+      labels
+      space
+      config {
+        id
+        type
+        description
+        writeOnly
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "CONTEXT_ID_HERE"
+  }
+}

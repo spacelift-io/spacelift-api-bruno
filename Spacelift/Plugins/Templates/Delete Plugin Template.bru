@@ -1,0 +1,34 @@
+meta {
+  name: Delete Plugin Template
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Delete an existing Plugin Template.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeletePluginTemplate($id: ID!) {
+    pluginTemplateDelete(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PLUGIN_TEMPLATE_ID_HERE"
+  }
+}

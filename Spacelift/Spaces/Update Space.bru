@@ -1,0 +1,45 @@
+meta {
+  name: Update Space
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Updates space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateSpace($space: ID!, $input: SpaceInput!) {
+    spaceUpdate(space: $space, input: $input) {
+      id
+      name
+      description
+      parentSpace
+      inheritEntities
+      labels
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "name": "my-space-updated",
+      "description": "Updated description",
+      "parentSpace": "root",
+      "inheritEntities": false,
+      "labels": []
+    }
+  }
+}

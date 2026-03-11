@@ -1,0 +1,40 @@
+meta {
+  name: Attach to Intent Project
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Attach AWS integration to an intent project.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AttachAwsIntegrationToIntentProject($intentProject: ID!, $integration: ID!, $read: Boolean!, $write: Boolean!, $awsRegion: String!) {
+    awsIntegrationIntentProjectAttach(intentProject: $intentProject, integration: $integration, read: $read, write: $write, awsRegion: $awsRegion) {
+      id
+      read
+      write
+      awsRegion
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE",
+    "integration": "AWS_INTEGRATION_ID_HERE",
+    "read": true,
+    "write": true,
+    "awsRegion": "us-east-1"
+  }
+}

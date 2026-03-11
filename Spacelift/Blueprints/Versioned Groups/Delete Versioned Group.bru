@@ -1,0 +1,30 @@
+meta {
+  name: Delete Versioned Group
+  type: graphql
+  seq: 5
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteBlueprintVersionedGroup($id: ID!) {
+    blueprintVersionedGroupDelete(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSIONED_GROUP_ID_HERE"
+  }
+}

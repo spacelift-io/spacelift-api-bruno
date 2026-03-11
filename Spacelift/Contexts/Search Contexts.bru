@@ -1,0 +1,43 @@
+meta {
+  name: Search Contexts
+  type: graphql
+  seq: 10
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchContexts($input: SearchInput!) {
+    searchContexts(input: $input) {
+      edges {
+        node {
+          id
+          name
+          description
+          labels
+          space
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

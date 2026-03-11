@@ -1,0 +1,38 @@
+meta {
+  name: Annotate Version
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Set notes on the Version.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AnnotateModuleVersion($id: ID!, $module: ID!, $notes: String) {
+    versionAnnotate(id: $id, module: $module, notes: $notes) {
+      id
+      number
+      notes
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSION_ID_HERE",
+    "module": "MODULE_ID_HERE",
+    "notes": "Release notes here"
+  }
+}

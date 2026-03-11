@@ -1,0 +1,33 @@
+meta {
+  name: List Terraform Providers
+  type: graphql
+  seq: 3
+}
+
+docs {
+  List of all Terraform providers managed by this account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    terraformProviders {
+      id
+      description
+      labels
+      latestVersionNumber
+      public
+      createdAt
+      deleted
+    }
+  }
+}

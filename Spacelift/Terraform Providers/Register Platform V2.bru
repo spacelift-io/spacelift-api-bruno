@@ -1,0 +1,46 @@
+meta {
+  name: Register Platform V2
+  type: graphql
+  seq: 14
+}
+
+docs {
+  This mutation is similar to terraformProviderVersionRegisterPlatform,
+  but it also returns the optional uploadHeaders required for the upload request.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RegisterTerraformProviderPlatformV2($version: ID!, $input: TerraformProviderVersionPlatformInput!) {
+    terraformProviderVersionRegisterPlatformV2(version: $version, input: $input) {
+      uploadUrl
+      uploadHeaders {
+        entries {
+          key
+          value
+        }
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "version": "PROVIDER_VERSION_ID_HERE",
+    "input": {
+      "os": "linux",
+      "arch": "amd64",
+      "filename": "terraform-provider-mycloud_0.1.0_linux_amd64.zip",
+      "shasum": "abc123"
+    }
+  }
+}

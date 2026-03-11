@@ -1,0 +1,49 @@
+meta {
+  name: Update Blueprint
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing blueprint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateBlueprint($id: ID!, $input: BlueprintCreateInput!) {
+    blueprintUpdate(id: $id, input: $input) {
+      id
+      name
+      description
+      state
+      labels
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLUEPRINT_ID_HERE",
+    "input": {
+      "name": "my-blueprint-updated",
+      "description": "Updated description",
+      "state": "PUBLISHED",
+      "labels": [],
+      "space": "root",
+      "template": "inputs:\n  - id: stack_name\n    name: Stack Name\n    type: SHORT_STRING\n"
+    }
+  }
+}

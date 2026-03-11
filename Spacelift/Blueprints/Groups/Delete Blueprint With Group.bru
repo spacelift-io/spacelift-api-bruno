@@ -1,0 +1,34 @@
+meta {
+  name: Delete Blueprint With Group
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Delete an existing blueprint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteBlueprintWithGroup($id: ID!) {
+    blueprintWithGroupDelete(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLUEPRINT_ID_HERE"
+  }
+}

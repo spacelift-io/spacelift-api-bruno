@@ -1,0 +1,35 @@
+meta {
+  name: List Policies
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the polices in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    policies {
+      id
+      name
+      body
+      type
+      description
+      labels
+      space
+      createdAt
+      updatedAt
+    }
+  }
+}

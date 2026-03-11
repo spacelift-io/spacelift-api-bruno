@@ -1,0 +1,40 @@
+meta {
+  name: List Ansible Hosts
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Returns a list of related Ansible Hosts.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListAnsibleHosts($input: RunOrStackArgs!) {
+    ansibleHosts(input: $input) {
+      id
+      name
+      machineID
+      architecture
+      distribution
+      distributionVersion
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "stackId": "STACK_ID_HERE"
+    }
+  }
+}

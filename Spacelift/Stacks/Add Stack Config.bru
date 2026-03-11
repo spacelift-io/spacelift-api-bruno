@@ -1,0 +1,45 @@
+meta {
+  name: Add Stack Config
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Add a stack config element.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AddStackConfig($stack: ID!, $config: ConfigInput!) {
+    stackConfigAdd(stack: $stack, config: $config) {
+      id
+      type
+      value
+      description
+      writeOnly
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "config": {
+      "id": "MY_ENV_VAR",
+      "type": "ENVIRONMENT_VARIABLE",
+      "value": "my-value",
+      "description": "My environment variable",
+      "writeOnly": false
+    }
+  }
+}

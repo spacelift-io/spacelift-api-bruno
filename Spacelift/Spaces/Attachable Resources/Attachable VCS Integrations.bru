@@ -1,0 +1,36 @@
+meta {
+  name: Attachable VCS Integrations
+  type: graphql
+  seq: 6
+}
+
+docs {
+  List of VCS integrations that can be attached Stacks/Modules in given space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AttachableVCSIntegrationsInSpace($id: ID!, $provider: VCSProvider!) {
+    attachableVCSIntegrationsForProviderInSpace(id: $id, provider: $provider) {
+      id
+      name
+      provider
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SPACE_ID_HERE",
+    "provider": "GITHUB_ENTERPRISE"
+  }
+}

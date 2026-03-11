@@ -1,0 +1,36 @@
+meta {
+  name: Delete Run State Summary
+  type: graphql
+  seq: 21
+}
+
+docs {
+  Deletes a run state summary
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteRunStateSummary($stack: ID!, $run: ID!, $stateVersion: Int!) {
+    deleteRunStateSummary(stack: $stack, run: $run, stateVersion: $stateVersion) {
+      summary
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "stateVersion": 1
+  }
+}

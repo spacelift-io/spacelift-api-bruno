@@ -1,0 +1,35 @@
+meta {
+  name: Attachable Policies in Space
+  type: graphql
+  seq: 12
+}
+
+docs {
+  List of policies that can be attached to Stacks/Modules in given space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AttachablePoliciesInSpace($id: ID!) {
+    attachablePoliciesInSpace(id: $id) {
+      id
+      name
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SPACE_ID_HERE"
+  }
+}

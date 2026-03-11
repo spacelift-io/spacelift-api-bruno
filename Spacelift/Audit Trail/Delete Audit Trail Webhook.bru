@@ -1,0 +1,28 @@
+meta {
+  name: Delete Audit Trail Webhook
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Delete audit trail webhook.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteAuditTrailWebhook {
+    auditTrailDeleteWebhook {
+      enabled
+      endpoint
+    }
+  }
+}

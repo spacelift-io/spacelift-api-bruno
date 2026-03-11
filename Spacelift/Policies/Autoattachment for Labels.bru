@@ -1,0 +1,42 @@
+meta {
+  name: Autoattachment for Labels
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Given the space and the labels, returns the list of autoattachment targets.
+  The list is not exhaustive, it only contains the 100 most recently updated
+  targets.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AutoattachmentForLabels($space: ID!, $labels: [String!]!) {
+    autoattachmentForLabels(space: $space, labels: $labels) {
+      count
+      sample {
+        id
+        name
+        isModule
+        labels
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "root",
+    "labels": ["autoattach:my-policy"]
+  }
+}

@@ -1,0 +1,25 @@
+meta {
+  name: List Kubectl Versions
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all supported kubectl versions.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    kubectlVersions
+  }
+}

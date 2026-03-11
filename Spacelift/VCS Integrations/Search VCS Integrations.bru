@@ -1,0 +1,42 @@
+meta {
+  name: Search VCS Integrations
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchVCSIntegrations($input: SearchInput!) {
+    searchVCSIntegrations(input: $input) {
+      edges {
+        node {
+          id
+          name
+          provider
+          isDefault
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

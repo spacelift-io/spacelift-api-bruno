@@ -1,0 +1,35 @@
+meta {
+  name: Delete Run Summary
+  type: graphql
+  seq: 20
+}
+
+docs {
+  Deletes a run summary
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteRunSummary($stack: ID!, $run: ID!) {
+    deleteRunSummary(stack: $stack, run: $run) {
+      summary
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE"
+  }
+}

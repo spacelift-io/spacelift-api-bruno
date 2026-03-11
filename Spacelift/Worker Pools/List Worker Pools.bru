@@ -1,0 +1,32 @@
+meta {
+  name: List Worker Pools
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the WorkerPools in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    workerPools {
+      id
+      name
+      description
+      labels
+      space
+      createdAt
+    }
+  }
+}

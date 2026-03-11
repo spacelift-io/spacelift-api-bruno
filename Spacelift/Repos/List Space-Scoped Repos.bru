@@ -1,0 +1,52 @@
+meta {
+  name: List Space-Scoped Repos
+  type: graphql
+  seq: 11
+}
+
+docs {
+  List all Repos in a space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListSpaceScopedRepos($spaceID: ID!, $first: Int, $after: String) {
+    repos(spaceID: $spaceID, first: $first, after: $after) {
+      edges {
+        node {
+          id
+          name
+          slug
+          description
+          labels
+          isDefault
+          space {
+            id
+            name
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "spaceID": "root",
+    "first": 50,
+    "after": null
+  }
+}

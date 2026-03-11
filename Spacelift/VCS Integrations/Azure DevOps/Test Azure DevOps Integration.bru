@@ -1,0 +1,31 @@
+meta {
+  name: Test Azure DevOps Integration
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Tests the Azure DevOps Repo integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TestAzureDevOpsIntegration($id: ID) {
+    azureDevOpsRepoIntegrationTest(id: $id)
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

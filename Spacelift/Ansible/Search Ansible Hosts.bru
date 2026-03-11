@@ -1,0 +1,48 @@
+meta {
+  name: Search Ansible Hosts
+  type: graphql
+  seq: 4
+}
+
+docs {
+  searchAnsibleHosts allows to search ansibleHosts.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchAnsibleHosts($input: SearchInput!) {
+    searchAnsibleHosts(input: $input) {
+      edges {
+        node {
+          id
+          name
+          machineID
+          architecture
+          distribution
+          distributionVersion
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

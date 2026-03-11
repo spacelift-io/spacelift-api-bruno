@@ -1,0 +1,42 @@
+meta {
+  name: Propose With Overrides
+  type: graphql
+  seq: 24
+}
+
+docs {
+  Trigger a proposed Run. By default, this mutation triggers a proposed run for the
+  commit currently tracked by a Stack or, if the Stack is not yet tracking any
+  commit, against the HEAD of the Stack's tracked branch. These defaults can
+  be overridden. In contrary to the generic runTrigger mutation, proposeWithOverrides allows
+  overriding environment variables in the proposed runs to enable more complex testing environment.
+  Bear in mind that these environment variables are NOT supposed to be secrets, therefore are not treated as such.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ProposeWithOverrides($stack: ID!, $commitSha: String, $environmentVarsOverrides: [EnvironmentVariable!]) {
+    proposeWithOverrides(stack: $stack, commitSha: $commitSha, environmentVarsOverrides: $environmentVarsOverrides) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "commitSha": null,
+    "environmentVarsOverrides": null
+  }
+}

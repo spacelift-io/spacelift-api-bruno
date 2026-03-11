@@ -1,0 +1,33 @@
+meta {
+  name: List Plugin Templates
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the plugin templates in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    pluginTemplates {
+      id
+      name
+      description
+      slug
+      isGlobal
+      labels
+      createdAt
+    }
+  }
+}

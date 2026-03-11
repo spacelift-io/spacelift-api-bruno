@@ -1,0 +1,44 @@
+meta {
+  name: Get Repo
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Get a single Repo by ID
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetRepo($id: ID!) {
+    repo(id: $id) {
+      id
+      name
+      slug
+      description
+      labels
+      isDefault
+      space {
+        id
+        name
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "REPO_ID_HERE"
+  }
+}

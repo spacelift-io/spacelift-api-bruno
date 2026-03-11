@@ -1,0 +1,35 @@
+meta {
+  name: Delete Scheduled Run
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Delete ScheduledRun for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteScheduledRun($stack: ID!, $scheduledRun: ID!) {
+    stackScheduledRunDelete(stack: $stack, scheduledRun: $scheduledRun) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "scheduledRun": "SCHEDULED_RUN_ID_HERE"
+  }
+}

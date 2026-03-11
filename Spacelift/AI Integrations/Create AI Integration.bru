@@ -1,0 +1,42 @@
+meta {
+  name: Create AI Integration
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create an AI integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateAIIntegration($name: String!, $provider: String!, $apiKey: String!, $description: String, $space: ID) {
+    aiIntegrationCreate(name: $name, provider: $provider, apiKey: $apiKey, description: $description, space: $space) {
+      id
+      name
+      description
+      provider
+      labels
+      isSpaceliftProvided
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "name": "my-ai-integration",
+    "provider": "OPENAI",
+    "apiKey": "sk-...",
+    "description": "My AI integration",
+    "space": "root"
+  }
+}

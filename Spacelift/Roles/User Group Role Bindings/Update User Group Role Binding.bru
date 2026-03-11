@@ -1,0 +1,35 @@
+meta {
+  name: Update User Group Role Binding
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateUserGroupRoleBinding($id: ID!, $input: UserGroupRoleBindingInput!) {
+    userGroupRoleBindingUpdate(id: $id, input: $input) {
+      id
+      roleID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ROLE_BINDING_ID_HERE",
+    "input": {
+      "userGroupID": "USER_GROUP_ID_HERE",
+      "roleID": "ROLE_ID_HERE",
+      "spaceID": "root"
+    }
+  }
+}

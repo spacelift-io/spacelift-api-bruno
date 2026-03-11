@@ -1,0 +1,41 @@
+meta {
+  name: Update GitHub Enterprise Integration
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Updates the GitHub Enterprise integration
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateGithubEnterpriseIntegration($apiHost: String!, $userFacingHost: String, $privateKey: String, $webhookSecret: String!, $customInput: CustomVCSUpdateInput) {
+    githubEnterpriseIntegrationUpdate(apiHost: $apiHost, userFacingHost: $userFacingHost, privateKey: $privateKey, webhookSecret: $webhookSecret, customInput: $customInput) {
+      id
+      name
+      apiHost
+      userFacingHost
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "apiHost": "https://github.example.com",
+    "userFacingHost": "https://github.example.com",
+    "webhookSecret": "my-webhook-secret"
+  }
+}

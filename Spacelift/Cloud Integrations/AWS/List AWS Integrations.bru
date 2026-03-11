@@ -1,0 +1,34 @@
+meta {
+  name: List AWS Integrations
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Lists any AWS integrations connected to the account. By default this excludes any integrations
+  that were created via the stackIntegrationAwsCreate mutation. You can return all integrations
+  by setting includeLegacy to true.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    awsIntegrations {
+      id
+      name
+      roleArn
+      generateCredentialsInWorker
+      labels
+      space
+    }
+  }
+}

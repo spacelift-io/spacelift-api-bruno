@@ -1,0 +1,41 @@
+meta {
+  name: Update AI Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an AI integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateAIIntegration($id: ID!, $name: String!, $provider: String!, $description: String, $apiKey: String, $space: ID) {
+    aiIntegrationUpdate(id: $id, name: $name, provider: $provider, description: $description, apiKey: $apiKey, space: $space) {
+      id
+      name
+      description
+      provider
+      labels
+      isSpaceliftProvided
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AI_INTEGRATION_ID_HERE",
+    "name": "my-ai-integration",
+    "provider": "OPENAI",
+    "description": "Updated description"
+  }
+}

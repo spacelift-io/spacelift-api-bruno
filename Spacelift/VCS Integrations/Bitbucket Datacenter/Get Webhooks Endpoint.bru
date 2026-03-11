@@ -1,0 +1,25 @@
+meta {
+  name: Get Webhooks Endpoint
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Endpoint for incoming Bitbucket Datacenter webhooks.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    bitbucketDatacenterWebhooksEndpoint
+  }
+}

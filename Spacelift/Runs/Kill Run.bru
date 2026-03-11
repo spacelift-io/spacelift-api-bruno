@@ -1,0 +1,38 @@
+meta {
+  name: Kill Run
+  type: graphql
+  seq: 10
+}
+
+docs {
+  Force-kill a Run that's currently in progress by sending SIGKILL immediately.
+  Should be used after runStop when the process has not terminated within an acceptable time.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation KillRun($stack: ID!, $run: ID!, $note: String) {
+    runKill(stack: $stack, run: $run, note: $note) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "note": "Force killing run"
+  }
+}

@@ -1,0 +1,38 @@
+meta {
+  name: Set Worker Drain
+  type: graphql
+  seq: 10
+}
+
+docs {
+  Toggles draining on the worker.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SetWorkerDrain($workerPool: ID!, $id: ID!, $drain: Boolean!) {
+    workerDrainSet(workerPool: $workerPool, id: $id, drain: $drain) {
+      id
+      busy
+      drained
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "workerPool": "WORKER_POOL_ID_HERE",
+    "id": "WORKER_ID_HERE",
+    "drain": true
+  }
+}

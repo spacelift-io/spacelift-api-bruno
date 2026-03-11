@@ -1,0 +1,35 @@
+meta {
+  name: Enable Stack
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Enable the stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation EnableStack($id: ID!) {
+    stackEnable(id: $id) {
+      id
+      name
+      isDisabled
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE"
+  }
+}

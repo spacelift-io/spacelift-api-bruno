@@ -1,0 +1,45 @@
+meta {
+  name: Add Config
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Add a context config element. Requires 'Context Update' permission on the context Space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AddContextConfig($context: ID!, $config: ConfigInput!) {
+    contextConfigAdd(context: $context, config: $config) {
+      id
+      type
+      value
+      description
+      writeOnly
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "context": "CONTEXT_ID_HERE",
+    "config": {
+      "id": "MY_ENV_VAR",
+      "type": "ENVIRONMENT_VARIABLE",
+      "value": "my-value",
+      "description": "My environment variable",
+      "writeOnly": false
+    }
+  }
+}

@@ -1,0 +1,33 @@
+meta {
+  name: Batch Create Stack Role Bindings
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation BatchCreateStackRoleBindings($input: StackRoleBindingBatchInput!) {
+    stackRoleBindingBatchCreate(input: $input) {
+      id
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "bindings": [
+        { "stackID": "STACK_ID_HERE", "roleID": "ROLE_ID_HERE", "spaceID": "root" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,59 @@
+name: Weekly Sync Check
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Every Monday at 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  sync-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
+      - uses: pre-commit/action@v3.0.0
+
+      - name: Check coverage
+        run: npm run coverage -- --ignore-deprecated
+
+      - name: Open issue on failure
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const title = `Schema sync failure — ${new Date().toISOString().slice(0, 10)}`;
+            const body = [
+              "The weekly schema sync check failed. One or more of the following may have changed in the Spacelift API:",
+              "",
+              "- A field or argument was renamed or removed (validation failure)",
+              "- New operations were added that have no `.bru` file (coverage gap)",
+              "",
+              `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              "",
+              "Run `/sync-schema` locally to investigate and fix.",
+            ].join("\n");
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "schema-drift",
+            });
+
+            // Don't open a duplicate if one is already open
+            if (issues.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ["schema-drift"],
+              });
+            }

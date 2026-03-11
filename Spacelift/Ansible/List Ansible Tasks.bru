@@ -1,0 +1,46 @@
+meta {
+  name: List Ansible Tasks
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Returns a list of related Ansible Tasks.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListAnsibleTasks($input: RunOrStackArgs!) {
+    ansibleTasks(input: $input) {
+      name
+      path
+      action
+      resolvedAction
+      role {
+        name
+        path
+      }
+      playbook {
+        name
+        path
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "stackId": "STACK_ID_HERE"
+    }
+  }
+}

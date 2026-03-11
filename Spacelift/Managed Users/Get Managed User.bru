@@ -1,0 +1,40 @@
+meta {
+  name: Get Managed User
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details about a single managed user.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetManagedUser($id: ID!) {
+    managedUser(id: $id) {
+      id
+      username
+      invitationEmail
+      loginMethod
+      status
+      lastLoginTime
+      spaceCount
+      groupCount
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "USER_ID_HERE"
+  }
+}

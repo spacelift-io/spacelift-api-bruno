@@ -1,0 +1,36 @@
+meta {
+  name: Get User Group Integration
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Managed user group integration specified by id.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetUserGroupIntegration($id: ID!) {
+    managedUserGroupIntegration(id: $id) {
+      id
+      integrationName
+      integrationType
+      slackChannelID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "USER_GROUP_INTEGRATION_ID_HERE"
+  }
+}

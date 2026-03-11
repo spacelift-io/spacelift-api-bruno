@@ -1,0 +1,37 @@
+meta {
+  name: Attach to Integration
+  type: graphql
+  seq: 6
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AttachBlueprintToIntegration($id: ID!, $input: BlueprintAttachInput!) {
+    blueprintAttachToIntegration(id: $id, input: $input) {
+      id
+      blueprintID
+      blueprintName
+      integrationID
+      integrationName
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLUEPRINT_ID_HERE",
+    "input": {
+      "externalIntegration": "INTEGRATION_ID_HERE"
+    }
+  }
+}

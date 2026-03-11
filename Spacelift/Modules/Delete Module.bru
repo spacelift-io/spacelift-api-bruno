@@ -1,0 +1,34 @@
+meta {
+  name: Delete Module
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Delete an existing Module, assuming it has no active versions.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteModule($id: ID!) {
+    moduleDelete(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "MODULE_ID_HERE"
+  }
+}

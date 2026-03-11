@@ -1,0 +1,35 @@
+meta {
+  name: Delete GitHub Enterprise Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Deletes the GitHub Enterprise integration
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteGithubEnterpriseIntegration($id: ID) {
+    githubEnterpriseIntegrationDelete(id: $id) {
+      id
+      name
+      apiHost
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

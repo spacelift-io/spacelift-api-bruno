@@ -1,0 +1,29 @@
+meta {
+  name: Logout
+  type: graphql
+  seq: 2
+}
+
+docs {
+  End the current session.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation Logout {
+    logout {
+      id
+      login
+      type
+    }
+  }
+}

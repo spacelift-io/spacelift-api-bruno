@@ -1,0 +1,42 @@
+meta {
+  name: Update API Key
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an API key.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateApiKey($id: ID!, $input: ApiKeyUpdateInput!) {
+    apiKeyUpdate(id: $id, input: $input) {
+      id
+      name
+      admin
+      description
+      isMachineUser
+      expiresAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "API_KEY_ID_HERE",
+    "input": {
+      "name": "my-api-key-updated",
+      "description": "Updated description"
+    }
+  }
+}

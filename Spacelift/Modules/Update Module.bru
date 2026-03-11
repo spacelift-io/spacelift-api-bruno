@@ -1,0 +1,47 @@
+meta {
+  name: Update Module
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing Module (v1 API, does not support updating source).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateModule($id: ID!, $input: ModuleUpdateInput!) {
+    moduleUpdate(id: $id, input: $input) {
+      id
+      name
+      description
+      labels
+      space
+      administrative
+      branch
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "MODULE_ID_HERE",
+    "input": {
+      "administrative": false,
+      "branch": "main",
+      "description": "Updated description",
+      "labels": [],
+      "space": "root",
+      "workerPool": null
+    }
+  }
+}

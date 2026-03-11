@@ -1,0 +1,38 @@
+meta {
+  name: Get Azure Integration by Name
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Details of a single Azure integration looked up by the integration name.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetAzureIntegrationByName($name: String!) {
+    azureIntegrationByName(name: $name) {
+      id
+      name
+      tenantId
+      defaultSubscriptionId
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "name": "my-azure-integration"
+  }
+}

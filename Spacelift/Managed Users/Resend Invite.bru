@@ -1,0 +1,32 @@
+meta {
+  name: Resend Invite
+  type: graphql
+  seq: 5
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ResendManagedUserInvite($id: ID!) {
+    managedUserResendInvite(id: $id) {
+      id
+      username
+      invitationEmail
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "USER_ID_HERE"
+  }
+}

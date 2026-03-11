@@ -1,0 +1,37 @@
+meta {
+  name: Targeted Replan
+  type: graphql
+  seq: 12
+}
+
+docs {
+  Set a run state to `PENDING_PLAN` to force a replan.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TargetedReplan($stack: ID!, $run: ID!, $targets: [String!]!) {
+    runTargetedReplan(stack: $stack, run: $run, targets: $targets) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "targets": ["aws_instance.web", "aws_security_group.allow_tls"]
+  }
+}

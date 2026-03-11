@@ -1,0 +1,36 @@
+meta {
+  name: Create External Integration
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateExternalIntegration($input: ExternalIntegrationInput!) {
+    externalIntegrationCreate(input: $input) {
+      id
+      name
+      description
+      type
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-external-integration",
+      "type": "CUSTOM"
+    }
+  }
+}

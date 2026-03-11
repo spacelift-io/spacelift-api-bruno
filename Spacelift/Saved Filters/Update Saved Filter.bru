@@ -1,0 +1,40 @@
+meta {
+  name: Update Saved Filter
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update a saved filter.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateSavedFilter($id: ID!, $isPublic: Boolean!, $name: String, $data: String) {
+    savedFilterUpdate(id: $id, isPublic: $isPublic, name: $name, data: $data) {
+      id
+      name
+      type
+      isPublic
+      data
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "FILTER_ID_HERE",
+    "isPublic": true,
+    "name": "My stacks filter (shared)",
+    "data": "{\"predicates\":[]}"
+  }
+}

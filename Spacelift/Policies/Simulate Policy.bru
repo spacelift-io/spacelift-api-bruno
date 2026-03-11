@@ -1,0 +1,35 @@
+meta {
+  name: Simulate Policy
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Simulate policy evaluation. (v2 API).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SimulatePolicy($input: PolicySimulateInput!) {
+    policySimulatev2(input: $input)
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "type": "ACCESS",
+      "body": "package spacelift\n\nallow { input.request.space == \"root\" }",
+      "data": "{\"request\": {\"space\": \"root\"}}"
+    }
+  }
+}

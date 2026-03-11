@@ -1,0 +1,32 @@
+meta {
+  name: List Spaces
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Details of all the spaces in the Account accessible for the user.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    spaces {
+      id
+      name
+      description
+      parentSpace
+      inheritEntities
+      labels
+    }
+  }
+}

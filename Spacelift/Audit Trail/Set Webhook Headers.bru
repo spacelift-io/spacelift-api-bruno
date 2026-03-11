@@ -1,0 +1,34 @@
+meta {
+  name: Set Webhook Headers
+  type: graphql
+  seq: 5
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SetAuditTrailWebhookHeaders($input: AuditTrailWebhookSetHeadersInput!) {
+    auditTrailWebhookSetHeaders(input: $input) {
+      enabled
+      endpoint
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "entries": [
+        { "key": "X-Custom-Header", "value": "header-value" }
+      ]
+    }
+  }
+}

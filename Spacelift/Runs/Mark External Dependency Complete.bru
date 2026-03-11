@@ -1,0 +1,35 @@
+meta {
+  name: Mark External Dependency Complete
+  type: graphql
+  seq: 17
+}
+
+docs {
+  Experimental: Mark a run external dependency as completed.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation MarkExternalDependencyComplete($dependency: ID!, $status: RunExternalDependencyStatus!) {
+    runExternalDependencyMarkAsCompleted(dependency: $dependency, status: $status) {
+      phantom
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "dependency": "DEPENDENCY_ID_HERE",
+    "status": "SUCCESS"
+  }
+}

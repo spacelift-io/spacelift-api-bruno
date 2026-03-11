@@ -1,0 +1,25 @@
+meta {
+  name: Get Blueprint Schema
+  type: graphql
+  seq: 9
+}
+
+docs {
+  The json schema of a blueprint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    blueprintSchema
+  }
+}

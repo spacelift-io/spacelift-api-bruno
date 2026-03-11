@@ -1,0 +1,37 @@
+meta {
+  name: Detach from Intent Project
+  type: graphql
+  seq: 15
+}
+
+docs {
+  Detach Policy from a Intent Project
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation PolicyIntentProjectDetach($id: ID!) {
+    policyIntentProjectDetach(id: $id) {
+      id
+      policyID
+      policyName
+      projectID
+      projectName
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "POLICY_INTENT_ATTACHMENT_ID_HERE"
+  }
+}

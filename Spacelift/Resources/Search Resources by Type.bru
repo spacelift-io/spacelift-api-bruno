@@ -1,0 +1,44 @@
+meta {
+  name: Search Resources by Type
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Search managed entities grouped by types with a set of predicates, ordering and paging.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchResourcesByType($input: SearchInput!) {
+    searchManagedEntitiesGroupByTypes(input: $input) {
+      edges {
+        node {
+          id
+          count
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

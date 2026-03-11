@@ -1,0 +1,49 @@
+meta {
+  name: Update Context
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing context (v2).
+
+  replaceConfigElements allow to specify if we want to also update config elements.
+  When it's not specified or false, input.configAttachments will be ignored and no config elements will be altered.
+  When true, the config elements attached to the context will be replaced with the values included in the request.
+  If an existing element is not included, it will be deleted from the context.
+
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateContext($id: ID!, $input: ContextInput!) {
+    contextUpdateV2(id: $id, input: $input) {
+      id
+      name
+      description
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "CONTEXT_ID_HERE",
+    "input": {
+      "name": "my-context-updated",
+      "description": "Updated description",
+      "labels": [],
+      "space": "root"
+    }
+  }
+}

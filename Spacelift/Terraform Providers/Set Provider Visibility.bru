@@ -1,0 +1,35 @@
+meta {
+  name: Set Provider Visibility
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Changes public visibility of the Terraform Provider
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SetTerraformProviderVisibility($id: ID!, $public: Boolean!) {
+    terraformProviderSetVisibility(id: $id, public: $public) {
+      id
+      public
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PROVIDER_ID_HERE",
+    "public": false
+  }
+}

@@ -1,0 +1,53 @@
+meta {
+  name: Search Resources
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Search managed entities with a set of predicates, ordering and paging.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchResources($input: SearchInput!) {
+    searchManagedEntities(input: $input) {
+      edges {
+        node {
+          id
+          name
+          type
+          address
+          drifted
+          vendor {
+            __typename
+          }
+          stackId
+          stackName
+          updatedAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

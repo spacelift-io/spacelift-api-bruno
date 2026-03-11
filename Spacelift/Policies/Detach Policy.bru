@@ -1,0 +1,37 @@
+meta {
+  name: Detach Policy
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Detach Policy from a Stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DetachPolicy($id: ID!) {
+    policyDetach(id: $id) {
+      id
+      stackId
+      stackName
+      isModule
+      isAutoattached
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "POLICY_ID_HERE"
+  }
+}

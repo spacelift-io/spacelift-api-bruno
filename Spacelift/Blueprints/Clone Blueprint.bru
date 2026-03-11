@@ -1,0 +1,43 @@
+meta {
+  name: Clone Blueprint
+  type: graphql
+  seq: 7
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CloneBlueprint($id: ID!, $input: BlueprintCloneInput!) {
+    blueprintClone(id: $id, input: $input) {
+      id
+      name
+      description
+      state
+      labels
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLUEPRINT_ID_HERE",
+    "input": {
+      "space": "root",
+      "name": "my-blueprint-clone",
+      "description": "Clone of my blueprint",
+      "labels": []
+    }
+  }
+}

@@ -1,0 +1,53 @@
+meta {
+  name: Update Stack
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateStack($id: ID!, $input: StackInput!) {
+    stackUpdate(id: $id, input: $input) {
+      id
+      name
+      description
+      space
+      repository
+      branch
+      projectRoot
+      administrative
+      autodeploy
+      labels
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE",
+    "input": {
+      "name": "my-stack-updated",
+      "description": "Updated description",
+      "space": "root",
+      "repository": "my-repo",
+      "branch": "main",
+      "projectRoot": "",
+      "administrative": false,
+      "autodeploy": false,
+      "labels": []
+    }
+  }
+}

@@ -1,0 +1,36 @@
+meta {
+  name: Get State Download URL
+  type: graphql
+  seq: 21
+}
+
+docs {
+  Generate pre-signed state download URL for a stack.
+  Requires external state access to be enabled on the stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation GetStateDownloadURL($input: StateDownloadUrlInput!) {
+    stateDownloadUrl(input: $input) {
+      url
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "stackId": "STACK_ID_HERE"
+    }
+  }
+}

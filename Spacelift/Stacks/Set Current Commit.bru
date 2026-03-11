@@ -1,0 +1,36 @@
+meta {
+  name: Set Current Commit
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Set the current commit on an existing stack. The current commit is what is
+  used for tasks and - by default - for triggering tracked runs (deployments).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SetCurrentCommit($id: ID!, $sha: String!) {
+    stackSetCurrentCommit(id: $id, sha: $sha) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE",
+    "sha": "COMMIT_SHA_HERE"
+  }
+}

@@ -1,0 +1,38 @@
+meta {
+  name: List Saved Filters
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of saved filters
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListSavedFilters($type: String) {
+    savedFilters(type: $type) {
+      id
+      name
+      type
+      isPublic
+      createdBy
+      data
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "type": null
+  }
+}

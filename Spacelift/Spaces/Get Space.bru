@@ -1,0 +1,38 @@
+meta {
+  name: Get Space
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetSpace($id: ID!) {
+    space(id: $id) {
+      id
+      name
+      description
+      parentSpace
+      inheritEntities
+      labels
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SPACE_ID_HERE"
+  }
+}

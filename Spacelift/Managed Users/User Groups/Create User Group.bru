@@ -1,0 +1,34 @@
+meta {
+  name: Create User Group
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateUserGroup($input: ManagedUserGroupCreateInputV2!) {
+    managedUserGroupCreateV2(input: $input) {
+      id
+      groupName
+      description
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "groupName": "my-user-group",
+      "description": "My user group"
+    }
+  }
+}

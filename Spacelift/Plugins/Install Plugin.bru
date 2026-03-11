@@ -1,0 +1,40 @@
+meta {
+  name: Install Plugin
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Install a plugin from a plugin template
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation InstallPlugin($input: PluginInstallInput!) {
+    pluginInstall(input: $input) {
+      id
+      name
+      description
+      slug
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "pluginTemplateID": "PLUGIN_TEMPLATE_ID_HERE",
+      "space": "root",
+      "labels": []
+    }
+  }
+}

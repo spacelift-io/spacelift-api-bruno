@@ -1,0 +1,47 @@
+meta {
+  name: Attach Azure Integration
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Attaches the specified Azure integration to a Stack. Note that at least one of either the 'read'
+  or 'write' parameters must be true, and a Stack can have at most one read, and one write attachment.
+  A single integration can be attached for both read and write. The subscriptionId can be
+  set when attaching an integration to override the default Azure subscription Id configured
+  against the integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AttachAzureIntegration($id: ID!, $stack: ID!, $read: Boolean!, $write: Boolean!, $subscriptionId: String) {
+    azureIntegrationAttach(id: $id, stack: $stack, read: $read, write: $write, subscriptionId: $subscriptionId) {
+      id
+      stackId
+      stackName
+      read
+      write
+      subscriptionId
+      isAutoattached
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AZURE_INTEGRATION_ID_HERE",
+    "stack": "STACK_ID_HERE",
+    "read": true,
+    "write": true,
+    "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  }
+}

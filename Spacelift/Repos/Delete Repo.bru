@@ -1,0 +1,31 @@
+meta {
+  name: Delete Repo
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Delete a Repo (only if no stacks attached)
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteRepo($id: ID!) {
+    repoDelete(id: $id)
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "REPO_ID_HERE"
+  }
+}

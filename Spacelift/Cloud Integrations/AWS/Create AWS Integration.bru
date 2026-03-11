@@ -1,0 +1,42 @@
+meta {
+  name: Create AWS Integration
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Creates an AWS integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateAwsIntegration($name: String!, $roleArn: String!, $generateCredentialsInWorker: Boolean!, $labels: [String!]!, $space: ID) {
+    awsIntegrationCreate(name: $name, roleArn: $roleArn, generateCredentialsInWorker: $generateCredentialsInWorker, labels: $labels, space: $space) {
+      id
+      name
+      roleArn
+      generateCredentialsInWorker
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "name": "my-aws-integration",
+    "roleArn": "arn:aws:iam::123456789012:role/spacelift-role",
+    "generateCredentialsInWorker": false,
+    "labels": [],
+    "space": "root"
+  }
+}

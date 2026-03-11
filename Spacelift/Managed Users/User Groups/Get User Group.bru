@@ -1,0 +1,39 @@
+meta {
+  name: Get User Group
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details about a single user group.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetUserGroup($id: ID!) {
+    managedUserGroup(id: $id) {
+      id
+      groupName
+      description
+      memberCount
+      spaceCount
+      status
+      identityProvider
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "USER_GROUP_ID_HERE"
+  }
+}

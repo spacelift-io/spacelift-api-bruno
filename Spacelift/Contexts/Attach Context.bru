@@ -1,0 +1,40 @@
+meta {
+  name: Attach Context
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Attach context to a Stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AttachContext($id: ID!, $stack: ID!, $priority: Int!) {
+    contextAttach(id: $id, stack: $stack, priority: $priority) {
+      id
+      stackId
+      stackName
+      priority
+      isModule
+      isAutoattached
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "CONTEXT_ID_HERE",
+    "stack": "STACK_ID_HERE",
+    "priority": 1
+  }
+}

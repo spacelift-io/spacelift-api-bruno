@@ -1,0 +1,20 @@
+{
+  "name": "spacelift-api-bruno",
+  "description": "Bruno collection for Spacelift API",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "coverage": "node scripts/coverage.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "pre-commit:update": "pre-commit autoupdate --freeze",
+    "sync-docs": "node scripts/sync-docs.js",
+    "validate": "node scripts/validate-schema.js"
+  },
+  "dependencies": {
+    "graphql": "^16.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}

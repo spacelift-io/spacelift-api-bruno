@@ -1,0 +1,43 @@
+meta {
+  name: Create Saved Filter
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a new saved filter.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateSavedFilter($input: SavedFilterInput!) {
+    savedFilterCreate(input: $input) {
+      id
+      name
+      type
+      isPublic
+      createdBy
+      data
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "My stacks filter",
+      "type": "STACKS",
+      "isPublic": false,
+      "data": "{\"predicates\":[]}"
+    }
+  }
+}

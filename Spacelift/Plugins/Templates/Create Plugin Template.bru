@@ -1,0 +1,40 @@
+meta {
+  name: Create Plugin Template
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a new Plugin Template.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreatePluginTemplate($input: PluginTemplateCreateInput!) {
+    pluginTemplateCreate(input: $input) {
+      id
+      name
+      description
+      slug
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-plugin-template",
+      "description": "My plugin template",
+      "manifest": "{}"
+    }
+  }
+}

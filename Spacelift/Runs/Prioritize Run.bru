@@ -1,0 +1,37 @@
+meta {
+  name: Prioritize Run
+  type: graphql
+  seq: 16
+}
+
+docs {
+  Sets the prioritization value of a run.
+  When prioritized, the run will take precedence over other queued runs for the worker pool it is assigned to.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation PrioritizeRun($stack: ID!, $run: ID!, $prioritize: Boolean!) {
+    runPrioritizeSet(stack: $stack, run: $run, prioritize: $prioritize) {
+      id
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "prioritize": true
+  }
+}

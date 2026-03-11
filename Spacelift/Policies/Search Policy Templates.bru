@@ -1,0 +1,44 @@
+meta {
+  name: Search Policy Templates
+  type: graphql
+  seq: 11
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchPolicyTemplates($input: SearchInput!) {
+    searchPolicyTemplates(input: $input) {
+      edges {
+        node {
+          id
+          name
+          slug
+          type
+          description
+          labels
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

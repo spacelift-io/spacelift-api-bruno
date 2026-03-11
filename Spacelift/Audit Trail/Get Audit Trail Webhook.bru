@@ -1,0 +1,30 @@
+meta {
+  name: Get Audit Trail Webhook
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Show details of AuditTrailWebhook.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    auditTrailWebhook {
+      enabled
+      endpoint
+      includeRuns
+      retryOnFailure
+    }
+  }
+}

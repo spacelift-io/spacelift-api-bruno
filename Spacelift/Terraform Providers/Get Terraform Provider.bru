@@ -1,0 +1,40 @@
+meta {
+  name: Get Terraform Provider
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Terraform provider.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetTerraformProvider($id: ID!) {
+    terraformProvider(id: $id) {
+      id
+      description
+      labels
+      latestVersionNumber
+      public
+      createdAt
+      updatedAt
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PROVIDER_ID_HERE"
+  }
+}

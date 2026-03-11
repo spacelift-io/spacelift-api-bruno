@@ -1,0 +1,39 @@
+meta {
+  name: Update Attachment
+  type: graphql
+  seq: 12
+}
+
+docs {
+  Updates an AWS integration attachment.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateAwsIntegrationAttachment($id: ID!, $read: Boolean!, $write: Boolean!) {
+    awsIntegrationAttachmentUpdate(id: $id, read: $read, write: $write) {
+      id
+      stackId
+      stackName
+      read
+      write
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ATTACHMENT_ID_HERE",
+    "read": true,
+    "write": true
+  }
+}

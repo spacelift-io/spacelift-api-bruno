@@ -1,0 +1,39 @@
+meta {
+  name: Get Webhook
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetWebhook($id: ID!) {
+    namedWebhooksIntegration(id: $id) {
+      id
+      name
+      endpoint
+      enabled
+      labels
+      space {
+        id
+        name
+      }
+      retryOnFailure
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WEBHOOK_ID_HERE"
+  }
+}

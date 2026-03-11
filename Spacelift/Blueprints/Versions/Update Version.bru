@@ -1,0 +1,36 @@
+meta {
+  name: Update Version
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateBlueprintVersion($id: ID!, $input: BlueprintVersionUpdateInput!) {
+    blueprintVersionUpdate(id: $id, input: $input) {
+      id
+      name
+      description
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "VERSION_ID_HERE",
+    "input": {
+      "name": "v1.0.1",
+      "description": "Updated version"
+    }
+  }
+}

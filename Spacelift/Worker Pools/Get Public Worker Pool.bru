@@ -1,0 +1,31 @@
+meta {
+  name: Get Public Worker Pool
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Shows public worker pool details
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    publicWorkerPool {
+      parallelism
+      busyWorkers
+      pendingRuns
+      usersCount
+      schedulableRunsCount
+    }
+  }
+}

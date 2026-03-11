@@ -1,0 +1,34 @@
+meta {
+  name: Delete Webhook
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Delete a NamedWebhooksIntegration from a space
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteWebhook($id: ID!) {
+    namedWebhooksIntegrationDelete(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WEBHOOK_ID_HERE"
+  }
+}

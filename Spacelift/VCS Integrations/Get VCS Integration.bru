@@ -1,0 +1,41 @@
+meta {
+  name: Get VCS Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Get VCS integrations by provider and id
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetVCSIntegration($provider: VCSProvider!, $id: ID) {
+    vcsIntegration(provider: $provider, id: $id) {
+      id
+      name
+      provider
+      isDefault
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "provider": "GITHUB_ENTERPRISE",
+    "id": "VCS_INTEGRATION_ID_HERE"
+  }
+}

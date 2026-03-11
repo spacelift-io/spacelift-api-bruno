@@ -1,0 +1,31 @@
+meta {
+  name: Test GitHub Enterprise Integration
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Tests the GitHub Enterprise integration
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TestGithubEnterpriseIntegration($id: ID) {
+    githubEnterpriseIntegrationTest(id: $id)
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "INTEGRATION_ID_HERE"
+  }
+}

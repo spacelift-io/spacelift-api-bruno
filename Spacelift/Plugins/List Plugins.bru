@@ -1,0 +1,33 @@
+meta {
+  name: List Plugins
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the plugins in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    plugins {
+      id
+      name
+      description
+      slug
+      labels
+      createdAt
+      updatedAt
+    }
+  }
+}

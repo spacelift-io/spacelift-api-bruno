@@ -1,0 +1,44 @@
+meta {
+  name: Set Webhook Headers
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Set secret headers for a named webhook to use when sending requests
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SetWebhookHeaders($id: ID!, $input: NamedWebhookHeaderInput!) {
+    namedWebhooksIntegrationSetHeaders(id: $id, input: $input) {
+      id
+      name
+      enabled
+      endpoint
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WEBHOOK_ID_HERE",
+    "input": {
+      "entries": [
+        {
+          "key": "X-Custom-Header",
+          "value": "my-value"
+        }
+      ]
+    }
+  }
+}

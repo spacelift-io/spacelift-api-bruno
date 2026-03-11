@@ -1,0 +1,35 @@
+meta {
+  name: Publish Provider Version
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Publish an existing Terraform provider version.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation PublishTerraformProviderVersion($version: ID!) {
+    terraformProviderVersionPublish(version: $version) {
+      id
+      number
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "version": "PROVIDER_VERSION_ID_HERE"
+  }
+}

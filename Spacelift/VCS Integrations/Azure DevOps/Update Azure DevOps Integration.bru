@@ -1,0 +1,41 @@
+meta {
+  name: Update Azure DevOps Integration
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Updates the Azure DevOps Repo integration with new properties.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateAzureDevOpsIntegration($organizationURL: String!, $personalAccessToken: String, $customInput: CustomVCSUpdateInput, $accessibleProjects: [String!]) {
+    azureDevOpsRepoIntegrationUpdate(organizationURL: $organizationURL, personalAccessToken: $personalAccessToken, customInput: $customInput, accessibleProjects: $accessibleProjects) {
+      id
+      name
+      organizationURL
+      userFacingHost
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "organizationURL": "https://dev.azure.com/my-org",
+    "personalAccessToken": null,
+    "accessibleProjects": []
+  }
+}

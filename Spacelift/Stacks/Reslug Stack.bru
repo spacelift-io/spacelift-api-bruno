@@ -1,0 +1,37 @@
+meta {
+  name: Reslug Stack
+  type: graphql
+  seq: 12
+}
+
+docs {
+  Change the slug of an existing stack. The slug will be generated from the
+  current stack name. WARNING: if you're referring to this stack by ID from
+  Terraform resources then some of those resources will be recreated. Make
+  sure you know exactly what you're doing!
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ReslugStack($id: ID!) {
+    stackReslug(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE"
+  }
+}

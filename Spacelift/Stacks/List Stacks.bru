@@ -1,0 +1,36 @@
+meta {
+  name: List Stacks
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the stacks in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    stacks {
+      id
+      name
+      description
+      space
+      repository
+      branch
+      projectRoot
+      administrative
+      autodeploy
+      labels
+    }
+  }
+}

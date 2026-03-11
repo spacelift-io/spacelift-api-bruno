@@ -1,0 +1,38 @@
+meta {
+  name: Get Token
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Exchange an API token for a Spacelift User.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation GetSpaceliftToken($apiKeyId: ID!, $apiKeySecret: String!) {
+    apiKeyUser(id: $apiKeyId, secret: $apiKeySecret) {
+      jwt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "apiKeyId": "{{SPACELIFT_API_KEY_ID}}",
+    "apiKeySecret": "{{SPACELIFT_API_KEY_SECRET}}"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body?.data?.apiKeyUser?.jwt) {
+    bru.setEnvVar("jwt", body.data.apiKeyUser.jwt);
+    console.log("JWT token stored successfully");
+  }
+}

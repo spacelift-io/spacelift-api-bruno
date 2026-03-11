@@ -1,0 +1,28 @@
+meta {
+  name: List External Integrations
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    externalIntegrations {
+      id
+      name
+      description
+      type
+      createdAt
+      deleted
+    }
+  }
+}

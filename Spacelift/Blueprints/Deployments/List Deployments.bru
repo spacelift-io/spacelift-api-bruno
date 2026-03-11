@@ -1,0 +1,43 @@
+meta {
+  name: List Deployments
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListBlueprintDeployments($input: SearchInput!) {
+    searchBlueprintDeployments(input: $input) {
+      edges {
+        node {
+          id
+          name
+          description
+          state
+          createdAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

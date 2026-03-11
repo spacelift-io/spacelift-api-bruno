@@ -1,0 +1,35 @@
+meta {
+  name: Push Version
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation PushModuleVersion($module: ID!, $commitSha: String!, $commitMessage: String!, $version: String!, $tarballURL: String!) {
+    versionPush(module: $module, commitSha: $commitSha, commitMessage: $commitMessage, version: $version, tarballURL: $tarballURL) {
+      id
+      number
+      state
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "module": "MODULE_ID_HERE",
+    "commitSha": "abc1234",
+    "commitMessage": "Release v1.0.0",
+    "version": "1.0.0",
+    "tarballURL": "https://example.com/module-v1.0.0.tar.gz"
+  }
+}

@@ -1,0 +1,43 @@
+meta {
+  name: Create Scheduled Task
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Create a new ScheduledTask for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateScheduledTask($stack: ID!, $input: ScheduledTaskInput!) {
+    stackScheduledTaskCreate(stack: $stack, input: $input) {
+      id
+      command
+      timezone
+      cronSchedule
+      timestampSchedule
+      nextSchedule
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "input": {
+      "command": "echo hello",
+      "timezone": "UTC",
+      "cronSchedule": "0 9 * * 1"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+meta {
+  name: Get Deployment
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single BlueprintDeployment.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetBlueprintDeployment($id: ID!, $blueprintID: ID!) {
+    blueprintDeployment(id: $id, blueprintID: $blueprintID) {
+      id
+      name
+      description
+      state
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "DEPLOYMENT_ID_HERE",
+    "blueprintID": "BLUEPRINT_ID_HERE"
+  }
+}

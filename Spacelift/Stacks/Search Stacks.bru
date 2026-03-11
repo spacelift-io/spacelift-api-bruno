@@ -1,0 +1,48 @@
+meta {
+  name: Search Stacks
+  type: graphql
+  seq: 18
+}
+
+docs {
+  Search Stacks with a set of predicates, ordering and paging.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchStacks($input: SearchInput!) {
+    searchStacks(input: $input) {
+      edges {
+        node {
+          id
+          name
+          state
+          description
+          labels
+          space
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

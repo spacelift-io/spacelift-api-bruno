@@ -1,0 +1,43 @@
+meta {
+  name: Create Scheduled Delete
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Create a new ScheduledDelete for stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateScheduledDelete($stack: ID!, $input: ScheduledDeleteInput!) {
+    stackScheduledDeleteCreate(stack: $stack, input: $input) {
+      id
+      shouldDeleteResources
+      timezone
+      cronSchedule
+      timestampSchedule
+      nextSchedule
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "input": {
+      "shouldDeleteResources": false,
+      "timezone": "UTC",
+      "timestampSchedule": 1893456000
+    }
+  }
+}

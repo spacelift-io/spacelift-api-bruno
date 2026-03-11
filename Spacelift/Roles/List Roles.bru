@@ -1,0 +1,32 @@
+meta {
+  name: List Roles
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Returns all roles for the account that are accessible by the requester.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    roles {
+      id
+      name
+      slug
+      description
+      isSystem
+      roleBindingsCount
+    }
+  }
+}

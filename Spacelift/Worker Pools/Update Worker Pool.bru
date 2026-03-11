@@ -1,0 +1,41 @@
+meta {
+  name: Update Worker Pool
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing WorkerPool.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateWorkerPool($id: ID!, $name: String!, $description: String, $labels: [String!], $space: ID) {
+    workerPoolUpdate(id: $id, name: $name, description: $description, labels: $labels, space: $space) {
+      id
+      name
+      description
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "WORKER_POOL_ID_HERE",
+    "name": "my-worker-pool-updated",
+    "description": "Updated description",
+    "labels": [],
+    "space": "root"
+  }
+}

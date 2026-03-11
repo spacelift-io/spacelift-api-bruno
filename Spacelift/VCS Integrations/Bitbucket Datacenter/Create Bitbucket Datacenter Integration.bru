@@ -1,0 +1,43 @@
+meta {
+  name: Create Bitbucket Datacenter Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Creates the Bitbucket Datacenter integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateBitbucketDatacenterIntegration($apiHost: String!, $userFacingHost: String!, $username: String, $accessToken: String!, $customInput: CustomVCSInput) {
+    bitbucketDatacenterIntegrationCreate(apiHost: $apiHost, userFacingHost: $userFacingHost, username: $username, accessToken: $accessToken, customInput: $customInput) {
+      id
+      name
+      apiHost
+      userFacingHost
+      username
+      webhookURL
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "apiHost": "https://bitbucket.example.com",
+    "userFacingHost": "https://bitbucket.example.com",
+    "username": "my-bitbucket-user",
+    "accessToken": "BITBUCKET_ACCESS_TOKEN_HERE"
+  }
+}

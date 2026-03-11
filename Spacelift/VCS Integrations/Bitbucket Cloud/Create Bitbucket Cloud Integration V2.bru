@@ -1,0 +1,44 @@
+meta {
+  name: Create Bitbucket Cloud Integration V2
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Creates the Bitbucket Cloud integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateBitbucketCloudIntegrationV2($input: BitbucketCloudIntegrationInput!) {
+    bitbucketCloudIntegrationCreateV2(input: $input) {
+      id
+      name
+      username
+      description
+      labels
+      space {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "email": "user@example.com",
+      "apiToken": "APP_PASSWORD_HERE"
+    }
+  }
+}

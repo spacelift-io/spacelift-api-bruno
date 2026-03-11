@@ -1,0 +1,38 @@
+meta {
+  name: Get Ansible Host
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Individual AnsibleHost by ID.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetAnsibleHost($id: ID!) {
+    ansibleHost(id: $id) {
+      id
+      name
+      machineID
+      architecture
+      distribution
+      distributionVersion
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ANSIBLE_HOST_ID_HERE"
+  }
+}

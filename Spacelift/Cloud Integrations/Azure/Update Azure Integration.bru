@@ -1,0 +1,40 @@
+meta {
+  name: Update Azure Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Updates the integration with the specified ID.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateAzureIntegration($id: ID!, $name: String!, $labels: [String!]!, $space: ID) {
+    azureIntegrationUpdate(id: $id, name: $name, labels: $labels, space: $space) {
+      id
+      name
+      tenantId
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AZURE_INTEGRATION_ID_HERE",
+    "name": "my-azure-integration-updated",
+    "labels": [],
+    "space": "root"
+  }
+}

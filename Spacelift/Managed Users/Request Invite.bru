@@ -1,0 +1,28 @@
+meta {
+  name: Request Invite
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RequestManagedUserInvite($email: String!, $userName: String!) {
+    managedUserRequestInvite(email: $email, userName: $userName)
+  }
+}
+
+body:graphql:vars {
+  {
+    "email": "user@example.com",
+    "userName": "myuser"
+  }
+}

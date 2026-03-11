@@ -1,0 +1,36 @@
+meta {
+  name: List User Group Integrations
+  type: graphql
+  seq: 6
+}
+
+docs {
+  List of managed user group integrations. Allows for optional integrationType parameter to get integrations of specific type only.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListUserGroupIntegrations($integrationType: ManagedUserGroupIntegrationType) {
+    managedUserGroupIntegrations(integrationType: $integrationType) {
+      id
+      integrationName
+      integrationType
+      slackChannelID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "integrationType": null
+  }
+}

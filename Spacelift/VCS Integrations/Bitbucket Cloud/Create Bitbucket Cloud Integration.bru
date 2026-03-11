@@ -1,0 +1,39 @@
+meta {
+  name: Create Bitbucket Cloud Integration
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Creates the Bitbucket Cloud integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateBitbucketCloudIntegration($username: String!, $appPassword: String!, $customInput: CustomVCSInput) {
+    bitbucketCloudIntegrationCreate(username: $username, appPassword: $appPassword, customInput: $customInput) {
+      id
+      name
+      username
+      webhookUrl
+      vcsChecks
+      useGitCheckout
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "username": "my-bitbucket-user",
+    "appPassword": "BITBUCKET_APP_PASSWORD_HERE"
+  }
+}

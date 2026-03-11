@@ -1,0 +1,30 @@
+meta {
+  name: Attachable External Integrations
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AttachableExternalIntegrationsInSpace($id: ID!) {
+    attachableExternalIntegrationInSpace(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SPACE_ID_HERE"
+  }
+}

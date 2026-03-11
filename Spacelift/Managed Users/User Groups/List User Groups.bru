@@ -1,0 +1,33 @@
+meta {
+  name: List User Groups
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of user groups in this account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    managedUserGroups {
+      id
+      groupName
+      description
+      memberCount
+      spaceCount
+      status
+      lastLoginTime
+    }
+  }
+}

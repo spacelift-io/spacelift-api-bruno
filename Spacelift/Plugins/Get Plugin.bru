@@ -1,0 +1,39 @@
+meta {
+  name: Get Plugin
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Plugin.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetPlugin($id: ID!) {
+    plugin(id: $id) {
+      id
+      name
+      description
+      slug
+      labels
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PLUGIN_ID_HERE"
+  }
+}

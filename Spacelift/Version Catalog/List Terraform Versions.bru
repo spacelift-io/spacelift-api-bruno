@@ -1,0 +1,25 @@
+meta {
+  name: List Terraform Versions
+  type: graphql
+  seq: 4
+}
+
+docs {
+  List of all supported Terraform versions.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    terraformVersions
+  }
+}

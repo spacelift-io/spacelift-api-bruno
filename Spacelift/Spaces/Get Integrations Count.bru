@@ -1,0 +1,37 @@
+meta {
+  name: Get Integrations Count
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Returns counts of different types of integrations in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    integrationsCount {
+      aws
+      azure
+      azureDevOps
+      bitbucketCloud
+      bitbucketDatacenter
+      github
+      gitlab
+      slack
+      vcsAgentPools
+      webhooks
+      ai
+    }
+  }
+}

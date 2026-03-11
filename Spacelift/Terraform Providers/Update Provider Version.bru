@@ -1,0 +1,37 @@
+meta {
+  name: Update Provider Version
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Update an existing Terraform provider version.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateTerraformProviderVersion($version: ID!, $description: String!) {
+    terraformProviderVersionUpdate(version: $version, description: $description) {
+      id
+      number
+      description
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "version": "PROVIDER_VERSION_ID_HERE",
+    "description": "Updated description"
+  }
+}

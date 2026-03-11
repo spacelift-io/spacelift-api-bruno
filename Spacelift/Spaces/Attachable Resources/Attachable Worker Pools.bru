@@ -1,0 +1,34 @@
+meta {
+  name: Attachable Worker Pools
+  type: graphql
+  seq: 7
+}
+
+docs {
+  List of worker pools that can be attached Stacks/Modules in given space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AttachableWorkerPoolsInSpace($id: ID!) {
+    attachableWorkerPoolsInSpace(id: $id) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SPACE_ID_HERE"
+  }
+}

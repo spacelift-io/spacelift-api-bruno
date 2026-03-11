@@ -1,0 +1,30 @@
+meta {
+  name: Delete Managed User
+  type: graphql
+  seq: 7
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteManagedUser($id: ID!) {
+    managedUserDelete(id: $id) {
+      id
+      username
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "USER_ID_HERE"
+  }
+}

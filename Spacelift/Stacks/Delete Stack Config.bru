@@ -1,0 +1,36 @@
+meta {
+  name: Delete Stack Config
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Delete a stack config element.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteStackConfig($stack: ID!, $id: ID!) {
+    stackConfigDelete(stack: $stack, id: $id) {
+      id
+      type
+      description
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "id": "MY_ENV_VAR"
+  }
+}

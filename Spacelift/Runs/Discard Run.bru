@@ -1,0 +1,38 @@
+meta {
+  name: Discard Run
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Discard a Run that's waiting to be applied. If the Run ID is not passed, the
+  Run that's currently blocking the stack will be discarded.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DiscardRun($stack: ID!, $run: ID, $note: String) {
+    runDiscard(stack: $stack, run: $run, note: $note) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
+    "note": "Discarding run"
+  }
+}

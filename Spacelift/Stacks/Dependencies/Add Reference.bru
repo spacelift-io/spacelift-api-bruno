@@ -1,0 +1,43 @@
+meta {
+  name: Add Reference
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Adds reference output/input
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AddStackDependencyReference($stackDependencyID: ID!, $reference: StackDependencyReferenceInput!) {
+    stackDependenciesAddReference(stackDependencyID: $stackDependencyID, reference: $reference) {
+      id
+      outputName
+      inputName
+      type
+      triggerAlways
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stackDependencyID": "DEPENDENCY_ID_HERE",
+    "reference": {
+      "outputName": "vpc_id",
+      "inputName": "TF_VAR_vpc_id",
+      "type": "ENVIRONMENT_VARIABLE",
+      "triggerAlways": false
+    }
+  }
+}

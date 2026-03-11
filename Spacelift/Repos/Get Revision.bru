@@ -1,0 +1,40 @@
+meta {
+  name: Get Revision
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Get a revision by repo ID and SHA (returns latest if SHA not provided)
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetRevision($repoID: ID!, $sha: String) {
+    revision(repoID: $repoID, sha: $sha) {
+      id
+      sha
+      message
+      description
+      authorName
+      authorEmail
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "repoID": "REPO_ID_HERE",
+    "sha": "COMMIT_SHA_HERE"
+  }
+}

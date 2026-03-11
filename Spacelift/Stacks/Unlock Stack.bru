@@ -1,0 +1,37 @@
+meta {
+  name: Unlock Stack
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Unlock the stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UnlockStack($id: ID!) {
+    stackUnlock(id: $id) {
+      id
+      name
+      lockedAt
+      lockedBy
+      lockNote
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE"
+  }
+}

@@ -1,0 +1,35 @@
+meta {
+  name: Delete Deployment
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Delete a blueprint deployment
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteBlueprintDeployment($id: ID!, $blueprintID: ID!) {
+    blueprintDeploymentDelete(id: $id, blueprintID: $blueprintID) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "DEPLOYMENT_ID_HERE",
+    "blueprintID": "BLUEPRINT_ID_HERE"
+  }
+}

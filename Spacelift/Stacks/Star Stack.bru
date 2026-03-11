@@ -1,0 +1,36 @@
+meta {
+  name: Star Stack
+  type: graphql
+  seq: 16
+}
+
+docs {
+  Sets or unsets star on a Stack or Module.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StarStack($id: ID!, $star: Boolean!) {
+    starSet(id: $id, star: $star) {
+      id
+      name
+      starred
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "STACK_ID_HERE",
+    "star": true
+  }
+}

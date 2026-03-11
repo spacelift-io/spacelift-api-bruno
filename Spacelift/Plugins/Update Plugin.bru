@@ -1,0 +1,39 @@
+meta {
+  name: Update Plugin
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Update an existing Plugin.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdatePlugin($id: ID!, $input: PluginUpdateInput!) {
+    pluginUpdate(id: $id, input: $input) {
+      id
+      name
+      description
+      labels
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "PLUGIN_ID_HERE",
+    "input": {
+      "labels": []
+    }
+  }
+}

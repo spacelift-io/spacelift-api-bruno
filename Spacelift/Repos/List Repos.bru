@@ -1,0 +1,54 @@
+meta {
+  name: List Repos
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Search Repos with filtering and ordering
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListRepos($input: SearchInput!) {
+    searchRepos(input: $input) {
+      edges {
+        node {
+          id
+          name
+          slug
+          description
+          labels
+          isDefault
+          space {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

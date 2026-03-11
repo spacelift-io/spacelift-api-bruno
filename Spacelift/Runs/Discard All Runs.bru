@@ -1,0 +1,38 @@
+meta {
+  name: Discard All Runs
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Discard all runs in a stack that are in a discardable state.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DiscardAllRuns($stack: ID!, $note: String) {
+    runDiscardAll(stack: $stack, note: $note) {
+      discardedRuns {
+        id
+        state
+      }
+      failedDiscarding
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "STACK_ID_HERE",
+    "note": "Discarding all queued runs"
+  }
+}

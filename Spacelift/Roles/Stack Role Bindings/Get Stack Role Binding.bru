@@ -1,0 +1,31 @@
+meta {
+  name: Get Stack Role Binding
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetStackRoleBinding($id: ID!) {
+    stackRoleBinding(id: $id) {
+      id
+      stackID
+      stackName
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ROLE_BINDING_ID_HERE"
+  }
+}

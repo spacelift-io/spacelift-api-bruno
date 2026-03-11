@@ -1,0 +1,42 @@
+meta {
+  name: Create Context
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a new context (v2).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateContext($input: ContextInput!) {
+    contextCreateV2(input: $input) {
+      id
+      name
+      description
+      labels
+      space
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "name": "my-context",
+      "description": "My context",
+      "labels": [],
+      "space": "root"
+    }
+  }
+}

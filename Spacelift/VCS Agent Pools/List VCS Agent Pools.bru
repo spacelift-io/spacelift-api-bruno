@@ -1,0 +1,29 @@
+meta {
+  name: List VCS Agent Pools
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the VCSAgentPools in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    vcsAgentPools {
+      id
+      name
+      description
+    }
+  }
+}

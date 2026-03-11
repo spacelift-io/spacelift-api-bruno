@@ -1,0 +1,38 @@
+meta {
+  name: List Modules
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the Modules managed by this account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    modules {
+      id
+      name
+      namespace
+      repository
+      provider
+      terraformProvider
+      space
+      description
+      labels
+      administrative
+      branch
+      createdAt
+    }
+  }
+}
