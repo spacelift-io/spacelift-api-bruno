@@ -12,6 +12,8 @@ npm run sync-docs                              # sync schema descriptions into d
 npm run coverage                               # show which schema operations have no .bru file
 npm run coverage -- --ignore-deprecated        # same, hiding deprecated operations
 npm run coverage -- --show-covered             # also list covered operations
+npm run coverage -- --fail-on-deprecated       # exit 1 if a covered op is deprecated
+npm run changelog                              # changelog entries since .changelog-checkpoint
 
 # All three scripts accept --endpoint to target a non-demo account:
 node scripts/validate-schema.js --endpoint https://myaccount.app.spacelift.io/graphql
@@ -59,7 +61,7 @@ body:graphql:vars {
 
 ### Scripts
 
-All three scripts share the same core helpers:
+`validate-schema.js`, `sync-docs.js` and `coverage.js` share the same core helpers:
 
 - `post(url, body)` — raw HTTPS POST (no dependencies beyond Node built-ins + `graphql` package)
 - `extractGraphQL(content)` — brace-depth tracking to extract the `body:graphql { ... }` block from .bru text
@@ -69,7 +71,13 @@ All three scripts share the same core helpers:
 
 **`coverage.js`**: Walks the schema's Query and Mutation root fields, maps them against which root fields appear in .bru files (`extractRootFields`), reports missing operations. Has a hardcoded `IGNORED` set (~130 operations) for intentionally out-of-scope operations: analytics events, UI state, OAuth flows, billing, SSO/SAML, notifications, autocomplete suggestions, and internal debug fields.
 
+**`changelog-since.js`**: Fetches `https://docs.spacelift.io/product/changelog` and prints the entries dated after `.changelog-checkpoint`, split on the page's `<h2 id="YYYY-MM-DD">` anchors. It deliberately does no matching — the changelog is free-form prose, and the GraphQL lines under its Deprecations headings are verbatim `deprecationReason` strings already surfaced by `coverage.js`. Its value is removals and retirements that introspection cannot express. `--since <date>` overrides the checkpoint; `--list-dates` prints dates only. The only script that does not talk to the GraphQL endpoint.
+
 **`sync-docs.js`**: Builds a map of root field name → schema description, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
+
+### Changelog Checkpoint
+
+`.changelog-checkpoint` holds a single ISO date — the newest changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed. It starts at `2026-05-11`, the last date the weekly sync check ran green.
 
 ### Coverage Ignore List
 

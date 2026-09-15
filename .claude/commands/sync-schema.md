@@ -33,11 +33,23 @@ Validate all Bruno requests against the live Spacelift GraphQL schema, fix any f
 9. Report the coverage summary (e.g. "47% — 202 missing operations").
 10. Highlight any newly uncovered operations that look like significant additions to the API — things that weren't missing before or that belong to resource types already covered by the collection.
 11. Do **not** automatically create new files. Coverage gaps require human judgment about what's worth implementing.
+    Coverage also prints a **Deprecated but still in use** section — operations that have a .bru file but carry a `deprecationReason`. Report these with their suggested replacements; they are the next removals. Do not migrate them automatically, since the replacement often has a different shape.
 
-### Step 4 — Update README
+### Step 4 — Cross-Reference the Changelog
 
-12. Read the **Collection Structure** section in `README.md`. It contains a single summary line of the form: "The collection covers X operations across Y folders, including all non-deprecated Spacelift API endpoints."
-13. Update X to match the current `.bru` file count (`find Spacelift -name "*.bru" | grep -v environments | wc -l`) and Y to match the number of unique folders.
+12. Run `node scripts/changelog-since.js`. It prints every changelog entry newer than the date in `.changelog-checkpoint`, newest first.
+13. The changelog is free-form prose with no feed and no topic tags, so read the entries — do not grep them for `GraphQL`. Most lines under a **Deprecations** heading are verbatim copies of the schema's own `deprecationReason` and tell you nothing Step 3 did not already report. Look instead for what introspection cannot express:
+    - **Removals** — an operation that is gone leaves no trace in the schema. When Step 1 reports `Cannot query field X`, the changelog is the only place that says what replaced it, or whether it was withdrawn rather than renamed.
+    - **Retirements filed under another heading** — a capability that moved is often a _Features_ or _Improvements_ entry with no `GraphQL` prefix, even when it removes operations. These are exactly the ones a keyword search misses.
+    - **Dated notices** — a host, transport or endpoint being sunset on a deadline. No `deprecationReason` carries these.
+14. Cross-reference what you find against Step 1's failures and Step 3's "Deprecated but still in use" list. Report which entries explain a failure, and which describe a change the collection should react to that no check has caught.
+15. Do **not** edit .bru files on the strength of a changelog entry alone — confirm against introspection first. The schema is the source of truth; the changelog is the explanation.
+16. Once the entries have been reviewed, update `.changelog-checkpoint` to the newest date printed.
+
+## Step 5 — Update README
+
+17. Read the **Collection Structure** section in `README.md`. It contains a single summary line of the form: "The collection covers X operations across Y folders, including all non-deprecated Spacelift API endpoints."
+18. Update X to match the current `.bru` file count (`find Spacelift -name "*.bru" | grep -v environments | wc -l`) and Y to match the number of unique folders.
 
 ## How to Introspect
 
