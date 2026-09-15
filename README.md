@@ -9,17 +9,38 @@ A [Bruno](https://www.usebruno.com/) collection covering the Spacelift GraphQL A
 
 ## Setup
 
-### 1. Open the Collection
+### 1. Get the Collection
 
-In Bruno, click **Open Collection** and select the `Spacelift/` folder from this repository.
+#### Option A — Clone from inside Bruno (recommended)
+
+No terminal, and the collection stays a git checkout you can update later.
+
+1. In the Bruno desktop app, open **Import Collection** (the **+** menu in the sidebar) and pick the **Git Repository** tab.
+2. Paste `https://github.com/spacelift-io/spacelift-api-bruno.git` and click **Clone**.
+3. Choose a location to clone into, optionally pick a branch, and click **Clone**.
+4. Bruno scans the clone and lists the collections it finds. Select **Spacelift** and click **Open**.
+
+Bruno shells out to `git`, so it must be installed and on your `PATH`. This flow is desktop-only. The VS Code extension has no clone option, so use option B there.
+
+The collection lives in the `Spacelift/` subfolder rather than at the repository root; Bruno's clone scans the whole repository, so it finds it either way.
+
+#### Option B — Clone yourself and open the folder
+
+```bash
+git clone https://github.com/spacelift-io/spacelift-api-bruno.git
+```
+
+Then in Bruno click **Open Collection** and select the `Spacelift/` folder.
 
 ### 2. Configure Your Environment
 
-Copy the example environment file and fill in your credentials:
+From the root of your clone, copy the example environment file and fill in your credentials:
 
 ```bash
 cp Spacelift/environments/local.bru.example Spacelift/environments/local.bru
 ```
+
+If you cloned from inside Bruno and would rather not hunt for the directory, create the environment in the app instead: gear icon → Environments → **Create**, name it `local`, and add the variables below by hand.
 
 Open the **local** environment in Bruno (gear icon → Environments → local) and fill in:
 

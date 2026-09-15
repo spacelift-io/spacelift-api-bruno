@@ -39,6 +39,8 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 - `environments/local.bru` — environment variables (`SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID`, `SPACELIFT_API_KEY_SECRET`, `jwt`). The tracked template is `local.bru.example`; the real file, `local.bru`, is gitignored.
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
 
+The README tells users to install the collection with Bruno's **Import Collection → Git Repository** clone, which scans the whole cloned repository for `bruno.json` files. That is why `Spacelift/` can sit in a subfolder alongside `scripts/` and `docs/` — nothing requires the collection at the repository root.
+
 ### .bru File Format
 
 ```
