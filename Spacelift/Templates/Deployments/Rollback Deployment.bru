@@ -1,0 +1,43 @@
+meta {
+  name: Rollback Deployment
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Rollback a template deployment to a previous state from its change history
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation RollbackTemplateDeployment($id: ID!, $templateID: ID!, $changeRecordID: ID!) {
+    templateDeploymentRollback(id: $id, templateID: $templateID, changeRecordID: $changeRecordID) {
+      id
+      name
+      description
+      deploymentType
+      state
+      createdAt
+      space {
+        id
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_DEPLOYMENT_ID_HERE",
+    "templateID": "TEMPLATE_ID_HERE",
+    "changeRecordID": "CHANGE_RECORD_ID_HERE"
+  }
+}

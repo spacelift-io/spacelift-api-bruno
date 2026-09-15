@@ -1,0 +1,53 @@
+meta {
+  name: Create Deployment
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Deploy a template
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateTemplateDeployment($id: ID!, $input: TemplateDeploymentCreateInput!) {
+    templateDeploymentCreate(id: $id, input: $input) {
+      id
+      name
+      description
+      deploymentType
+      state
+      createdAt
+      space {
+        id
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_VERSION_ID_HERE",
+    "input": {
+      "space": "SPACE_ID_HERE",
+      "name": "example-deployment",
+      "description": "Example deployment",
+      "inputs": [
+        {
+          "id": "input_name",
+          "value": "input_value"
+        }
+      ],
+      "deploymentType": "REGULAR"
+    }
+  }
+}

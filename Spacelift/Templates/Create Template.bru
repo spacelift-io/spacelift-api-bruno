@@ -1,0 +1,43 @@
+meta {
+  name: Create Template
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateTemplate($input: TemplateCreateInput!) {
+    templateCreate(input: $input) {
+      id
+      name
+      description
+      labels
+      space {
+        id
+      }
+      createdAt
+      updatedAt
+      deploymentsCount
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "space": "SPACE_ID_HERE",
+      "name": "example-template",
+      "description": "Example template",
+      "labels": ["example"]
+    }
+  }
+}

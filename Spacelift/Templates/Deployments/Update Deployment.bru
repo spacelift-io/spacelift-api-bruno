@@ -1,0 +1,52 @@
+meta {
+  name: Update Deployment
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Upgrade a template deployment to a new version and update deployment metadata
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateTemplateDeployment($id: ID!, $templateID: ID!, $input: TemplateDeploymentUpdateInput!) {
+    templateDeploymentUpdate(id: $id, templateID: $templateID, input: $input) {
+      id
+      name
+      description
+      deploymentType
+      state
+      createdAt
+      space {
+        id
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_DEPLOYMENT_ID_HERE",
+    "templateID": "TEMPLATE_ID_HERE",
+    "input": {
+      "name": "example-deployment",
+      "description": "Updated deployment",
+      "inputs": [
+        {
+          "id": "input_name",
+          "value": "input_value"
+        }
+      ]
+    }
+  }
+}

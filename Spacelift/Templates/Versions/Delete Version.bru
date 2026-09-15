@@ -1,0 +1,30 @@
+meta {
+  name: Delete Version
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteTemplateVersion($id: ID!) {
+    templateVersionDelete(id: $id) {
+      id
+      version
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_VERSION_ID_HERE"
+  }
+}

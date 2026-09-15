@@ -1,0 +1,47 @@
+meta {
+  name: Search Deployments
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchTemplateDeployments($input: SearchInput!) {
+    searchTemplateDeployments(input: $input) {
+      edges {
+        node {
+          id
+          name
+          description
+          deploymentType
+          state
+          createdAt
+          space {
+            id
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

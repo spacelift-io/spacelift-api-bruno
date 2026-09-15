@@ -1,0 +1,44 @@
+meta {
+  name: Update Version
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateTemplateVersion($id: ID!, $input: TemplateVersionUpdateInput!) {
+    templateVersionUpdate(id: $id, input: $input) {
+      id
+      name
+      version
+      state
+      instructions
+      labels
+      deploymentsCount
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_VERSION_ID_HERE",
+    "input": {
+      "versionNumber": "1.0.1",
+      "state": "PUBLISHED",
+      "instructions": "How to use this template",
+      "labels": ["example"],
+      "template": "TEMPLATE_YAML_HERE"
+    }
+  }
+}

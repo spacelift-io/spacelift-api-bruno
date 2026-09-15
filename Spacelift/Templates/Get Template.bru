@@ -1,0 +1,46 @@
+meta {
+  name: Get Template
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns a single template details.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetTemplate($id: ID!) {
+    template(id: $id) {
+      id
+      name
+      description
+      labels
+      space {
+        id
+      }
+      createdAt
+      updatedAt
+      deploymentsCount
+      latestVersion {
+        id
+        version
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_ID_HERE"
+  }
+}

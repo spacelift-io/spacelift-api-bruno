@@ -1,0 +1,38 @@
+meta {
+  name: Parse Template
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Parse a template and return its inputs and any validation errors.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ParseTemplateVersion($template: String!) {
+    templateVersionParseTemplate(template: $template) {
+      inputs {
+        id
+        name
+        type
+      }
+      errors
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "template": "TEMPLATE_YAML_HERE"
+  }
+}

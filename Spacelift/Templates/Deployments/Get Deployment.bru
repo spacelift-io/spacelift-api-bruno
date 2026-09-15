@@ -1,0 +1,42 @@
+meta {
+  name: Get Deployment
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single TemplateDeployment.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetTemplateDeployment($id: ID!, $templateID: ID!) {
+    templateDeployment(id: $id, templateID: $templateID) {
+      id
+      name
+      description
+      deploymentType
+      state
+      createdAt
+      space {
+        id
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_DEPLOYMENT_ID_HERE",
+    "templateID": "TEMPLATE_ID_HERE"
+  }
+}

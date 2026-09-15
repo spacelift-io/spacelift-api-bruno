@@ -1,0 +1,38 @@
+meta {
+  name: Delete Deployment
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Delete a template deployment.
+  If skipStackDeletion is true, the deployment record is removed and stacks are
+  detached (made standalone) instead of being destroyed.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteTemplateDeployment($id: ID!, $templateID: ID!, $skipStackDeletion: Boolean) {
+    templateDeploymentDelete(id: $id, templateID: $templateID, skipStackDeletion: $skipStackDeletion) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_DEPLOYMENT_ID_HERE",
+    "templateID": "TEMPLATE_ID_HERE",
+    "skipStackDeletion": false
+  }
+}

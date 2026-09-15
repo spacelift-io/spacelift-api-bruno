@@ -1,0 +1,44 @@
+meta {
+  name: Update Template
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateTemplate($id: ID!, $input: TemplateUpdateInput!) {
+    templateUpdate(id: $id, input: $input) {
+      id
+      name
+      description
+      labels
+      space {
+        id
+      }
+      createdAt
+      updatedAt
+      deploymentsCount
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_ID_HERE",
+    "input": {
+      "space": "SPACE_ID_HERE",
+      "name": "example-template",
+      "description": "Updated template",
+      "labels": ["example"]
+    }
+  }
+}

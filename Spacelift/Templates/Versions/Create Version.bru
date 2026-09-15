@@ -1,0 +1,44 @@
+meta {
+  name: Create Version
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateTemplateVersion($input: TemplateVersionCreateInput!) {
+    templateVersionCreate(input: $input) {
+      id
+      name
+      version
+      state
+      instructions
+      labels
+      deploymentsCount
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "templateID": "TEMPLATE_ID_HERE",
+      "versionNumber": "1.0.0",
+      "state": "DRAFT",
+      "instructions": "How to use this template",
+      "labels": ["example"],
+      "template": "TEMPLATE_YAML_HERE"
+    }
+  }
+}

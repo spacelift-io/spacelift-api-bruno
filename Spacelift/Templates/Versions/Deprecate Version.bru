@@ -1,0 +1,39 @@
+meta {
+  name: Deprecate Version
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Mark a published template version as deprecated.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeprecateTemplateVersion($id: ID!, $input: TemplateVersionDeprecateInput) {
+    templateVersionDeprecate(id: $id, input: $input) {
+      id
+      version
+      deprecatedAt
+      deprecationNote
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "TEMPLATE_VERSION_ID_HERE",
+    "input": {
+      "note": "Superseded by a newer version"
+    }
+  }
+}
