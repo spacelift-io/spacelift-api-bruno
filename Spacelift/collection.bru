@@ -117,6 +117,25 @@ script:pre-request {
   }
 }
 
+tests {
+  // Runs after every request, in the app and under the CLI.
+  //
+  // The second assertion is the one that earns its place. GraphQL answers 200
+  // even when the operation failed — the failure is an entry in the body's
+  // `errors` array — so "stack not found" and "here is your stack" are the same
+  // status code. Anyone judging a response by its status is reading the wrong
+  // field, and the Tests tab now says so directly.
+
+  test("responds 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("returns no GraphQL errors", function () {
+    const errors = res.getBody()?.errors;
+    expect(errors, errors ? JSON.stringify(errors) : "").to.equal(undefined);
+  });
+}
+
 docs {
   # Spacelift API
 

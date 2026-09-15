@@ -24,6 +24,9 @@ jobs:
 
       - uses: pre-commit/action@v3.0.1
 
+      - name: Test
+        run: npm test
+
       - name: Check destructive requests prompt for their IDs
         run: npm run destructive-prompts:check
 

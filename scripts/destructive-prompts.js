@@ -16,8 +16,11 @@
  * act — you cannot destroy anything by opening a request and hitting send.
  *
  * Bruno's collection runner and CLI *skip* any request containing a prompt
- * variable, since neither can prompt. That is the second reason for this: a
- * collection run cannot delete anything, whatever it is pointed at.
+ * variable, since neither can prompt. That is a useful second effect, but not a
+ * guarantee: fourteen destructive operations take no arguments at all, so they
+ * have nothing to prompt for and a bulk run would send them. Treat this as
+ * making the common mistake hard, not as making the collection safe to run
+ * wholesale against an account you care about.
  *
  * Destructiveness is decided by the verb in the request name (DESTRUCTIVE_VERBS
  * below), matched whole-word. That is coarse but predictable, and being wrong
@@ -162,8 +165,8 @@ function main() {
     const span = varsBlockSpan(content);
 
     // Nothing to prompt for: the operation takes no arguments. Such a request
-    // is still destructive, which is why the collection runner is pointed at an
-    // explicit allowlist of tagged requests rather than trusted to skip these.
+    // is still destructive and a collection run would send it, so prompt-skip
+    // is a safety net rather than a guarantee — see the note above.
     if (!span) {
       noPlaceholders++;
       continue;

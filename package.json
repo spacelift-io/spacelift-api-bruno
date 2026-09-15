@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "pre-commit:update": "pre-commit autoupdate --freeze",
     "sync-docs": "node scripts/sync-docs.js",
+    "test": "node scripts/test.js",
     "sync-docs:check": "node scripts/sync-docs.js --check",
     "sync-docs:check-folders": "node scripts/sync-docs.js --check-folders",
     "validate": "node scripts/validate-schema.js"
@@ -23,6 +24,8 @@
     "graphql": "^17.0.2"
   },
   "devDependencies": {
+    "@usebruno/lang": "^0.39.0",
+    "atob": "^2.1.2",
     "prettier": "^3.9.6"
   }
 }

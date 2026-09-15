@@ -5,8 +5,9 @@ This file provides guidance to AI agents when working with code in this reposito
 ## Commands
 
 ```bash
-npm install                                    # install the single dependency (graphql)
+npm install                                    # graphql, plus @usebruno/lang and atob for the tests
 
+npm test                                       # offline tests: files parse, auth resolves, token script behaves
 npm run validate                               # validate all .bru files against the live schema
 npm run sync-docs                              # sync schema descriptions + deprecations into docs {} blocks, and folder docs into folder.bru
 npm run sync-docs:check                        # exit 1 if any request or folder docs block is stale (needs the schema)
@@ -101,6 +102,25 @@ The expressions use optional chaining (`res.body.data.stacks?.[0]?.id`) so an em
 
 This is deliberately limited to the documented workflows. Chaining every request that takes an ID would mean 352 files silently depending on execution order, and a request whose variable was never set fails less legibly than one still holding `STACK_ID_HERE` — the placeholder at least says what it wants. Each chained request carries a note saying which request feeds it.
 
+### Tests
+
+`npm test` (`scripts/test.js`) — offline, no credentials, about a second. It uses Bruno's own parser rather than a reimplementation, and runs the pre-request script the way Bruno runs it: in an async wrapper with `require()` limited to the Safe Mode allowlist. It asserts that
+
+- every `.bru` file parses and has a `meta.name`, and every `folder.bru` has docs;
+- `SPACELIFT_API_KEY_SECRET` and `jwt` are both **secret** variables — the assertion that stops a token ever being written into a tracked file;
+- every request resolves to a bearer token through `inherit`, with exactly one at `auth: none`;
+- the token script mints, refreshes, skips and fails in the ten ways it is supposed to.
+
+This exists because `validate` cannot see any of it. A search-and-replace once put backticks inside a template literal in `collection.bru`, breaking authentication for every user, while `npm run validate` stayed green.
+
+**Nothing in this repository sends a request to a real Spacelift account**, in CI or otherwise. Every check works from public introspection, with no credentials. That is a deliberate property — it is why anyone can clone this and run the whole suite — so keep it.
+
+The obvious thing to add is a smoke run: tag a handful of read-only requests and point `@usebruno/cli` at a real account on a schedule. It is not worth building, and this has been weighed rather than overlooked.
+
+A read-only canary reaches a fraction of 649 requests and none of the arguments that matter, because the failures worth catching — `docs/backend-lookups.md`'s backend-validated `String` values, a wrong enum member, a renamed input field — all live on mutations a smoke run must not send. What it would actually prove is that authentication works end to end, and that does not pay for a live account, an admin-scoped key in CI (`apiKeys` and `outgoingIPAddresses` are admin reads), a credential whose rotation breaks the build, and a weekly session and audit-trail entry on somebody's account.
+
+If that verification is ever wanted, build the version that earns it: a disposable account, mutations creating and destroying real objects in order, cleanup on failure. The read-only half was never the useful one.
+
 ### Destructive Requests
 
 Requests whose name contains a destructive verb take their IDs as Bruno **prompt variables** rather than placeholders:
@@ -118,7 +138,7 @@ Two things follow from that, and both are the point:
 
 The run lifecycle is deliberately excluded. `Discard`, `Cancel`, `Stop` and `Kill` all end a run, but a run is re-triggerable, and putting a dialog in front of the most common action in the collection would be a worse trade.
 
-Fourteen destructive operations take no arguments at all (`Delete Audit Trail Webhook`, `Clean Migration Queue`, …), so there is nothing to prompt for and a runner would happily send them. Prompt-skip is therefore a useful safety net, not a guarantee: anything that runs the collection automatically must be pointed at an explicit allowlist of read-only requests rather than trusting it.
+Fourteen destructive operations take no arguments at all (`Delete Audit Trail Webhook`, `Clean Migration Queue`, …), so there is nothing to prompt for and a runner would happily send them. Prompt-skip is therefore a useful safety net, not a guarantee. Nothing in the collection makes it safe to run in bulk against an account you care about, and nothing in the repository tries to.
 
 `npm run destructive-prompts:check` runs in pre-commit and CI, so a newly added `Delete …` request cannot ship with a plain placeholder.
 
