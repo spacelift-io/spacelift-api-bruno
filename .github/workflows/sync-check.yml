@@ -9,23 +9,23 @@ jobs:
   sync-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: npm
 
       - run: npm ci
 
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@v3.0.1
 
       - name: Check coverage
         run: npm run coverage -- --ignore-deprecated
 
       - name: Open issue on failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const title = `Schema sync failure — ${new Date().toISOString().slice(0, 10)}`;
