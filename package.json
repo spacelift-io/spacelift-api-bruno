@@ -13,9 +13,9 @@
     "validate": "node scripts/validate-schema.js"
   },
   "dependencies": {
-    "graphql": "^16.0.0"
+    "graphql": "^17.0.2"
   },
   "devDependencies": {
-    "prettier": "^3.0.0"
+    "prettier": "^3.9.6"
   }
 }
