@@ -27,8 +27,15 @@ body:graphql {
 body:graphql:vars {
   {
     "input": {
+      "integrationType": "SLACK",
       "integrationName": "my-integration",
-      "integrationType": "SLACK"
+      "slackChannelID": "SLACK_CHANNEL_ID_HERE",
+      "accessRules": [
+        {
+          "space": "root",
+          "spaceAccessLevel": "READ"
+        }
+      ]
     }
   }
 }

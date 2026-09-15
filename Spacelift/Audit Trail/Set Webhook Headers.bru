@@ -26,9 +26,14 @@ body:graphql {
 body:graphql:vars {
   {
     "input": {
-      "entries": [
-        { "key": "X-Custom-Header", "value": "header-value" }
-      ]
+      "customHeaders": {
+        "entries": [
+          {
+            "key": "X-Custom-Header",
+            "value": "header-value"
+          }
+        ]
+      }
     }
   }
 }

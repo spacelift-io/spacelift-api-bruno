@@ -28,7 +28,13 @@ body:graphql:vars {
   {
     "input": {
       "groupName": "my-user-group",
-      "description": "My user group"
+      "description": "My user group",
+      "roleBindings": [
+        {
+          "roleID": "ROLE_ID_HERE",
+          "spaceID": "root"
+        }
+      ]
     }
   }
 }

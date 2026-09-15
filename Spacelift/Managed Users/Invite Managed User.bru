@@ -28,8 +28,14 @@ body:graphql {
 body:graphql:vars {
   {
     "input": {
-      "email": "user@example.com",
-      "username": "myuser"
+      "invitationEmail": "user@example.com",
+      "username": "myuser",
+      "roleBindings": [
+        {
+          "roleID": "ROLE_ID_HERE",
+          "spaceID": "root"
+        }
+      ]
     }
   }
 }

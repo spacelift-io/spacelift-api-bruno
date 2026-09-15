@@ -35,10 +35,16 @@ body:graphql {
 body:graphql:vars {
   {
     "input": {
+      "updateInput": {
+        "branch": "main",
+        "description": "My module",
+        "labels": [],
+        "space": "root"
+      },
       "name": "my-module",
       "namespace": "my-org",
       "repository": "terraform-aws-my-module",
-      "provider": "aws",
+      "provider": "GITHUB",
       "terraformProvider": "hashicorp/aws",
       "space": "root"
     }

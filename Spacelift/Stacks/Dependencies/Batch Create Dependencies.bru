@@ -32,8 +32,13 @@ body:graphql {
 body:graphql:vars {
   {
     "input": {
-      "stackID": "STACK_ID_HERE",
-      "dependsOnStackIDs": ["DEPENDENCY_STACK_ID_HERE"]
+      "dependencies": [
+        {
+          "stackId": "STACK_ID_HERE",
+          "dependsOnStackId": "DEPENDENCY_STACK_ID_HERE",
+          "triggerAlways": false
+        }
+      ]
     }
   }
 }

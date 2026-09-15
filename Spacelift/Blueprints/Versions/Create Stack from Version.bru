@@ -27,9 +27,12 @@ body:graphql:vars {
   {
     "id": "BLUEPRINT_VERSION_ID_HERE",
     "input": {
-      "name": "my-stack",
-      "space": "root",
-      "inputs": []
+      "templateInputs": [
+        {
+          "id": "stack_name",
+          "value": "my-new-stack"
+        }
+      ]
     }
   }
 }
