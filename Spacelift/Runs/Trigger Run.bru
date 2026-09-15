@@ -9,6 +9,15 @@ docs {
   commit currently tracked by a Stack or, if the Stack is not yet tracking any
   commit, against the HEAD of the Stack's tracked branch. These defaults can
   be overridden.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  **`runType`** accepts `PROPOSED` (plan only, nothing applied), `TRACKED` (the
+  normal deployable run), `DESTROY`, `TASK`, `TESTING` and `PARSE`. Omit it for the
+  stack's default.
+
+  Leave `commitSha` null to run against whatever commit the stack currently
+  tracks.
 }
 
 post {

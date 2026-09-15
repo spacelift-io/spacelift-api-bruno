@@ -84,7 +84,10 @@ meta {
 }
 
 docs {
-  <populated automatically by sync-docs — do not hand-edit>
+  <populated automatically by sync-docs from the schema — do not hand-edit>
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+  <optional notes; see "Adding Notes to a Request" below>
 }
 
 post {
@@ -107,6 +110,18 @@ body:graphql:vars {
 Use obvious placeholder strings like `STACK_ID_HERE` for required ID arguments.
 
 `auth: inherit` takes the bearer token from `Spacelift/collection.bru`, so a new request needs no `auth:bearer` block of its own. Don't add one — the token lives in exactly one place.
+
+## Adding Notes to a Request
+
+A request's docs come from the schema, and `sync-docs` rewrites them every run. To add something the schema cannot say — where to get an ID, which request to send first, which values an argument really accepts — put it below this marker inside the `docs { }` block:
+
+```
+<!-- notes: hand-written, preserved by sync-docs -->
+```
+
+Everything from that line down is preserved verbatim; everything above it is regenerated. You can add it from Bruno's own Docs editor — it renders as markdown, so the marker itself is invisible in the Docs pane.
+
+Please write notes for what actually trips people up rather than restating the schema. If the schema _could_ say it, it is better fixed there.
 
 ## Adding a New Folder
 

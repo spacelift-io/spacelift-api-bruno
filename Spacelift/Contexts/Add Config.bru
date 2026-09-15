@@ -6,6 +6,14 @@ meta {
 
 docs {
   Add a context config element. Requires 'Context Update' permission on the context Space.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  **`config.type`** is either `ENVIRONMENT_VARIABLE` or `FILE_MOUNT`. For a file
+  mount, `id` is the path the file is mounted at.
+
+  Setting `writeOnly` to true means the value cannot be read back afterwards —
+  right for secrets, and irreversible without replacing the entry.
 }
 
 post {

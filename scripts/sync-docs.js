@@ -51,6 +51,12 @@ const DEPRECATED_MARKER = "**DEPRECATED**";
 // which coverage.js --check-advanced-marks reads too, so membership and wording
 // cannot drift between writer and checker the way DEPRECATED_MARKER can.
 
+// Everything from this line onward in a docs block is hand-written and is
+// preserved across syncs; everything above it is regenerated from the schema.
+// An HTML comment because Bruno renders these blocks as markdown — the marker
+// does its job in the file and stays invisible in the Docs pane.
+const NOTES_MARKER = "<!-- notes: hand-written, preserved by sync-docs -->";
+
 const args = process.argv.slice(2);
 const endpointFlag = args.indexOf("--endpoint");
 const ENDPOINT =
@@ -215,13 +221,54 @@ function findBlockEnd(content, startIdx) {
 }
 
 /**
+ * Everything from NOTES_MARKER onward in an existing docs block, or null.
+ *
+ * A schema description says what an operation does. It never says where to get
+ * the ID the request needs, which request to send first, or which of two
+ * spellings of an argument the backend actually accepts — and those are the
+ * questions someone has with the request open in front of them. Before this,
+ * there was nowhere to write the answer: sync-docs replaced the whole block,
+ * so anything hand-written survived until the next sync.
+ *
+ * Text below the marker is preserved verbatim. Text above it is regenerated
+ * from the schema on every run, and edits there are lost — which is why the
+ * marker names itself.
+ *
+ * The marker is an HTML comment because Bruno renders these blocks as
+ * markdown: it does its job in the file and is invisible in the Docs pane.
+ */
+function extractNotes(docsBlockBody) {
+  const index = docsBlockBody.indexOf(NOTES_MARKER);
+  if (index === -1) return null;
+  return docsBlockBody.slice(index).trimEnd();
+}
+
+/** The body of a `docs { ... }` block, outdented, or null if there is none. */
+function docsBlockBody(content) {
+  const match = content.match(/^docs \{/m);
+  if (!match) return null;
+  const block = content.slice(match.index, findBlockEnd(content, match.index));
+  return block
+    .replace(/^docs \{\n?/, "")
+    .replace(/\n?\}$/, "")
+    .split("\n")
+    .map((line) => (line.startsWith("  ") ? line.slice(2) : line))
+    .join("\n");
+}
+
+/**
  * Insert or update the `docs { ... }` block in .bru file content.
- * - If a docs block already exists, replace its content.
+ * - If a docs block already exists, replace its content, keeping any
+ *   hand-written notes below NOTES_MARKER.
  * - Otherwise insert it immediately after the `meta { ... }` block.
  * Returns the updated content, or the original content if nothing changed.
  */
 function upsertDocsBlock(content, description) {
-  const newBlock = buildDocsBlock(description);
+  const existingBody = docsBlockBody(content);
+  const notes = existingBody === null ? null : extractNotes(existingBody);
+  const newBlock = buildDocsBlock(
+    notes ? `${description}\n\n${notes}` : description,
+  );
 
   // Replace existing docs block (matched at start of a line)
   const docsMatch = content.match(/^docs \{/m);

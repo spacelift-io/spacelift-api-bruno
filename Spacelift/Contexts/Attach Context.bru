@@ -6,6 +6,12 @@ meta {
 
 docs {
   Attach context to a Stack.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  **`priority`** orders this attachment against the stack's other contexts, which
+  is what decides the winner when two of them set the same variable. Attaching a
+  context a stack already has will fail rather than move it.
 }
 
 post {
