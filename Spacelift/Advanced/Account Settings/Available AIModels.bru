@@ -19,11 +19,7 @@ docs {
 post {
   url: {{SPACELIFT_ENDPOINT}}
   body: graphql
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{jwt}}
+  auth: inherit
 }
 
 body:graphql {

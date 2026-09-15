@@ -64,9 +64,7 @@ docs {
   <managed by sync-docs.js — do not hand-edit>
 }
 
-post { url: {{SPACELIFT_ENDPOINT}}; body: graphql; auth: bearer }
-
-auth:bearer { token: {{jwt}} }
+post { url: {{SPACELIFT_ENDPOINT}}; body: graphql; auth: inherit }
 
 body:graphql {
   <raw GraphQL operation — no "query:" prefix>
@@ -78,6 +76,8 @@ body:graphql:vars {
 ```
 
 `seq` controls ordering within a folder. IDs in vars use placeholder strings like `STACK_ID_HERE`.
+
+`auth: inherit` means "use the collection's auth", resolved by Bruno's `prepare-request.js`: a request whose mode is `inherit` takes the collection's `auth { mode: bearer }` and gets `Authorization: Bearer {{jwt}}`. New requests should use `inherit` and carry no `auth:bearer` block of their own — the token is configured in exactly one place, `collection.bru`. `Auth/Get Token.bru` is the sole exception, at `auth: none`.
 
 ### Authentication Flow
 

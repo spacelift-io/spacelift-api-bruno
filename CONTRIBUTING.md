@@ -85,11 +85,7 @@ docs {
 post {
   url: {{SPACELIFT_ENDPOINT}}
   body: graphql
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{jwt}}
+  auth: inherit
 }
 
 body:graphql {
@@ -104,3 +100,5 @@ body:graphql:vars {
 ```
 
 Use obvious placeholder strings like `STACK_ID_HERE` for required ID arguments.
+
+`auth: inherit` takes the bearer token from `Spacelift/collection.bru`, so a new request needs no `auth:bearer` block of its own. Don't add one — the token lives in exactly one place.
