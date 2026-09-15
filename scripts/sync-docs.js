@@ -134,6 +134,7 @@ function getRootFieldName(gql) {
 function buildDocsBlock(description) {
   const indented = description
     .split("\n")
+    .map((line) => line.trimEnd())
     .map((line) => (line ? "  " + line : ""))
     .join("\n");
   return `docs {\n${indented}\n}`;
