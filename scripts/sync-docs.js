@@ -126,10 +126,18 @@ function extractGraphQL(content) {
 }
 
 /**
- * Get the root field name from a GraphQL operation string.
- * Handles named operations (query Foo { bar }) and anonymous ({ bar }).
+ * Get the root field from a GraphQL operation string, qualified by operation
+ * type — "Query.stacks", "Mutation.stackCreate".
+ *
+ * The qualifier matters: a name can exist as both a Query and a Mutation field
+ * with different metadata. templateVersionParseTemplate is live as a query and
+ * deprecated as a mutation, so keying on the bare name would let one overwrite
+ * the other and stamp the wrong notice into the docs block.
+ *
+ * Handles named operations (query Foo { bar }) and anonymous ({ bar }), which
+ * GraphQL defines as queries.
  */
-function getRootFieldName(gql) {
+function getRootFieldKey(gql) {
   let doc;
   try {
     doc = parse(gql);
@@ -140,7 +148,8 @@ function getRootFieldName(gql) {
   if (!def || !def.selectionSet) return null;
   const sel = def.selectionSet.selections[0];
   if (!sel || sel.kind !== "Field") return null;
-  return sel.name.value;
+  const kind = def.operation === "mutation" ? "Mutation" : "Query";
+  return `${kind}.${sel.name.value}`;
 }
 
 /**
@@ -254,14 +263,15 @@ async function main() {
   let deprecatedCount = 0;
   let advancedCount = 0;
 
-  for (const fields of [
-    schema.getQueryType()?.getFields() ?? {},
-    schema.getMutationType()?.getFields() ?? {},
+  for (const [kind, fields] of [
+    ["Query", schema.getQueryType()?.getFields() ?? {}],
+    ["Mutation", schema.getMutationType()?.getFields() ?? {}],
   ]) {
     for (const [name, field] of Object.entries(fields)) {
       const text = buildDocsText(field, ADVANCED.get(name));
       if (!text) continue;
-      docsText[name] = text;
+      // Qualified by operation type — see getRootFieldKey.
+      docsText[`${kind}.${name}`] = text;
       if (field.deprecationReason) deprecatedCount++;
       if (ADVANCED.has(name)) advancedCount++;
     }
@@ -295,7 +305,7 @@ async function main() {
       continue;
     }
 
-    const rootField = getRootFieldName(gql);
+    const rootField = getRootFieldKey(gql);
     if (!rootField) {
       skipped++;
       continue;

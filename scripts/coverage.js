@@ -140,8 +140,13 @@ function findBruFiles(dir) {
 }
 
 /**
- * Parse a GraphQL operation string and return the set of root field names used.
- * e.g. "query { stacks { id } }" → Set { "stacks" }
+ * Parse a GraphQL operation string and return its root fields, each qualified
+ * by operation type: "query { stacks { id } }" → Set { "Query.stacks" }.
+ *
+ * Qualified because a name can be both a Query and a Mutation field with
+ * different metadata — templateVersionParseTemplate is live as a query and
+ * deprecated as a mutation — and a file covering one must not be credited with
+ * covering the other.
  */
 function extractRootFields(gql) {
   let doc;
@@ -156,7 +161,8 @@ function extractRootFields(gql) {
     if (def.kind === "OperationDefinition") {
       for (const sel of def.selectionSet.selections) {
         if (sel.kind === "Field") {
-          fields.add(sel.name.value);
+          const kind = def.operation === "mutation" ? "Mutation" : "Query";
+          fields.add(`${kind}.${sel.name.value}`);
         }
       }
     }
@@ -167,6 +173,18 @@ function extractRootFields(gql) {
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
+
+/**
+ * Files covering a root field, looked up by bare name across both operation
+ * types. The advanced list is keyed by bare name, so a lookup there has to try
+ * Query and Mutation.
+ */
+function filesCovering(coveredBy, name) {
+  return [
+    ...(coveredBy.get(`Query.${name}`) ?? []),
+    ...(coveredBy.get(`Mutation.${name}`) ?? []),
+  ];
+}
 
 async function main() {
   // 1. Fetch schema
@@ -200,7 +218,7 @@ async function main() {
     for (const [name, field] of Object.entries(type.getFields())) {
       if (name.startsWith("__")) continue;
       const deprecated = !!field.deprecationReason;
-      if (!deprecated) baselineOps.add(name);
+      if (!deprecated) baselineOps.add(`${typeName}.${name}`);
       if (IGNORE_DEPRECATED && deprecated) continue;
       schemaOps[typeName].set(name, {
         deprecated,
@@ -257,9 +275,9 @@ async function main() {
 
   // 4. Report
   const coveredCount = [
-    ...schemaOps.Query.keys(),
-    ...schemaOps.Mutation.keys(),
-  ].filter((name) => covered.has(name)).length;
+    ...[...schemaOps.Query.keys()].map((n) => `Query.${n}`),
+    ...[...schemaOps.Mutation.keys()].map((n) => `Mutation.${n}`),
+  ].filter((key) => covered.has(key)).length;
 
   const pct = Math.round((coveredCount / totalOps) * 100);
   const filterNote = IGNORE_DEPRECATED ? "  (deprecated hidden)" : "";
@@ -281,7 +299,7 @@ async function main() {
   }
 
   const deprecatedCovered = [...deprecatedOps.entries()]
-    .filter(([name]) => coveredBy.has(name))
+    .filter(([name, { typeName }]) => coveredBy.has(`${typeName}.${name}`))
     .sort(([a], [b]) => a.localeCompare(b));
 
   if (deprecatedCovered.length > 0) {
@@ -300,7 +318,7 @@ async function main() {
     for (const [name, { typeName, reason }] of deprecatedCovered) {
       console.log(`   ○  ${typeName}.${name}`);
       console.log(`      ${reason}`);
-      for (const file of coveredBy.get(name)) {
+      for (const file of coveredBy.get(`${typeName}.${name}`)) {
         console.log(`      → ${file}`);
       }
     }
@@ -323,7 +341,8 @@ async function main() {
       console.log(`   ${folder}  (${key}, ${live.length})`);
       console.log(`      ${note}`);
       for (const name of live.sort()) {
-        console.log(`      ${covered.has(name) ? "✓" : "✗"}  ${name}`);
+        const isCovered = filesCovering(coveredBy, name).length > 0;
+        console.log(`      ${isCovered ? "✓" : "✗"}  ${name}`);
       }
       console.log();
     }
@@ -331,8 +350,12 @@ async function main() {
 
   for (const typeName of ["Query", "Mutation"]) {
     const ops = schemaOps[typeName];
-    const missing = [...ops.entries()].filter(([name]) => !covered.has(name));
-    const present = [...ops.entries()].filter(([name]) => covered.has(name));
+    const missing = [...ops.entries()].filter(
+      ([name]) => !covered.has(`${typeName}.${name}`),
+    );
+    const present = [...ops.entries()].filter(([name]) =>
+      covered.has(`${typeName}.${name}`),
+    );
 
     console.log(`── ${typeName} ─────────────────────────────────────────────`);
     console.log(`   ${present.length} covered, ${missing.length} missing\n`);
@@ -369,7 +392,7 @@ async function main() {
     // failure — going unmarked is. Anything listed here just needs sync-docs.
     const unmarked = [];
     for (const [name] of deprecatedCovered) {
-      for (const rel of coveredBy.get(name)) {
+      for (const rel of filesCovering(coveredBy, name)) {
         const content = fs.readFileSync(path.join(COLLECTION_DIR, rel), "utf8");
         if (!content.includes(DEPRECATED_MARKER)) unmarked.push([name, rel]);
       }
@@ -399,7 +422,7 @@ async function main() {
     // tells the reader this is off the beaten path. Fix with sync-docs.
     const unmarked = [];
     for (const name of advancedInSchema) {
-      for (const rel of coveredBy.get(name) ?? []) {
+      for (const rel of filesCovering(coveredBy, name)) {
         const content = fs.readFileSync(path.join(COLLECTION_DIR, rel), "utf8");
         if (!content.includes(ADVANCED_MARKER)) unmarked.push([name, rel]);
       }
@@ -417,8 +440,8 @@ async function main() {
       );
       process.exitCode = 1;
     } else {
-      const coveredAdvanced = [...advancedInSchema].filter((n) =>
-        coveredBy.has(n),
+      const coveredAdvanced = [...advancedInSchema].filter(
+        (n) => filesCovering(coveredBy, n).length > 0,
       ).length;
       console.log(
         `\n✓ All ${coveredAdvanced} covered advanced operation(s) are marked advanced.`,
