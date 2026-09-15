@@ -1,0 +1,13 @@
+meta {
+  name: Terraform Providers
+}
+
+docs {
+  The private Terraform provider registry.
+
+  Publishing is a sequence, and skipping a step leaves a version nobody can
+  install: create the provider, create a version, **Register Platform** once per
+  OS/architecture, optionally **Upload Version Docs**, then **Publish Provider
+  Version**. **Revoke Provider Version** withdraws one that should no longer be
+  used.
+}

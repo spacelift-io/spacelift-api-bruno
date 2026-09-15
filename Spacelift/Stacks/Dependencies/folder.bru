@@ -2,3 +2,12 @@ meta {
   name: Dependencies
   seq: 17
 }
+
+docs {
+  Ordering between stacks — run this one only after that one — and the outputs
+  passed along the edge.
+
+  The Dependency requests create and remove the edge itself. The Reference
+  requests say which output of the upstream stack feeds which input of the
+  downstream one.
+}

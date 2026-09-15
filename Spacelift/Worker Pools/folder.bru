@@ -1,0 +1,13 @@
+meta {
+  name: Worker Pools
+}
+
+docs {
+  Private workers that execute runs inside your own network, instead of on
+  Spacelift's shared workers.
+
+  Create the pool here, then run workers against it. **Set Worker Drain** stops a
+  worker picking up new runs without interrupting the one it is on — the graceful
+  way to take it out of service. **Cycle Worker Pool** rotates the whole pool, and
+  **Get Worker Usage** shows how busy it has been.
+}

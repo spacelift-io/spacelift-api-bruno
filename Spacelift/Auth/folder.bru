@@ -1,0 +1,14 @@
+meta {
+  name: Auth
+}
+
+docs {
+  Getting a token by hand.
+
+  You normally don't need this. The collection authenticates itself: a
+  collection-level pre-request script mints a token when one is missing and
+  replaces it shortly before it expires. See the collection's Docs pane.
+
+  Use **Get Token** when you want a token to use elsewhere — in curl, a script, or
+  `spacectl`. **Logout** invalidates the current session.
+}

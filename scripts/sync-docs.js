@@ -1,12 +1,19 @@
 #!/usr/bin/env node
 /**
- * sync-docs.js — Sync schema field descriptions into Bruno request docs blocks.
+ * sync-docs.js — Sync documentation into the collection's docs blocks.
  *
- * For each .bru file, looks up the root GraphQL field in the live schema and
- * inserts/updates a `docs { ... }` block containing:
- *   - a deprecation warning, if the field has a `deprecationReason`
- *   - the field's description, if it has one
- * Files whose schema field has neither are left untouched.
+ * Two sources, because there are two kinds of documentation:
+ *
+ * 1. Requests take theirs from the live schema. For each .bru file, looks up
+ *    the root GraphQL field and inserts/updates a `docs { ... }` block with a
+ *    deprecation warning (if the field has a `deprecationReason`), an advanced
+ *    note (if it is listed in advanced-operations.js), and the field's
+ *    description. Files whose field has none of those are left untouched.
+ *
+ * 2. Folders take theirs from folder-docs.js, hand-written. A schema describes
+ *    one operation at a time and can never say which order to send them in or
+ *    which folder supersedes another, which is exactly what a reader needs
+ *    before working through a folder of 25 requests.
  *
  * Deprecated operations keep their .bru file — they stay supported, so the
  * collection keeps covering them and marks them instead, to steer users to
@@ -15,11 +22,14 @@
  * Usage:
  *   node scripts/sync-docs.js
  *   node scripts/sync-docs.js --endpoint https://myaccount.app.spacelift.io/graphql
- *   node scripts/sync-docs.js --dry-run    (show what would change, no writes)
+ *   node scripts/sync-docs.js --dry-run          (show what would change, no writes)
+ *   node scripts/sync-docs.js --check            (exit 1 if anything is stale)
+ *   node scripts/sync-docs.js --check-folders    (folders only — offline, for PRs)
  */
 
 const { buildClientSchema, getIntrospectionQuery, parse } = require("graphql");
 const { ADVANCED, ADVANCED_MARKER } = require("./advanced-operations");
+const { FOLDER_DOCS } = require("./folder-docs");
 const https = require("https");
 const http = require("http");
 const fs = require("fs");
@@ -46,6 +56,9 @@ const endpointFlag = args.indexOf("--endpoint");
 const ENDPOINT =
   endpointFlag !== -1 ? args[endpointFlag + 1] : DEFAULT_ENDPOINT;
 const DRY_RUN = args.includes("--dry-run");
+const CHECK_FOLDERS = args.includes("--check-folders");
+// --check-folders is a narrower --check, so it implies the no-write behaviour.
+const CHECK = args.includes("--check") || CHECK_FOLDERS;
 
 // ---------------------------------------------------------------------------
 // Helpers (shared with validate-schema.js / coverage.js)
@@ -239,10 +252,143 @@ function upsertDocsBlock(content, description) {
 }
 
 // ---------------------------------------------------------------------------
+// Folder docs
+// ---------------------------------------------------------------------------
+
+/** Every folder under Spacelift/, as paths relative to it, `/`-separated. */
+function findFolders(dir, prefix = []) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    // Environments are not part of the request tree and have no folder.bru.
+    if (!entry.isDirectory() || entry.name === "environments") continue;
+    out.push([...prefix, entry.name].join("/"));
+    out.push(
+      ...findFolders(path.join(dir, entry.name), [...prefix, entry.name]),
+    );
+  }
+  return out.sort();
+}
+
+/** The `name:` / `seq:` pairs of a folder.bru's meta block, if it has one. */
+function readFolderMeta(content) {
+  const match = content.match(/^meta \{/m);
+  if (!match) return {};
+  const block = content.slice(match.index, findBlockEnd(content, match.index));
+  const name = block.match(/^\s*name:\s*(.+)$/m);
+  const seq = block.match(/^\s*seq:\s*(\d+)\s*$/m);
+  return {
+    name: name ? name[1].trim() : undefined,
+    seq: seq ? seq[1] : undefined,
+  };
+}
+
+/**
+ * The folder.bru content for one folder: a meta block, then the docs block.
+ *
+ * `seq` is preserved exactly as found and never invented. Bruno orders folders
+ * alphabetically and splices only those carrying a seq in at `seq - 1`, so
+ * adding one here would silently move a folder, and dropping Advanced's would
+ * move 196 administrative requests to the top of the sidebar.
+ *
+ * `name` likewise defaults to the directory name, because Bruno sorts on the
+ * meta name when there is one — a name that differs from the directory would
+ * reorder the sidebar just as surely.
+ */
+function buildFolderBru(folderPath, existing) {
+  const dirName = folderPath.split("/").pop();
+  const { name = dirName, seq } = existing ? readFolderMeta(existing) : {};
+
+  const meta = ["meta {", `  name: ${name}`];
+  if (seq !== undefined) meta.push(`  seq: ${seq}`);
+  meta.push("}");
+
+  return `${meta.join("\n")}\n\n${buildDocsBlock(FOLDER_DOCS[folderPath])}\n`;
+}
+
+/**
+ * Write every folder's docs into its folder.bru.
+ *
+ * Returns a list of problems: folders with no entry in folder-docs.js, and
+ * (under --check) folders whose file has fallen behind it.
+ */
+function syncFolderDocs() {
+  const folders = findFolders(COLLECTION_DIR);
+  const problems = [];
+  let updated = 0;
+  let unchanged = 0;
+
+  for (const folderPath of folders) {
+    const file = path.join(COLLECTION_DIR, folderPath, "folder.bru");
+
+    if (!(folderPath in FOLDER_DOCS)) {
+      problems.push(
+        `${folderPath} — no entry in scripts/folder-docs.js. Add one; a folder ` +
+          `with no docs is a folder a reader has to reverse-engineer.`,
+      );
+      continue;
+    }
+
+    const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+    const wanted = buildFolderBru(folderPath, existing);
+
+    if (existing === wanted) {
+      unchanged++;
+      continue;
+    }
+
+    if (CHECK) {
+      problems.push(
+        `${folderPath} — folder.bru is out of date. Run \`npm run sync-docs\`.`,
+      );
+      continue;
+    }
+
+    if (!DRY_RUN) fs.writeFileSync(file, wanted, "utf8");
+    updated++;
+    console.log(
+      `  ${DRY_RUN ? "(dry-run) " : ""}${existing ? "updated" : "created"}  ${folderPath}/folder.bru`,
+    );
+  }
+
+  // A folder.bru with no folder left under it is dead weight the walk above
+  // can never reach, so it has to be looked for separately.
+  for (const key of Object.keys(FOLDER_DOCS)) {
+    if (!folders.includes(key)) {
+      problems.push(
+        `${key} — documented in scripts/folder-docs.js, but no such folder exists. ` +
+          `Remove the entry, or restore the folder.`,
+      );
+    }
+  }
+
+  return { problems, updated, unchanged, total: folders.length };
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
 async function main() {
+  // --check-folders is the pull-request check: folder docs are hand-written, so
+  // whether every folder has one is a fact about this repository alone. Keeping
+  // it offline means a PR cannot fail because Spacelift reworded a description
+  // or the demo endpoint was briefly unreachable. Schema drift is the weekly
+  // job's business, via --check.
+  if (CHECK_FOLDERS) {
+    const folders = syncFolderDocs();
+    console.log(
+      `Folders: ${folders.unchanged} up-to-date of ${folders.total}` +
+        (folders.updated ? `, ${folders.updated} stale` : ""),
+    );
+    if (folders.problems.length > 0) {
+      console.log(`\n✖ ${folders.problems.length} folder docs problem(s):\n`);
+      for (const problem of folders.problems) console.log(`  ${problem}`);
+      process.exit(1);
+    }
+    console.log("Every folder is documented and up to date.");
+    return;
+  }
+
   // 1. Fetch schema
   process.stdout.write(`Fetching schema from ${ENDPOINT} ... `);
   let introspectionResult;
@@ -289,6 +435,7 @@ async function main() {
   let unchanged = 0;
   let noDesc = 0;
   let skipped = 0;
+  const staleRequests = [];
 
   for (const filePath of files.sort()) {
     const rel = path.relative(process.cwd(), filePath);
@@ -323,6 +470,13 @@ async function main() {
       continue;
     }
 
+    // --check reports rather than writes; it is the CI mode, and a check that
+    // fixes what it is checking would always pass.
+    if (CHECK) {
+      staleRequests.push(rel);
+      continue;
+    }
+
     if (!DRY_RUN) {
       fs.writeFileSync(filePath, newContent, "utf8");
     }
@@ -330,15 +484,40 @@ async function main() {
     console.log(`  ${DRY_RUN ? "(dry-run) " : ""}updated  ${rel}`);
   }
 
-  // 4. Summary
+  // 4. Folder docs — hand-written, so they come from folder-docs.js rather
+  //    than the schema, but they land in a docs block just the same.
+  console.log(`\nFolder docs:`);
+  const folders = syncFolderDocs();
+
+  // 5. Summary
   console.log(`\n${"─".repeat(60)}`);
   if (DRY_RUN) console.log("DRY RUN — no files written");
   console.log(
-    `${updated} updated, ${unchanged} already up-to-date, ${noDesc} nothing to document, ${skipped} skipped`,
+    `Requests: ${updated} updated, ${unchanged} already up-to-date, ${noDesc} nothing to document, ${skipped} skipped`,
+  );
+  console.log(
+    `Folders:  ${folders.updated} updated, ${folders.unchanged} already up-to-date, of ${folders.total}`,
   );
 
-  if (updated === 0 && !DRY_RUN) {
-    console.log("All docs blocks are up to date.");
+  if (staleRequests.length > 0) {
+    console.log(
+      `\n✖ ${staleRequests.length} request docs block(s) out of date with the schema.` +
+        ` Run \`npm run sync-docs\`:\n`,
+    );
+    for (const rel of staleRequests) console.log(`  ${rel}`);
+  }
+
+  if (folders.problems.length > 0) {
+    console.log(`\n✖ ${folders.problems.length} folder docs problem(s):\n`);
+    for (const problem of folders.problems) console.log(`  ${problem}`);
+  }
+
+  if (staleRequests.length > 0 || folders.problems.length > 0) {
+    process.exit(1);
+  }
+
+  if (updated === 0 && folders.updated === 0 && !DRY_RUN) {
+    console.log("\nEverything is up to date.");
   }
 }
 

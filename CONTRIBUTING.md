@@ -11,9 +11,14 @@ npm install
 # mutations, or missing required arguments
 npm run validate
 
-# Sync documentation from schema descriptions into the docs { } block of each
-# .bru file — idempotent; safe to run repeatedly
+# Sync documentation into the docs { } block of each .bru file — schema
+# descriptions for requests, scripts/folder-docs.js for folders.
+# Idempotent; safe to run repeatedly
 npm run sync-docs
+
+# Check without writing: every folder documented and every docs block current
+npm run sync-docs:check-folders   # offline, instant — also runs in pre-commit
+npm run sync-docs:check           # the above plus request docs (needs the schema)
 
 # Report coverage: how many schema operations have a corresponding request file
 npm run coverage
@@ -102,3 +107,11 @@ body:graphql:vars {
 Use obvious placeholder strings like `STACK_ID_HERE` for required ID arguments.
 
 `auth: inherit` takes the bearer token from `Spacelift/collection.bru`, so a new request needs no `auth:bearer` block of its own. Don't add one — the token lives in exactly one place.
+
+## Adding a New Folder
+
+Folders carry their own documentation, and it is not generated — the schema cannot tell a reader which order to send things in or which folder supersedes another.
+
+If you add a folder, add an entry for it to [`scripts/folder-docs.js`](./scripts/folder-docs.js) and run `npm run sync-docs`. The pre-commit hook and CI both fail on an undocumented folder, so you will not get far without it.
+
+Keep entries to three or four sentences: what the folder is for, what order things happen in, and the one thing that will otherwise trip someone up. Anything specific to a single operation belongs in the schema description, where `sync-docs` picks it up on its own.

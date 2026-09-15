@@ -1,0 +1,12 @@
+meta {
+  name: Account Settings
+}
+
+docs {
+  Reads and writes for every account-wide setting: MFA enforcement, retention
+  windows, AI features, and who may manage API keys or create spaces.
+
+  Most come in pairs — a query that reads the current value, and an `account…`
+  mutation that sets it. Read before you write; these apply to everyone in the
+  account.
+}

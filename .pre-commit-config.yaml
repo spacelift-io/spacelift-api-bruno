@@ -28,3 +28,12 @@ repos:
         language: system
         pass_filenames: false
         files: \.bru$
+
+      # Offline and instant, unlike validate-schema — safe to run on every
+      # commit that touches the collection or the docs module.
+      - id: folder-docs
+        name: Check every folder is documented
+        entry: npm run sync-docs:check-folders
+        language: system
+        pass_filenames: false
+        files: (\.bru$|^scripts/folder-docs\.js$)

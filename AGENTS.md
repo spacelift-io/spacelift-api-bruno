@@ -8,7 +8,9 @@ This file provides guidance to AI agents when working with code in this reposito
 npm install                                    # install the single dependency (graphql)
 
 npm run validate                               # validate all .bru files against the live schema
-npm run sync-docs                              # sync schema descriptions + deprecations into docs {} blocks
+npm run sync-docs                              # sync schema descriptions + deprecations into docs {} blocks, and folder docs into folder.bru
+npm run sync-docs:check                        # exit 1 if any request or folder docs block is stale (needs the schema)
+npm run sync-docs:check-folders                # exit 1 if a folder is undocumented or stale (offline, instant)
 npm run coverage                               # show which schema operations have no .bru file
 npm run coverage -- --ignore-deprecated        # same, hiding deprecated operations
 npm run coverage -- --show-covered             # also list covered operations
@@ -49,7 +51,7 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
 - `collection.bru` — collection-level settings. It holds a `script:pre-request` block (see **Authentication Flow**) and a `docs { }` block written by `collection-changelog.js --sync`, which is what Bruno shows in the collection's Docs pane. Do not hand-edit the docs block; `--sync` replaces it wholesale and leaves every other block alone, so the script, and any auth, headers or vars added through Bruno's UI, survive.
-- `Advanced/folder.bru` — the only top-level folder metadata, and the only reason it exists is `seq: 99`, which pins `Advanced` to the bottom of the sidebar. See **Advanced Operations** below.
+- A `folder.bru` in every folder, holding a `meta { }` block and the folder's `docs { }`. Written by `sync-docs.js` from `scripts/folder-docs.js` — see **Folder Docs** below. `Advanced/folder.bru` additionally carries `seq: 99`, which pins `Advanced` to the bottom of the sidebar; see **Advanced Operations**.
 
 Bruno sorts folders alphabetically and then splices any folder carrying a valid `seq` in at index `seq - 1`, so a folder's position is settled entirely by its `folder.bru` — no instruction in this file can move it. Every folder but `Advanced` is deliberately seq-less and therefore alphabetical.
 
@@ -78,6 +80,23 @@ body:graphql:vars {
 `seq` controls ordering within a folder. IDs in vars use placeholder strings like `STACK_ID_HERE`.
 
 `auth: inherit` means "use the collection's auth", resolved by Bruno's `prepare-request.js`: a request whose mode is `inherit` takes the collection's `auth { mode: bearer }` and gets `Authorization: Bearer {{jwt}}`. New requests should use `inherit` and carry no `auth:bearer` block of their own — the token is configured in exactly one place, `collection.bru`. `Auth/Get Token.bru` is the sole exception, at `auth: none`.
+
+### Folder Docs
+
+Every folder carries a `docs { }` block, which Bruno renders in its Docs pane the same way it renders a request's. The text lives in `scripts/folder-docs.js`, keyed by folder path relative to `Spacelift/`.
+
+These are hand-written, and have to be: a schema describes one operation at a time and can never say which order to send them in, that Templates supersede Blueprints, or that a cloud integration attached to nothing does nothing. That is precisely what someone needs before they start clicking through 25 requests.
+
+- `npm run sync-docs` writes them, alongside the request docs it takes from the schema.
+- `npm run sync-docs:check-folders` fails if a folder has no entry, has an entry but no folder, or has a stale file. It touches no network, so it runs in pre-commit and on pull requests.
+- `npm run sync-docs:check` is the same plus request docs, which do need the schema. That one runs in the weekly job, where schema drift is expected and opens an issue rather than failing somebody's PR.
+
+Two invariants in `buildFolderBru` protect the sidebar, and both are easy to break by accident:
+
+- **`seq` is preserved, never invented.** Bruno orders folders alphabetically and splices only the ones carrying a `seq` in at `seq - 1`. Writing a `seq` into a folder that had none would move it; dropping `Advanced`'s would move 196 administrative requests to the top of the sidebar.
+- **`meta.name` defaults to the directory name.** Bruno sorts on the meta name when a folder has one, so a name that differs from its directory reorders the sidebar just as effectively.
+
+When changing either, verify by dumping the sidebar order before and after and diffing — the rules are reimplemented in `collection-changelog.js`'s `buildSidebarOrder`.
 
 ### Authentication Flow
 
@@ -109,7 +128,9 @@ Details that matter if you touch it:
 
 **`api-changelog.js`**: Fetches `https://docs.spacelift.io/product/changelog` and prints the entries dated after `.api-changelog-checkpoint`, split on the page's `<h2 id="YYYY-MM-DD">` anchors. It deliberately does no matching — the changelog is free-form prose, and the GraphQL lines under its Deprecations headings are verbatim `deprecationReason` strings already surfaced by `coverage.js`. Its value is removals and retirements that introspection cannot express. `--since <date>` overrides the checkpoint; `--list-dates` prints dates only. The only script that does not talk to the GraphQL endpoint.
 
-**`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present), then the `ℹ **ADVANCED** — ...` note if the operation is listed in `advanced-operations.js`, then its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
+**`folder-docs.js`**: Hand-written docs for every folder, keyed by path relative to `Spacelift/`. Imported by `sync-docs.js`, which both writes them and checks them, so a folder cannot be added without documenting it. Same one-module-for-writer-and-checker shape as `advanced-operations.js`.
+
+**`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. Also writes each folder's `folder.bru` from `folder-docs.js`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present), then the `ℹ **ADVANCED** — ...` note if the operation is listed in `advanced-operations.js`, then its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
 
 **`collection-changelog.js`**: Maintains the collection's own changelog — `CHANGELOG.md` for the full history, and a "What's New" `docs { }` block in `Spacelift/collection.bru` for the newest `DEFAULT_ENTRIES` of it, which is what a user sees in Bruno without leaving the app. Three modes: `--collect` derives entries from git and appends them, `--sync` rewrites the docs block, `--check` fails if either is stale.
 

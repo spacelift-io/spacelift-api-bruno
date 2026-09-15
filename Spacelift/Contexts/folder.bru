@@ -1,0 +1,13 @@
+meta {
+  name: Contexts
+}
+
+docs {
+  Reusable bundles of environment variables and mounted files, attached to stacks
+  so configuration is shared rather than copied.
+
+  **Add Config** puts one variable or file into a context — set `config.type` to
+  `ENVIRONMENT_VARIABLE` or `FILE_MOUNT`. **Attach Context** binds the context to a
+  stack with a `priority`; when two contexts set the same key, priority decides
+  which wins.
+}

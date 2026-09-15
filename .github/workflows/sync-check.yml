@@ -23,6 +23,12 @@ jobs:
       - name: Check coverage
         run: npm run coverage -- --ignore-deprecated --check-baseline --check-deprecated-marks --check-advanced-marks
 
+      # Request docs are copied from schema descriptions, so they go stale when
+      # Spacelift rewords one. That is drift, not a defect in a pull request —
+      # it belongs here, where a failure opens an issue.
+      - name: Check docs are in sync with the schema
+        run: npm run sync-docs:check
+
       - name: Open issue on failure
         if: failure()
         uses: actions/github-script@v9
@@ -35,6 +41,7 @@ jobs:
               "- A field or argument was renamed or removed (validation failure)",
               "- New operations were added that have no `.bru` file (coverage regressed past `.coverage-baseline`)",
               "- An operation was newly deprecated and its `.bru` file isn't marked yet (run `npm run sync-docs`)",
+              "- A schema description changed, so a request's `docs { }` block is stale (run `npm run sync-docs`)",
               "",
               `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               "",

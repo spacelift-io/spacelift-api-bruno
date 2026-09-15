@@ -1,0 +1,14 @@
+meta {
+  name: API Keys
+}
+
+docs {
+  Machine credentials for this API, including the one you are using now.
+
+  **Create API Key** returns the secret exactly once; store it before you close
+  the response. **Reset API Key** issues a new secret and invalidates the old one,
+  which will break anything still using it.
+
+  A key starts with no permissions. Grant them under
+  **Roles → API Key Role Bindings**.
+}
