@@ -60,7 +60,7 @@ Requests that require IDs use obvious placeholder strings like `STACK_ID_HERE`. 
 
 ## Collection Structure
 
-The collection covers all non-deprecated Spacelift API endpoints, organized into folders by resource type.
+The collection covers all Spacelift API endpoints, organized into folders by resource type.
 
 ## Contributing
 

@@ -46,10 +46,11 @@ Validate all Bruno requests against the live Spacelift GraphQL schema, fix any f
 15. Do **not** edit .bru files on the strength of a changelog entry alone — confirm against introspection first. The schema is the source of truth; the changelog is the explanation.
 16. Once the entries have been reviewed, update `.changelog-checkpoint` to the newest date printed.
 
-## Step 5 — Update README
+## Step 5 — Check the README
 
-17. Read the **Collection Structure** section in `README.md`. It contains a single summary line of the form: "The collection covers X operations across Y folders, including all non-deprecated Spacelift API endpoints."
-18. Update X to match the current `.bru` file count (`find Spacelift -name "*.bru" | grep -v environments | wc -l`) and Y to match the number of unique folders.
+17. Read the **Collection Structure** section in `README.md`. It describes the collection qualitatively — "all Spacelift API endpoints, organized into folders by resource type" — and deliberately carries no operation or folder counts. Full coverage is the aim; the gap Step 3 reports is a backlog to work through, not a caveat to add here.
+18. Do not add counts to this section. A reader here is deciding whether the collection covers the API at all — "all" versus "some" is the useful distinction, not whether the figure is 355 or 358. Anyone who needs exact numbers runs `npm run coverage`; a digit in the README only rots between runs of this command.
+19. Only edit this section if the _shape_ of the collection changed — for example if requests stop being organized by resource type. Report any such change rather than rewriting the section unprompted.
 
 ## How to Introspect
 
