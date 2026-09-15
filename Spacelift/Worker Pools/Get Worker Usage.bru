@@ -1,0 +1,59 @@
+meta {
+  name: Get Worker Usage
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Private worker usage for a billing cycle. Omit `input` to select the
+  current cycle.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetWorkerUsage($percentiles: [Int!]!) {
+    workerUsage {
+      cycle {
+        start
+        end
+      }
+      contractedLimit
+      contractedPercentile
+      concurrencyAtContractedPercentile
+      concurrencyPercentiles(percentiles: $percentiles) {
+        percentile
+        value
+      }
+      burst {
+        budgetMinutes
+        usedMinutes
+        remainingMinutes
+      }
+      daily(percentiles: $percentiles) {
+        day
+        max
+        concurrencyAtContractedPercentileToDate
+        concurrencyAtPercentilesToDate {
+          percentile
+          value
+        }
+        burstMinutesUsed
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "percentiles": [75, 90, 95, 99]
+  }
+}
