@@ -4,6 +4,12 @@ meta {
   seq: 14
 }
 
+docs {
+  Import a previously uploaded state file into a managed-state stack.
+  NOTE: the `state` argument is the objectId returned by the stateUploadUrl
+  mutation, which points at the file you uploaded via its pre-signed URL.
+}
+
 post {
   url: {{SPACELIFT_ENDPOINT}}
   body: graphql
