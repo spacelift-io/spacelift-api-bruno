@@ -6,6 +6,12 @@ meta {
 
 docs {
   List of all the stacks in the account.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Sets `{{stackId}}` to the first stack in the response, so **Get Stack**,
+  **Trigger Run** and **Attach Policy** work straight after this without copying an
+  ID by hand. Send this first, then open one of those.
 }
 
 post {
@@ -29,4 +35,8 @@ body:graphql {
       labels
     }
   }
+}
+
+vars:post-response {
+  stackId: res.body.data.stacks?.[0]?.id
 }

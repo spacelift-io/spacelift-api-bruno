@@ -14,6 +14,8 @@ docs {
 
   Setting `writeOnly` to true means the value cannot be read back afterwards —
   right for secrets, and irreversible without replacing the entry.
+
+  `context` comes from `{{contextId}}`, which **Contexts → List Contexts** sets.
 }
 
 post {
@@ -37,7 +39,7 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "context": "CONTEXT_ID_HERE",
+    "context": "{{contextId}}",
     "config": {
       "id": "MY_ENV_VAR",
       "type": "ENVIRONMENT_VARIABLE",

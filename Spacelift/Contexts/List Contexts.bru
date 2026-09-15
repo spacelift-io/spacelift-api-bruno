@@ -6,6 +6,11 @@ meta {
 
 docs {
   List of all the contexts in the account.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Sets `{{contextId}}` to the first context in the response, which **Add Config**
+  then uses without you copying anything.
 }
 
 post {
@@ -26,4 +31,8 @@ body:graphql {
       updatedAt
     }
   }
+}
+
+vars:post-response {
+  contextId: res.body.data.contexts?.[0]?.id
 }

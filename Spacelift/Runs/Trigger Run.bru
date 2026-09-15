@@ -18,6 +18,10 @@ docs {
 
   Leave `commitSha` null to run against whatever commit the stack currently
   tracks.
+
+  Takes `stack` from `{{stackId}}` — send **Stacks → List Stacks** first, or replace
+  it with the ID you want. Sets `{{runId}}` from the run it creates, so
+  **Confirm Run** follows on directly.
 }
 
 post {
@@ -40,8 +44,12 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "stack": "STACK_ID_HERE",
+    "stack": "{{stackId}}",
     "commitSha": null,
     "runType": "PROPOSED"
   }
+}
+
+vars:post-response {
+  runId: res.body.data.runTrigger?.id
 }

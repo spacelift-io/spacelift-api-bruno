@@ -69,26 +69,35 @@ exactly which variables are still missing, rather than a bare 401.
 
 ## Typical Workflows
 
+These run start to finish without copying an ID between requests. Each list request
+stores the first result's ID in a variable that the next request already uses, so you
+just send them in order.
+
 **Trigger and confirm a run:**
 
-1. **Stacks → List Stacks** — find your stack's ID
-2. **Runs → Trigger Run** — set `stack` to that ID
-3. **Runs → Confirm Run** — set `stack` and `run` to confirm it
+1. **Stacks → List Stacks** — stores `{{stackId}}`
+2. **Runs → Trigger Run** — uses `{{stackId}}`, stores `{{runId}}`
+3. **Runs → Confirm Run** — uses both
 
 **Attach a policy to a stack:**
 
-1. **Policies → List Policies** — find the policy ID
-2. **Stacks → List Stacks** — find the stack ID
-3. **Policies → Attach Policy** — provide both IDs
+1. **Policies → List Policies** — stores `{{policyId}}`
+2. **Stacks → List Stacks** — stores `{{stackId}}`
+3. **Policies → Attach Policy** — uses both
 
 **Add an environment variable to a context:**
 
-1. **Contexts → List Contexts** — find the context ID
-2. **Contexts → Add Config** — set `context` to that ID, set `config.type` to `ENVIRONMENT_VARIABLE`
+1. **Contexts → List Contexts** — stores `{{contextId}}`
+2. **Contexts → Add Config** — uses `{{contextId}}`; set `config.type` to `ENVIRONMENT_VARIABLE`
+
+Working on a specific resource rather than the first one in the list? Replace the
+variable in the **Variables** panel with the ID you want. The chaining is a default,
+not a constraint.
 
 ## Placeholder Values
 
-Requests that require IDs use obvious placeholder strings like `STACK_ID_HERE`. Replace these in the **Variables** panel before sending.
+Outside those workflows, requests that need an ID use an obvious placeholder like
+`STACK_ID_HERE`. Replace it in the **Variables** panel before sending.
 
 ## Collection Structure
 

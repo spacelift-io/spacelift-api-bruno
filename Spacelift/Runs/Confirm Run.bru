@@ -7,6 +7,14 @@ meta {
 docs {
   Confirm a Run that's waiting to be applied. If the Run ID is not passed, the
   Run that's currently blocking the stack will be confirmed.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Takes both IDs from the variables **List Stacks** and **Trigger Run** set, so the
+  three requests run in order with no copying. Replace either with a literal ID to
+  confirm a different run.
+
+  Omit `run` entirely to confirm whichever run is currently blocking the stack.
 }
 
 post {
@@ -27,8 +35,8 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "stack": "STACK_ID_HERE",
-    "run": "RUN_ID_HERE",
+    "stack": "{{stackId}}",
+    "run": "{{runId}}",
     "note": "Approved"
   }
 }

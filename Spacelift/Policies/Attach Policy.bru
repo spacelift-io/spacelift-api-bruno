@@ -6,6 +6,11 @@ meta {
 
 docs {
   Attach Policy to a Stack.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Takes both IDs from the variables **List Policies** and **List Stacks** set. Send
+  those two first, then this — no copying between them.
 }
 
 post {
@@ -28,7 +33,7 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "POLICY_ID_HERE",
-    "stack": "STACK_ID_HERE"
+    "id": "{{policyId}}",
+    "stack": "{{stackId}}"
   }
 }

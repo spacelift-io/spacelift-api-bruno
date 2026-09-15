@@ -6,6 +6,11 @@ meta {
 
 docs {
   List of all the polices in the account.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Sets `{{policyId}}` to the first policy in the response, which **Attach Policy**
+  then uses without you copying anything.
 }
 
 post {
@@ -28,4 +33,8 @@ body:graphql {
       updatedAt
     }
   }
+}
+
+vars:post-response {
+  policyId: res.body.data.policies?.[0]?.id
 }
