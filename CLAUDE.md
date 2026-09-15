@@ -29,7 +29,7 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 
 `Spacelift/` is the Bruno collection root (`bruno.json` marks it). It contains:
 
-- `environments/local.bru` — environment variables (`SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID`, `SPACELIFT_API_KEY_SECRET`, `jwt`). The example file is `local.bru` but the actual file is gitignored.
+- `environments/local.bru` — environment variables (`SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID`, `SPACELIFT_API_KEY_SECRET`, `jwt`). The tracked template is `local.bru.example`; the real file, `local.bru`, is gitignored.
 - ~54 subfolders of `.bru` request files, one operation per file, 382 request files.
 
 ### .bru File Format
