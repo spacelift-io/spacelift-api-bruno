@@ -9,7 +9,7 @@
  * warnings. Those are valid GraphQL, so nothing else in the toolchain sees them:
  * coverage.js only walks root Query/Mutation fields, and validate() itself treats
  * deprecation as documentation. They never fail the run — deprecation is
- * information, retirement is the defect (see CLAUDE.md "Deprecated Operations").
+ * information, retirement is the defect (see AGENTS.md "Deprecated Operations").
  *
  * Usage:
  *   node scripts/validate-schema.js
