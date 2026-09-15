@@ -3,8 +3,14 @@
  * sync-docs.js — Sync schema field descriptions into Bruno request docs blocks.
  *
  * For each .bru file, looks up the root GraphQL field in the live schema and
- * inserts/updates a `docs { ... }` block with the field's description.
- * Files whose schema field has no description are left untouched.
+ * inserts/updates a `docs { ... }` block containing:
+ *   - a deprecation warning, if the field has a `deprecationReason`
+ *   - the field's description, if it has one
+ * Files whose schema field has neither are left untouched.
+ *
+ * Deprecated operations keep their .bru file — they stay supported, so the
+ * collection keeps covering them and marks them instead, to steer users to
+ * the replacement named in the schema's deprecationReason.
  *
  * Usage:
  *   node scripts/sync-docs.js
@@ -24,6 +30,11 @@ const path = require("path");
 
 const DEFAULT_ENDPOINT = "https://demo.app.spacelift.io/graphql";
 const COLLECTION_DIR = path.join(__dirname, "../Spacelift");
+
+// Marker that identifies a deprecation warning inside a docs block.
+// coverage.js --check-deprecated-marks greps for this exact substring, so the
+// two must stay in sync.
+const DEPRECATED_MARKER = "**DEPRECATED**";
 
 const args = process.argv.slice(2);
 const endpointFlag = args.indexOf("--endpoint");
@@ -128,6 +139,21 @@ function getRootFieldName(gql) {
 }
 
 /**
+ * Compose the docs text for a field from its schema metadata.
+ * A deprecated field leads with a warning naming its replacement, so the
+ * notice is the first thing visible in Bruno's Docs pane.
+ * Returns null when the field has nothing worth documenting.
+ */
+function buildDocsText({ description, deprecationReason }) {
+  const parts = [];
+  if (deprecationReason) {
+    parts.push(`⚠ ${DEPRECATED_MARKER} — ${deprecationReason.trim()}`);
+  }
+  if (description) parts.push(description.trim());
+  return parts.length ? parts.join("\n\n") : null;
+}
+
+/**
  * Build the `docs { ... }` block string for a description.
  * Each line is indented with 2 spaces.
  */
@@ -214,23 +240,25 @@ async function main() {
     process.exit(1);
   }
 
-  // 2. Build description map for all root Query + Mutation fields
+  // 2. Build docs-text map for all root Query + Mutation fields
   const schema = buildClientSchema(introspectionResult);
-  const descriptions = {};
+  const docsText = {};
+  let deprecatedCount = 0;
 
-  for (const [name, field] of Object.entries(
+  for (const fields of [
     schema.getQueryType()?.getFields() ?? {},
-  )) {
-    if (field.description) descriptions[name] = field.description;
-  }
-  for (const [name, field] of Object.entries(
     schema.getMutationType()?.getFields() ?? {},
-  )) {
-    if (field.description) descriptions[name] = field.description;
+  ]) {
+    for (const [name, field] of Object.entries(fields)) {
+      const text = buildDocsText(field);
+      if (!text) continue;
+      docsText[name] = text;
+      if (field.deprecationReason) deprecatedCount++;
+    }
   }
 
   console.log(
-    `  ${Object.keys(descriptions).length} operations have descriptions`,
+    `  ${Object.keys(docsText).length} operations have docs (${deprecatedCount} deprecated)`,
   );
 
   // 3. Process all .bru files
@@ -263,7 +291,7 @@ async function main() {
       continue;
     }
 
-    const desc = descriptions[rootField];
+    const desc = docsText[rootField];
     if (!desc) {
       noDesc++;
       continue;
@@ -286,7 +314,7 @@ async function main() {
   console.log(`\n${"─".repeat(60)}`);
   if (DRY_RUN) console.log("DRY RUN — no files written");
   console.log(
-    `${updated} updated, ${unchanged} already up-to-date, ${noDesc} no schema description, ${skipped} skipped`,
+    `${updated} updated, ${unchanged} already up-to-date, ${noDesc} nothing to document, ${skipped} skipped`,
   );
 
   if (updated === 0 && !DRY_RUN) {

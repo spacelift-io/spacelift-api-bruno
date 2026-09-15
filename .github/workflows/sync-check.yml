@@ -21,7 +21,7 @@ jobs:
       - uses: pre-commit/action@v3.0.1
 
       - name: Check coverage
-        run: npm run coverage -- --ignore-deprecated --check-baseline
+        run: npm run coverage -- --ignore-deprecated --check-baseline --check-deprecated-marks
 
       - name: Open issue on failure
         if: failure()
@@ -34,6 +34,7 @@ jobs:
               "",
               "- A field or argument was renamed or removed (validation failure)",
               "- New operations were added that have no `.bru` file (coverage regressed past `.coverage-baseline`)",
+              "- An operation was newly deprecated and its `.bru` file isn't marked yet (run `npm run sync-docs`)",
               "",
               `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               "",

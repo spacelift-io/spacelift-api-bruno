@@ -8,12 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm install                                    # install the single dependency (graphql)
 
 npm run validate                               # validate all .bru files against the live schema
-npm run sync-docs                              # sync schema descriptions into docs {} blocks
+npm run sync-docs                              # sync schema descriptions + deprecations into docs {} blocks
 npm run coverage                               # show which schema operations have no .bru file
 npm run coverage -- --ignore-deprecated        # same, hiding deprecated operations
 npm run coverage -- --show-covered             # also list covered operations
-npm run coverage -- --fail-on-deprecated       # exit 1 if a covered op is deprecated
 npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
+npm run coverage -- --check-deprecated-marks   # exit 1 if a deprecated op's .bru file isn't marked deprecated
 npm run changelog                              # changelog entries since .changelog-checkpoint
 
 # All three scripts accept --endpoint to target a non-demo account:
@@ -74,7 +74,7 @@ body:graphql:vars {
 
 **`changelog-since.js`**: Fetches `https://docs.spacelift.io/product/changelog` and prints the entries dated after `.changelog-checkpoint`, split on the page's `<h2 id="YYYY-MM-DD">` anchors. It deliberately does no matching — the changelog is free-form prose, and the GraphQL lines under its Deprecations headings are verbatim `deprecationReason` strings already surfaced by `coverage.js`. Its value is removals and retirements that introspection cannot express. `--since <date>` overrides the checkpoint; `--list-dates` prints dates only. The only script that does not talk to the GraphQL endpoint.
 
-**`sync-docs.js`**: Builds a map of root field name → schema description, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
+**`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present) followed by its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
 
 ### Changelog Checkpoint
 
@@ -83,6 +83,15 @@ body:graphql:vars {
 ### Coverage Baseline
 
 `.coverage-baseline` holds a single integer: the maximum acceptable count of missing (non-deprecated, non-ignored) schema operations. `npm run coverage -- --check-baseline` fails CI if live coverage regresses past it. The count is always computed over non-deprecated operations, independent of whether `--ignore-deprecated` was passed for display purposes. When intentionally adding scope to the collection (or deciding to leave new operations uncovered), update this number to the current missing count reported by `npm run coverage -- --ignore-deprecated`.
+
+### Deprecated Operations
+
+Deprecated operations are **not** removed from the collection — they stay supported by the API, so removing them would break users who still rely on them. Instead they are marked, to discourage new use:
+
+- Every deprecated root field in the schema carries a `deprecationReason`, and in practice each one names its replacement. `sync-docs.js` writes it into the request's `docs { }` block as `⚠ **DEPRECATED** — <reason>`, ahead of the description, so the notice is the first thing in Bruno's Docs pane.
+- `npm run coverage -- --check-deprecated-marks` fails if a covered operation is deprecated in the schema but its `.bru` file carries no marker — i.e. a _newly_ deprecated operation that hasn't been synced. The fix is always `npm run sync-docs`.
+- The marker string is duplicated as `DEPRECATED_MARKER` in both `sync-docs.js` (writer) and `coverage.js` (checker); change both together.
+- Deprecation is never itself a CI failure. `coverage.js` lists deprecated covered operations informationally, under "Deprecated operations kept in the collection". Retirement — the operation actually being removed from the schema — is what fails CI, via `npm run validate`: the request's GraphQL stops validating ("Cannot query field"). That is the signal to act on, and it arrives through the normal validation path with no extra flag.
 
 ### Coverage Ignore List
 

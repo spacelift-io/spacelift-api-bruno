@@ -14,8 +14,9 @@
  *   node scripts/coverage.js --show-covered        also list covered operations
  *   node scripts/coverage.js --ignore-deprecated   hide deprecated operations
  *   node scripts/coverage.js --show-ignored        show what the ignore list filters out
- *   node scripts/coverage.js --fail-on-deprecated  exit 1 if a covered op is deprecated
  *   node scripts/coverage.js --check-baseline      exit 1 if coverage regressed past .coverage-baseline
+ *   node scripts/coverage.js --check-deprecated-marks
+ *                                                  exit 1 if a deprecated op's .bru file isn't marked deprecated
  */
 
 const { buildClientSchema, getIntrospectionQuery, parse } = require("graphql");
@@ -32,6 +33,11 @@ const DEFAULT_ENDPOINT = "https://demo.app.spacelift.io/graphql";
 const COLLECTION_DIR = path.join(__dirname, "../Spacelift");
 const BASELINE_FILE = path.join(__dirname, "../.coverage-baseline");
 
+// Deprecated operations are kept, not removed — they stay supported, and the
+// collection discourages use by marking them. sync-docs.js writes this marker
+// into the docs block from the schema's deprecationReason; the two must agree.
+const DEPRECATED_MARKER = "**DEPRECATED**";
+
 const args = process.argv.slice(2);
 const endpointFlag = args.indexOf("--endpoint");
 const ENDPOINT =
@@ -39,8 +45,8 @@ const ENDPOINT =
 const SHOW_COVERED = args.includes("--show-covered");
 const IGNORE_DEPRECATED = args.includes("--ignore-deprecated");
 const SHOW_IGNORED = args.includes("--show-ignored");
-const FAIL_ON_DEPRECATED = args.includes("--fail-on-deprecated");
 const CHECK_BASELINE = args.includes("--check-baseline");
+const CHECK_DEPRECATED_MARKS = args.includes("--check-deprecated-marks");
 
 function readBaseline() {
   try {
@@ -457,17 +463,25 @@ async function main() {
   );
   console.log(`Scanned:  ${bruFiles.length} .bru files\n`);
 
-  const deprecatedInUse = [...deprecatedOps.entries()]
+  const deprecatedCovered = [...deprecatedOps.entries()]
     .filter(([name]) => coveredBy.has(name))
     .sort(([a], [b]) => a.localeCompare(b));
 
-  if (deprecatedInUse.length > 0) {
-    console.log(`── Deprecated but still in use ${"─".repeat(30)}`);
+  if (deprecatedCovered.length > 0) {
     console.log(
-      `   ${deprecatedInUse.length} operation(s) have a .bru file but are deprecated in the schema.\n`,
+      `── Deprecated operations kept in the collection ${"─".repeat(14)}`,
     );
-    for (const [name, { typeName, reason }] of deprecatedInUse) {
-      console.log(`   !  ${typeName}.${name}`);
+    console.log(
+      `   ${deprecatedCovered.length} covered operation(s) are deprecated in the schema. They are kept on`,
+    );
+    console.log(
+      `   purpose — still supported, marked in their docs block to steer users to the`,
+    );
+    console.log(
+      `   replacement. Informational; a retired operation fails 'npm run validate' instead.\n`,
+    );
+    for (const [name, { typeName, reason }] of deprecatedCovered) {
+      console.log(`   ○  ${typeName}.${name}`);
       console.log(`      ${reason}`);
       for (const file of coveredBy.get(name)) {
         console.log(`      → ${file}`);
@@ -515,6 +529,35 @@ async function main() {
     }
   }
 
+  if (CHECK_DEPRECATED_MARKS) {
+    // Deprecated operations are kept on purpose, so being deprecated is not a
+    // failure — going unmarked is. Anything listed here just needs sync-docs.
+    const unmarked = [];
+    for (const [name] of deprecatedCovered) {
+      for (const rel of coveredBy.get(name)) {
+        const content = fs.readFileSync(path.join(COLLECTION_DIR, rel), "utf8");
+        if (!content.includes(DEPRECATED_MARKER)) unmarked.push([name, rel]);
+      }
+    }
+
+    if (unmarked.length > 0) {
+      console.log(
+        `\n✗ ${unmarked.length} deprecated operation(s) are not marked deprecated in their .bru file:`,
+      );
+      for (const [name, rel] of unmarked) {
+        console.log(`     ✗  ${name}  →  ${rel}`);
+      }
+      console.log(
+        `  Run 'npm run sync-docs' to write the schema's deprecationReason into their docs blocks.`,
+      );
+      process.exitCode = 1;
+    } else {
+      console.log(
+        `\n✓ All ${deprecatedCovered.length} deprecated-but-covered operation(s) are marked deprecated.`,
+      );
+    }
+  }
+
   if (CHECK_BASELINE) {
     const totalMissing = [...baselineOps].filter(
       (name) => !covered.has(name),
@@ -541,10 +584,6 @@ async function main() {
         `\n✓ Coverage baseline OK (${totalMissing} missing, baseline ${baseline}).`,
       );
     }
-  }
-
-  if (FAIL_ON_DEPRECATED && deprecatedInUse.length > 0) {
-    process.exitCode = 1;
   }
 }
 
