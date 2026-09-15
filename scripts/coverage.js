@@ -13,13 +13,20 @@
  *   node scripts/coverage.js --endpoint https://myaccount.app.spacelift.io/graphql
  *   node scripts/coverage.js --show-covered        also list covered operations
  *   node scripts/coverage.js --ignore-deprecated   hide deprecated operations
- *   node scripts/coverage.js --show-ignored        show what the ignore list filters out
+ *   node scripts/coverage.js --show-advanced       list the advanced operations by category
  *   node scripts/coverage.js --check-baseline      exit 1 if coverage regressed past .coverage-baseline
  *   node scripts/coverage.js --check-deprecated-marks
  *                                                  exit 1 if a deprecated op's .bru file isn't marked deprecated
+ *   node scripts/coverage.js --check-advanced-marks
+ *                                                  exit 1 if an advanced op's .bru file isn't marked advanced
  */
 
 const { buildClientSchema, getIntrospectionQuery, parse } = require("graphql");
+const {
+  ADVANCED,
+  CATEGORIES,
+  ADVANCED_MARKER,
+} = require("./advanced-operations");
 const https = require("https");
 const http = require("http");
 const fs = require("fs");
@@ -44,9 +51,10 @@ const ENDPOINT =
   endpointFlag !== -1 ? args[endpointFlag + 1] : DEFAULT_ENDPOINT;
 const SHOW_COVERED = args.includes("--show-covered");
 const IGNORE_DEPRECATED = args.includes("--ignore-deprecated");
-const SHOW_IGNORED = args.includes("--show-ignored");
+const SHOW_ADVANCED = args.includes("--show-advanced");
 const CHECK_BASELINE = args.includes("--check-baseline");
 const CHECK_DEPRECATED_MARKS = args.includes("--check-deprecated-marks");
+const CHECK_ADVANCED_MARKS = args.includes("--check-advanced-marks");
 
 function readBaseline() {
   try {
@@ -57,210 +65,6 @@ function readBaseline() {
     return null;
   }
 }
-
-// ---------------------------------------------------------------------------
-// Ignore list — operations that exist in the schema but are intentionally
-// out of scope for this collection.
-// ---------------------------------------------------------------------------
-
-const IGNORED = new Set([
-  // Analytics / tracking — client-side events, not API operations
-  "trackUserEvent",
-  "pageUserEvent",
-  "identifyUserEvent",
-  "groupUserEvent",
-
-  // User guide — in-app onboarding wizard
-  "userGuide",
-  "userGuideChapter",
-  "userGuideChapters",
-  "userGuideGroup",
-  "userGuideGroups",
-  "userGuides",
-  "completedUserGuides",
-  "activeUserGuideProgress",
-  "userGuideAbandon",
-  "userGuideComplete",
-  "userGuideMoveToNextStep",
-  "userGuideMoveToPreviousStep",
-  "userGuideRestart",
-  "userGuideStart",
-
-  // Internal account scalars exposed as root Query fields
-  "id",
-  "name",
-  "type",
-
-  // OAuth flows — browser-based, not scriptable via API key
-  "oauthRedirect",
-  "oauthToken",
-  "oauthUser",
-  "slackOauthRedirect",
-
-  // *Suggestions — autocomplete helpers, not useful in a request collection
-  "searchAnsibleHostsSuggestions",
-  "searchAnsibleTasksSuggestions",
-  "searchAuditTrailEntriesSuggestions",
-  "searchBlueprintsSuggestions",
-  "searchBlueprintVersionedGroupsSuggestions",
-  "searchContextsSuggestions",
-  "searchIntentProjectsSuggestions",
-  "searchIntentResourcesSuggestions",
-  "searchIntentResourcesOperationsSuggestions",
-  "searchManagedEntitiesSuggestions",
-  "searchModulesSuggestions",
-  "searchNamedWebhooksIntegrationsSuggestions",
-  "searchNotificationsSuggestions",
-  "searchPoliciesSuggestions",
-  "searchPolicyTemplatesSuggestions",
-  "searchRepoFilesSuggestions",
-  "searchReposSuggestions",
-  "searchRevisionsSuggestions",
-  "searchStacksSuggestions",
-  "searchTofuWorkspacesSuggestions",
-  "searchVCSIntegrationsSuggestions",
-  "searchWorkerPoolsSuggestions",
-
-  // Notification management — UI concerns
-  "searchNotifications",
-  "dismissAllNotifications",
-  "dismissNotificationGroup",
-  "dismissNotifications",
-  "notificationCount",
-
-  // In-app UI state
-  "uiConfigGet",
-  "uiConfigStore",
-
-  // CLI-specific token flow
-  "cliConfirmationToken",
-
-  // Internal debug
-  "debugInfo",
-
-  // Feature flags — internal feature rollout
-  "evaluateFeatureFlags",
-
-  // Billing — managed via Spacelift sales, not API
-  "availableBillingAddons",
-  "availableSelfServicePlans",
-  "billedExternally",
-  "billingSubscription",
-  "onTrialUntil",
-  "tier",
-  "tierFeatures",
-  "usage",
-  "usageAspect",
-  "seats",
-  "billingSubscriptionCreate",
-  "billingSubscriptionDelete",
-  "billingSubscriptionUpdateInfo",
-  "billingSubscriptionUpdateTier",
-  "billingSubscriptionUpdateV2",
-
-  // Account-level admin toggles — not typical API usage
-  "accountAcceptTermsAndConditionsVersionForAI",
-  "acceptedTermsAndConditionsAI",
-  "latestTermsAndConditionsVersionAI",
-  "accountCanBeDeleted",
-  "accountCanBeDeletedAt",
-  "markedForDeletion",
-  "accountConfirmDelete",
-  "accountToggleDeletionMark",
-  "accountToggleEnablingAI",
-  "accountToggleEnforcingMFA",
-  "accountUpdateAuthorizationScheme",
-  "accountUpdateAwarenessSourceSurvey",
-  "accountUpdateDefaultWorkerPoolRunnerImages",
-  "accountUpdateSecurityEmail",
-  "accountUpdateVCSEventTriggeredRunsLimit",
-  "accountSetOIDCSubjectTemplate",
-  "accountToggleAllowNonRootAdminSpaceCreation",
-  "accountToggleAPIKeyManagementFromNonHumans",
-  "allowNonRootAdminSpaceCreation",
-  "apiKeysManageableByNonHumans",
-  "apiKeysManagedByNonRootAdmins",
-  "awarenessSourceSurvey",
-  "auditTrailRetentionDays",
-  "runLogRetentionDays",
-  "vcsEventTriggeredRunsLimit",
-  "authorizationScheme",
-  "enforceMFA",
-  "hasSSO",
-  "hasAIEnabled",
-  "hasAnsibleStacks",
-  "llmVendor",
-  "changeLLMVendor",
-  "availableAIProviders",
-
-  // SSO / SAML / SCIM / OIDC — account-level integrations
-  "samlSettings",
-  "oidcSettings",
-  "oidcSubjectTemplate",
-  "scimSettings",
-  "samlCreate",
-  "samlDelete",
-  "samlUpdate",
-  "oidcCreate",
-  "oidcDelete",
-  "oidcUpdate",
-  "createOauthClientForSCIM",
-  "deleteOauthClientForSCIM",
-  "resetOauthClientForSCIM",
-
-  // Session / security key management — personal account
-  "sessions",
-  "sessionDelete",
-  "sessionDeleteAll",
-  "securityEmail",
-  "securityKeys",
-  "securityKeyDelete",
-  "userSecurityKeyDeleteAll",
-
-  // Slack integration — account-level app config
-  "slackIntegration",
-  "slackAppConfig",
-  "slackAppManifest",
-  "slackAppConfigDelete",
-  "slackAppConfigSet",
-  "githubAppCreateFromManifest",
-  "githubAppGenerateManifest",
-
-  // Internal infra info
-  "installationId",
-  "policyRuntime",
-
-  // Generic forms — in-app survey/onboarding
-  "genericFormsList",
-  "isGenericFormCompleted",
-  "completeGenericForm",
-
-  // Intent / AI chat — preview features
-  "intentChatConversation",
-  "intentChatConversations",
-  "intentProject",
-  "intentProjects",
-  "searchIntentProjects",
-  "searchIntentResources",
-  "searchIntentResourcesOperations",
-  "intentProjectConfigAdd",
-  "intentProjectConfigDelete",
-  "intentProjectConfigUpdate",
-  "intentProjectCreate",
-  "intentProjectDelete",
-  "intentProjectDisable",
-  "intentProjectEnable",
-  "intentProjectUnlock",
-  "intentProjectUpdate",
-  "intentChatConversationCreate",
-  "intentChatConversationDelete",
-  "intentChatConversationUpdate",
-  "intentResourceOperationReview",
-  "stackCreateFromIntent",
-
-  // Viewer — the currently authenticated user
-  "viewer",
-]);
 
 // ---------------------------------------------------------------------------
 // Helpers (shared with validate-schema.js)
@@ -384,9 +188,10 @@ async function main() {
   // 2. Collect all Query and Mutation root fields from schema
   const schemaOps = { Query: new Map(), Mutation: new Map() };
 
-  // The set the baseline check measures against: non-ignored, non-deprecated
-  // ops, collected regardless of --ignore-deprecated so the CLI flag can't
-  // change what the baseline compares against.
+  // The set the baseline check measures against: non-deprecated ops, collected
+  // regardless of --ignore-deprecated so the CLI flag can't change what the
+  // baseline compares against. Advanced operations are in scope and counted
+  // here like any other — they are labelled, not excluded.
   const baselineOps = new Set();
 
   for (const typeName of ["Query", "Mutation"]) {
@@ -394,13 +199,13 @@ async function main() {
     if (!type) continue;
     for (const [name, field] of Object.entries(type.getFields())) {
       if (name.startsWith("__")) continue;
-      if (IGNORED.has(name)) continue;
       const deprecated = !!field.deprecationReason;
       if (!deprecated) baselineOps.add(name);
       if (IGNORE_DEPRECATED && deprecated) continue;
       schemaOps[typeName].set(name, {
         deprecated,
         reason: field.deprecationReason,
+        advanced: ADVANCED.has(name),
       });
     }
   }
@@ -420,13 +225,17 @@ async function main() {
 
   const totalOps = schemaOps.Query.size + schemaOps.Mutation.size;
 
-  let ignoredCount = 0;
-  for (const typeName of ["Query", "Mutation"]) {
-    const type = schema.getType(typeName);
-    if (!type) continue;
-    for (const name of Object.keys(type.getFields())) {
-      if (IGNORED.has(name)) ignoredCount++;
-    }
+  // Advanced operations present in this schema. The list is maintained by hand,
+  // so an entry can outlive the operation it names; counting against the live
+  // schema keeps the report honest and surfaces stale entries.
+  const advancedInSchema = new Set();
+  const advancedStale = [];
+  for (const name of ADVANCED.keys()) {
+    const inSchema = ["Query", "Mutation"].some((t) =>
+      Object.hasOwn(schema.getType(t)?.getFields() ?? {}, name),
+    );
+    if (inSchema) advancedInSchema.add(name);
+    else advancedStale.push(name);
   }
 
   // 3. Scan .bru files and collect covered root fields
@@ -453,15 +262,23 @@ async function main() {
   ].filter((name) => covered.has(name)).length;
 
   const pct = Math.round((coveredCount / totalOps) * 100);
-  const filters = [];
-  if (IGNORE_DEPRECATED) filters.push("deprecated hidden");
-  if (ignoredCount > 0) filters.push(`${ignoredCount} out-of-scope ops hidden`);
-  const filterNote = filters.length ? `  (${filters.join(", ")})` : "";
+  const filterNote = IGNORE_DEPRECATED ? "  (deprecated hidden)" : "";
 
   console.log(
     `\nCoverage: ${coveredCount}/${totalOps} operations (${pct}%)${filterNote}`,
   );
-  console.log(`Scanned:  ${bruFiles.length} .bru files\n`);
+  console.log(`Scanned:  ${bruFiles.length} .bru files`);
+  console.log(
+    `Advanced: ${advancedInSchema.size} operation(s) in ${Object.keys(CATEGORIES).length} categories are in scope but labelled advanced\n`,
+  );
+
+  if (advancedStale.length > 0) {
+    console.log(
+      `⚠ ${advancedStale.length} advanced entries no longer exist in the schema — remove from scripts/advanced-operations.js:`,
+    );
+    for (const name of advancedStale.sort()) console.log(`     ✗  ${name}`);
+    console.log();
+  }
 
   const deprecatedCovered = [...deprecatedOps.entries()]
     .filter(([name]) => coveredBy.has(name))
@@ -490,12 +307,26 @@ async function main() {
     console.log();
   }
 
-  if (SHOW_IGNORED) {
-    console.log(`── Ignored (out of scope) ${"─".repeat(35)}`);
-    for (const name of [...IGNORED].sort()) {
-      console.log(`   ○  ${name}`);
+  if (SHOW_ADVANCED) {
+    console.log(`── Advanced operations ${"─".repeat(38)}`);
+    console.log(
+      `   In scope and documented, but not the everyday surface. Each request's docs`,
+    );
+    console.log(
+      `   block carries an ${ADVANCED_MARKER} notice explaining why.\n`,
+    );
+    for (const [key, { folder, note, operations }] of Object.entries(
+      CATEGORIES,
+    )) {
+      const live = operations.filter((n) => advancedInSchema.has(n));
+      if (live.length === 0) continue;
+      console.log(`   ${folder}  (${key}, ${live.length})`);
+      console.log(`      ${note}`);
+      for (const name of live.sort()) {
+        console.log(`      ${covered.has(name) ? "✓" : "✗"}  ${name}`);
+      }
+      console.log();
     }
-    console.log();
   }
 
   for (const typeName of ["Query", "Mutation"]) {
@@ -508,10 +339,12 @@ async function main() {
 
     if (missing.length > 0) {
       console.log(`   Missing:`);
-      for (const [name, { deprecated }] of missing.sort(([a], [b]) =>
+      for (const [name, { deprecated, advanced }] of missing.sort(([a], [b]) =>
         a.localeCompare(b),
       )) {
-        const tag = deprecated ? "  [deprecated]" : "";
+        const tag =
+          (deprecated ? "  [deprecated]" : "") +
+          (advanced ? "  [advanced]" : "");
         console.log(`     ✗  ${name}${tag}`);
       }
       console.log();
@@ -519,10 +352,12 @@ async function main() {
 
     if (SHOW_COVERED && present.length > 0) {
       console.log(`   Covered:`);
-      for (const [name, { deprecated }] of present.sort(([a], [b]) =>
+      for (const [name, { deprecated, advanced }] of present.sort(([a], [b]) =>
         a.localeCompare(b),
       )) {
-        const tag = deprecated ? "  [deprecated]" : "";
+        const tag =
+          (deprecated ? "  [deprecated]" : "") +
+          (advanced ? "  [advanced]" : "");
         console.log(`     ✓  ${name}${tag}`);
       }
       console.log();
@@ -558,6 +393,39 @@ async function main() {
     }
   }
 
+  if (CHECK_ADVANCED_MARKS) {
+    // Mirrors --check-deprecated-marks. Being advanced is not a failure; an
+    // advanced operation whose request does not say so is, because then nothing
+    // tells the reader this is off the beaten path. Fix with sync-docs.
+    const unmarked = [];
+    for (const name of advancedInSchema) {
+      for (const rel of coveredBy.get(name) ?? []) {
+        const content = fs.readFileSync(path.join(COLLECTION_DIR, rel), "utf8");
+        if (!content.includes(ADVANCED_MARKER)) unmarked.push([name, rel]);
+      }
+    }
+
+    if (unmarked.length > 0) {
+      console.log(
+        `\n✗ ${unmarked.length} advanced operation(s) are not marked advanced in their .bru file:`,
+      );
+      for (const [name, rel] of unmarked) {
+        console.log(`     ✗  ${name}  →  ${rel}`);
+      }
+      console.log(
+        `  Run 'npm run sync-docs' to write the advanced notice into their docs blocks.`,
+      );
+      process.exitCode = 1;
+    } else {
+      const coveredAdvanced = [...advancedInSchema].filter((n) =>
+        coveredBy.has(n),
+      ).length;
+      console.log(
+        `\n✓ All ${coveredAdvanced} covered advanced operation(s) are marked advanced.`,
+      );
+    }
+  }
+
   if (CHECK_BASELINE) {
     const totalMissing = [...baselineOps].filter(
       (name) => !covered.has(name),
@@ -573,7 +441,7 @@ async function main() {
         `  New schema operations have no .bru file. Run 'npm run coverage -- --ignore-deprecated --show-covered'`,
       );
       console.log(
-        `  to see what's new, add .bru files (or extend IGNORED in scripts/coverage.js for out-of-scope`,
+        `  to see what's new, add .bru files (labelling any niche ones in scripts/advanced-operations.js`,
       );
       console.log(
         `  ones), then update .coverage-baseline to ${totalMissing}.`,

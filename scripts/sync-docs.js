@@ -19,6 +19,7 @@
  */
 
 const { buildClientSchema, getIntrospectionQuery, parse } = require("graphql");
+const { ADVANCED, ADVANCED_MARKER } = require("./advanced-operations");
 const https = require("https");
 const http = require("http");
 const fs = require("fs");
@@ -35,6 +36,10 @@ const COLLECTION_DIR = path.join(__dirname, "../Spacelift");
 // coverage.js --check-deprecated-marks greps for this exact substring, so the
 // two must stay in sync.
 const DEPRECATED_MARKER = "**DEPRECATED**";
+
+// ADVANCED_MARKER and the operation list come from advanced-operations.js,
+// which coverage.js --check-advanced-marks reads too, so membership and wording
+// cannot drift between writer and checker the way DEPRECATED_MARKER can.
 
 const args = process.argv.slice(2);
 const endpointFlag = args.indexOf("--endpoint");
@@ -144,10 +149,13 @@ function getRootFieldName(gql) {
  * notice is the first thing visible in Bruno's Docs pane.
  * Returns null when the field has nothing worth documenting.
  */
-function buildDocsText({ description, deprecationReason }) {
+function buildDocsText({ description, deprecationReason }, advanced) {
   const parts = [];
   if (deprecationReason) {
     parts.push(`⚠ ${DEPRECATED_MARKER} — ${deprecationReason.trim()}`);
+  }
+  if (advanced) {
+    parts.push(`ℹ ${ADVANCED_MARKER} — ${advanced.note}`);
   }
   if (description) parts.push(description.trim());
   return parts.length ? parts.join("\n\n") : null;
@@ -244,21 +252,23 @@ async function main() {
   const schema = buildClientSchema(introspectionResult);
   const docsText = {};
   let deprecatedCount = 0;
+  let advancedCount = 0;
 
   for (const fields of [
     schema.getQueryType()?.getFields() ?? {},
     schema.getMutationType()?.getFields() ?? {},
   ]) {
     for (const [name, field] of Object.entries(fields)) {
-      const text = buildDocsText(field);
+      const text = buildDocsText(field, ADVANCED.get(name));
       if (!text) continue;
       docsText[name] = text;
       if (field.deprecationReason) deprecatedCount++;
+      if (ADVANCED.has(name)) advancedCount++;
     }
   }
 
   console.log(
-    `  ${Object.keys(docsText).length} operations have docs (${deprecatedCount} deprecated)`,
+    `  ${Object.keys(docsText).length} operations have docs (${deprecatedCount} deprecated, ${advancedCount} advanced)`,
   );
 
   // 3. Process all .bru files

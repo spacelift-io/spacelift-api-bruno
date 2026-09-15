@@ -12,9 +12,10 @@ npm run sync-docs                              # sync schema descriptions + depr
 npm run coverage                               # show which schema operations have no .bru file
 npm run coverage -- --ignore-deprecated        # same, hiding deprecated operations
 npm run coverage -- --show-covered             # also list covered operations
-npm run coverage -- --show-ignored             # list what the IGNORED set filters out
+npm run coverage -- --show-advanced            # list the advanced operations by category
 npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
 npm run coverage -- --check-deprecated-marks   # exit 1 if a deprecated op's .bru file isn't marked deprecated
+npm run coverage -- --check-advanced-marks     # exit 1 if an advanced op's .bru file isn't marked advanced
 npm run changelog                              # changelog entries since .changelog-checkpoint
 
 npm run format                                 # format js/json/yaml/md files with prettier
@@ -76,11 +77,13 @@ body:graphql:vars {
 
 **`validate-schema.js`**: Fetches schema via introspection, parses the GraphQL from each .bru file, runs `graphql.validate()`, reports PASS/FAIL per file. Files that pass are then checked with `NoDeprecatedCustomRule`, which reports selections of deprecated fields, enum values and input fields. These are printed as warnings and never fail the run — deprecation is information, retirement is the defect. This is the only check that sees deprecation _inside_ a request: `coverage.js` walks root fields only, and selecting a deprecated field is valid GraphQL.
 
-**`coverage.js`**: Walks the schema's Query and Mutation root fields, maps them against which root fields appear in .bru files (`extractRootFields`), reports missing operations. Has a hardcoded `IGNORED` set for intentionally out-of-scope operations: analytics events, UI state, OAuth flows, billing, SSO/SAML, notifications, autocomplete suggestions, and internal debug fields. Run `npm run coverage -- --show-ignored` to see the current list.
+**`coverage.js`**: Walks the schema's Query and Mutation root fields, maps them against which root fields appear in .bru files (`extractRootFields`), reports missing operations. Every schema operation is in scope; the ones listed in `advanced-operations.js` are counted like any other but tagged `[advanced]` in the report. Run `npm run coverage -- --show-advanced` to see them by category. It also reports advanced entries that no longer exist in the schema, since that list is hand-maintained and an operation can be retired out from under it.
+
+**`advanced-operations.js`**: The list of operations that are real but not the everyday surface — account administration, billing, SSO, in-app UI plumbing. Maps each to a category with a `folder` and a user-facing `note`. Imported by `sync-docs.js` (which writes the note) and `coverage.js` (which checks it was written), so membership and wording cannot drift between writer and checker.
 
 **`changelog-since.js`**: Fetches `https://docs.spacelift.io/product/changelog` and prints the entries dated after `.changelog-checkpoint`, split on the page's `<h2 id="YYYY-MM-DD">` anchors. It deliberately does no matching — the changelog is free-form prose, and the GraphQL lines under its Deprecations headings are verbatim `deprecationReason` strings already surfaced by `coverage.js`. Its value is removals and retirements that introspection cannot express. `--since <date>` overrides the checkpoint; `--list-dates` prints dates only. The only script that does not talk to the GraphQL endpoint.
 
-**`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present) followed by its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
+**`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present), then the `ℹ **ADVANCED** — ...` note if the operation is listed in `advanced-operations.js`, then its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
 
 ### Changelog Checkpoint
 
@@ -88,7 +91,7 @@ body:graphql:vars {
 
 ### Coverage Baseline
 
-`.coverage-baseline` holds a single integer: the maximum acceptable count of missing (non-deprecated, non-ignored) schema operations. `npm run coverage -- --check-baseline` fails CI if live coverage regresses past it. The count is always computed over non-deprecated operations, independent of whether `--ignore-deprecated` was passed for display purposes. When intentionally adding scope to the collection (or deciding to leave new operations uncovered), update this number to the current missing count reported by `npm run coverage -- --ignore-deprecated`.
+`.coverage-baseline` holds a single integer: the maximum acceptable count of missing non-deprecated schema operations. Advanced operations count here like any other — labelling an operation does not excuse it from coverage. `npm run coverage -- --check-baseline` fails CI if live coverage regresses past it. The count is always computed over non-deprecated operations, independent of whether `--ignore-deprecated` was passed for display purposes. After adding requests, lower this number to the missing count reported by `npm run coverage -- --ignore-deprecated`, otherwise a later run treats your own improvement as headroom.
 
 ### Deprecated Operations
 
@@ -99,6 +102,15 @@ Deprecated operations are **not** removed from the collection — they stay supp
 - The marker string is duplicated as `DEPRECATED_MARKER` in both `sync-docs.js` (writer) and `coverage.js` (checker); change both together.
 - Deprecation is never itself a CI failure. `coverage.js` lists deprecated covered operations informationally, under "Deprecated operations kept in the collection". Retirement — the operation actually being removed from the schema — is what fails CI, via `npm run validate`: the request's GraphQL stops validating ("Cannot query field"). That is the signal to act on, and it arrives through the normal validation path with no extra flag.
 
-### Coverage Ignore List
+### Advanced Operations
 
-`scripts/coverage.js` has an `IGNORED` set. When a schema operation should not have a .bru file (browser OAuth, billing, SSO, in-app UI state, etc.), add it there rather than creating a placeholder file.
+**Everything in the schema gets documented.** Deciding which operations are worth exposing is not this collection's job — Spacelift staff and advanced users have real reasons to call the administrative and internal corners of the API, and hiding them only makes them harder to find.
+
+What `scripts/advanced-operations.js` does is _label_ them, so nobody mistakes them for the everyday surface:
+
+- Each operation maps to a category carrying a `folder` and a one-line `note`.
+- `sync-docs.js` writes `ℹ **ADVANCED** — <note>` into the request's `docs { }` block, after any deprecation warning and before the description.
+- `npm run coverage -- --check-advanced-marks` fails if a covered advanced operation's `.bru` file has no marker — the same shape as `--check-deprecated-marks`. The fix is always `npm run sync-docs`.
+- Unlike `DEPRECATED_MARKER`, which is duplicated in `sync-docs.js` and `coverage.js`, `ADVANCED_MARKER` and the operation list live in one module both import. Nothing to keep in sync by hand.
+
+Being advanced is never a CI failure — it is a label, like deprecation. Add new entries to the appropriate category when an operation is clearly administrative or internal plumbing; when in doubt, leave it unlabelled, since a wrong label discourages legitimate use.
