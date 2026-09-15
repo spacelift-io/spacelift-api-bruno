@@ -1,0 +1,35 @@
+meta {
+  name: Oidc Settings
+  type: graphql
+  seq: 5
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  OIDC settings, if the account is using OIDC-based SSO.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OidcSettings {
+    oidcSettings {
+      adminLogin
+      clientId
+      identityProviderHost
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

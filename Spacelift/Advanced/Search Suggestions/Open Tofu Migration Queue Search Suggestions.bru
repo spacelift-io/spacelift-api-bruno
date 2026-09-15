@@ -1,0 +1,44 @@
+meta {
+  name: Open Tofu Migration Queue Search Suggestions
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Returns search suggestions (predicate fields and possible values) for the
+  OpenTofu migration queue. The suggestions counterpart of
+  openTofuMigrationQueueSearch: same rows, same predicate surface (state,
+  createdAt, updatedAt, stackName, stackSlug, space, label).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OpenTofuMigrationQueueSearchSuggestions($input: SearchSuggestionsInput!) {
+    openTofuMigrationQueueSearchSuggestions(input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

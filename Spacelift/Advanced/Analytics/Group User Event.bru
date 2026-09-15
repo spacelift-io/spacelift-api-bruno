@@ -1,0 +1,31 @@
+meta {
+  name: Group User Event
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Client-side tracking event, normally emitted by the Spacelift UI rather than called directly.
+
+  Group user event
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation GroupUserEvent {
+    groupUserEvent
+  }
+}
+
+body:graphql:vars {
+  {}
+}

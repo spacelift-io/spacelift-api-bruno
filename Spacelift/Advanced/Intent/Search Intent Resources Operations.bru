@@ -1,0 +1,41 @@
+meta {
+  name: Search Intent Resources Operations
+  type: graphql
+  seq: 30
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchIntentResourcesOperations($input: SearchInput!) {
+    searchIntentResourcesOperations(input: $input) {
+      edges {
+        cursor
+      }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

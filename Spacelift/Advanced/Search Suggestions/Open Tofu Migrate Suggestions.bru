@@ -1,0 +1,49 @@
+meta {
+  name: Open Tofu Migrate Suggestions
+  type: graphql
+  seq: 3
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Returns search suggestions (predicate fields and possible values) for stacks
+  eligible for OpenTofu vendor migration or rollback. Same surface as
+  searchStacksSuggestions but scoped to the migration cohort selected by target:
+
+  - target=OpenTofu: legacy Terraform stacks with terraform_workflow_tool=OPEN_TOFU
+    (forward migration candidates).
+  - target=Terraform: native OpenTofu stacks previously migrated by this flow
+    (rollback candidates).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OpenTofuMigrateSuggestions($input: SearchSuggestionsInput!, $target: StackVendor!) {
+    openTofuMigrateSuggestions(input: $input, target: $target) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {},
+    "target": "Ansible"
+  }
+}

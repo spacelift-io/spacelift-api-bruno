@@ -1,0 +1,37 @@
+meta {
+  name: Security Keys
+  type: graphql
+  seq: 3
+}
+
+docs {
+  ℹ **ADVANCED** — Manages your own sessions and security keys.
+
+  Returns list of the security keys in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SecurityKeys {
+    securityKeys {
+      id
+      createdAt
+      currentOwner
+      name
+      owner
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

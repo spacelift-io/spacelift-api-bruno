@@ -1,0 +1,39 @@
+meta {
+  name: Intent Resource Dependency Remove
+  type: graphql
+  seq: 24
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentResourceDependencyRemove($intentProject: ID!, $fromResourceID: String!, $toResourceID: String!) {
+    intentResourceDependencyRemove(intentProject: $intentProject, fromResourceID: $fromResourceID, toResourceID: $toResourceID) {
+      id
+      fromResourceID
+      toResourceID
+      dependencyType
+      explanation
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE",
+    "fromResourceID": "example",
+    "toResourceID": "example"
+  }
+}

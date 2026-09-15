@@ -1,0 +1,35 @@
+meta {
+  name: Available AIProviders
+  type: graphql
+  seq: 27
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Returns available AI providers. If provider is specified, returns models for that provider only.
+  If provider is not specified, returns all providers with their available models.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AvailableAIProviders {
+    availableAIProviders {
+      provider
+      models
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

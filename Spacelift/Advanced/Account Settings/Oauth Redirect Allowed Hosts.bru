@@ -1,0 +1,31 @@
+meta {
+  name: Oauth Redirect Allowed Hosts
+  type: graphql
+  seq: 36
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Returns the account's custom OAuth2 redirect host allowlist
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OauthRedirectAllowedHosts {
+    oauthRedirectAllowedHosts
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,40 @@
+meta {
+  name: Billing Subscription Update Tier
+  type: graphql
+  seq: 8
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Updates the billing tier of an existing billing subscription
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation BillingSubscriptionUpdateTier($tier: BillingTier!) {
+    billingSubscriptionUpdateTier(tier: $tier) {
+      billingCycleStart
+      billingRenewalDate
+      billingInterval
+      billingAmount
+      isActive
+      selfServePortalUrl
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "tier": "FREE"
+  }
+}

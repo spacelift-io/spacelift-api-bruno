@@ -1,0 +1,33 @@
+meta {
+  name: Account Set Infra Assistant Build Mode Enabled
+  type: graphql
+  seq: 6
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Set Infra Assistant build mode enabled state. Requires T&C to be accepted first.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountSetInfraAssistantBuildModeEnabled($enabled: Boolean!) {
+    accountSetInfraAssistantBuildModeEnabled(enabled: $enabled)
+  }
+}
+
+body:graphql:vars {
+  {
+    "enabled": false
+  }
+}

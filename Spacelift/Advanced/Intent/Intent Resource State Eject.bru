@@ -1,0 +1,39 @@
+meta {
+  name: Intent Resource State Eject
+  type: graphql
+  seq: 26
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentResourceStateEject($intentProject: ID!, $resourceID: String!) {
+    intentResourceStateEject(intentProject: $intentProject, resourceID: $resourceID) {
+      resourceID
+      intentProjectID
+      resourceType
+      address
+      name
+      provider
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE",
+    "resourceID": "example"
+  }
+}

@@ -1,0 +1,41 @@
+meta {
+  name: Github App Create From Manifest
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Create a GitHub integration using an app created from a manifest.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation GithubAppCreateFromManifest($code: String!, $state: String!) {
+    githubAppCreateFromManifest(code: $code, state: $state) {
+      id
+      name
+      description
+      labels
+      isDefault
+      apiHost
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "code": "example",
+    "state": "example"
+  }
+}

@@ -1,0 +1,40 @@
+meta {
+  name: Oauth User
+  type: graphql
+  seq: 3
+}
+
+docs {
+  ℹ **ADVANCED** — Part of a browser-based OAuth redirect flow; cannot be completed with an API key.
+
+  Exchange GitHub token for a Spacelift User.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OauthUser($token: String!) {
+    oauthUser(token: $token) {
+      id
+      admin
+      canCreatePersonalApiKey
+      avatarURL
+      email
+      jwt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "token": "example"
+  }
+}

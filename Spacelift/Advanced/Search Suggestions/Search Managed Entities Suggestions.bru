@@ -1,0 +1,41 @@
+meta {
+  name: Search Managed Entities Suggestions
+  type: graphql
+  seq: 14
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Information about fields available for searching managed entities.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchManagedEntitiesSuggestions($input: SearchSuggestionsInput!) {
+    searchManagedEntitiesSuggestions(input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

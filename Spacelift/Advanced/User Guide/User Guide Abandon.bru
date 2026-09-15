@@ -1,0 +1,37 @@
+meta {
+  name: User Guide Abandon
+  type: graphql
+  seq: 5
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Abandon the active user guide
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UserGuideAbandon {
+    userGuideAbandon {
+      status
+      startedAt
+      completedAt
+      currentStep
+      progressPercent
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

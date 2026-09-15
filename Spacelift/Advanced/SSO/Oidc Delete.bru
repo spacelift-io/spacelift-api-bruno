@@ -1,0 +1,35 @@
+meta {
+  name: Oidc Delete
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Delete OIDC integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OidcDelete {
+    oidcDelete {
+      adminLogin
+      clientId
+      identityProviderHost
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

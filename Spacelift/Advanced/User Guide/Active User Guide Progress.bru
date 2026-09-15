@@ -1,0 +1,37 @@
+meta {
+  name: Active User Guide Progress
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Get the currently active user guide progress for the user
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ActiveUserGuideProgress {
+    activeUserGuideProgress {
+      status
+      startedAt
+      completedAt
+      currentStep
+      progressPercent
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

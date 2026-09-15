@@ -1,0 +1,31 @@
+meta {
+  name: Installation Id
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Internal infrastructure detail.
+
+  ID of the GitHub App installation linked to the current account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query InstallationId {
+    installationId
+  }
+}
+
+body:graphql:vars {
+  {}
+}

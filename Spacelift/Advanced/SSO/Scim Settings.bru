@@ -1,0 +1,36 @@
+meta {
+  name: Scim Settings
+  type: graphql
+  seq: 13
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  SCIM settings, if the account has SCIM provisioning configured.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ScimSettings {
+    scimSettings {
+      clientID
+      clientSecret
+      connnectorBaseURL
+      accessTokenEndpoint
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

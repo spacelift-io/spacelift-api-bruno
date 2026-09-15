@@ -1,0 +1,35 @@
+meta {
+  name: Account Set OAuth Redirect Allowlist
+  type: graphql
+  seq: 8
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Replace the account's custom OAuth2 redirect host allowlist (exact hostnames or "*.subdomain" wildcards)
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountSetOAuthRedirectAllowlist($hosts: [String!]!) {
+    accountSetOAuthRedirectAllowlist(hosts: $hosts)
+  }
+}
+
+body:graphql:vars {
+  {
+    "hosts": [
+      "example"
+    ]
+  }
+}

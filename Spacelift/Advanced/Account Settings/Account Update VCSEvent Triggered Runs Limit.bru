@@ -1,0 +1,31 @@
+meta {
+  name: Account Update VCSEvent Triggered Runs Limit
+  type: graphql
+  seq: 19
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Update limit of runs created by a single VCS event for this account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountUpdateVCSEventTriggeredRunsLimit {
+    accountUpdateVCSEventTriggeredRunsLimit
+  }
+}
+
+body:graphql:vars {
+  {}
+}

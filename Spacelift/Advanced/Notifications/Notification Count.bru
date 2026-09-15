@@ -1,0 +1,31 @@
+meta {
+  name: Notification Count
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Manages the in-app notification inbox.
+
+  Total number of new Notifications.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query NotificationCount {
+    notificationCount
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Search Policy Templates Suggestions
+  type: graphql
+  seq: 19
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchPolicyTemplatesSuggestions($input: SearchSuggestionsInput!) {
+    searchPolicyTemplatesSuggestions(input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Oidc Update
+  type: graphql
+  seq: 7
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Update OIDC settings to change claim mappings.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OidcUpdate($input: OIDCUpdateInput!) {
+    oidcUpdate(input: $input) {
+      adminLogin
+      clientId
+      identityProviderHost
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

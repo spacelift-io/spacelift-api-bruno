@@ -1,0 +1,31 @@
+meta {
+  name: Marked For Deletion
+  type: graphql
+  seq: 35
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Tells if the account is marked for deletion.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query MarkedForDeletion {
+    markedForDeletion
+  }
+}
+
+body:graphql:vars {
+  {}
+}

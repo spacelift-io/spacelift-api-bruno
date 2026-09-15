@@ -1,0 +1,37 @@
+meta {
+  name: Completed User Guides
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Retrieve all completed guides for the user
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query CompletedUserGuides {
+    completedUserGuides {
+      status
+      startedAt
+      completedAt
+      currentStep
+      progressPercent
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Intent Chat Conversation Update
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentChatConversationUpdate($id: ID!, $description: String!) {
+    intentChatConversationUpdate(id: $id, description: $description) {
+      id
+      description
+      createdAt
+      updatedAt
+      version
+      lastUsedAIModel
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE",
+    "description": "example"
+  }
+}

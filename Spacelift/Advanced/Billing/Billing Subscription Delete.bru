@@ -1,0 +1,38 @@
+meta {
+  name: Billing Subscription Delete
+  type: graphql
+  seq: 6
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Cancels current subscription
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation BillingSubscriptionDelete {
+    billingSubscriptionDelete {
+      billingCycleStart
+      billingRenewalDate
+      billingInterval
+      billingAmount
+      isActive
+      selfServePortalUrl
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

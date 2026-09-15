@@ -1,0 +1,31 @@
+meta {
+  name: On Trial Until
+  type: graphql
+  seq: 10
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  If the account is on the trial period, this indicates the end of it.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OnTrialUntil {
+    onTrialUntil
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,36 @@
+meta {
+  name: Saml Settings
+  type: graphql
+  seq: 11
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  SAML settings, if the account is using SAML-based SSO.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SamlSettings {
+    samlSettings {
+      adminLogin
+      idpMetadata
+      idpMetadataURL
+      nameIDFormat
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,41 @@
+meta {
+  name: User Guide Certification Update
+  type: graphql
+  seq: 8
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Updates the display name of an existing certificate. Returns an error if the certificate does not exist.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UserGuideCertificationUpdate($id: ID!, $displayName: String!) {
+    userGuideCertificationUpdate(id: $id, displayName: $displayName) {
+      id
+      userLogin
+      displayName
+      course
+      issuedAt
+      groupID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE",
+    "displayName": "example"
+  }
+}

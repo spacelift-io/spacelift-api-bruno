@@ -1,0 +1,36 @@
+meta {
+  name: Available Billing Addons
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  availableBillingAddons returns the list of available billing addons.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AvailableBillingAddons {
+    availableBillingAddons {
+      name
+      tiers
+      monthlyPrice
+      yearlyPrice
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

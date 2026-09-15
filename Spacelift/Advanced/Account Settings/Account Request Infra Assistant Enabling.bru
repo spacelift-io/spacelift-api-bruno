@@ -1,0 +1,31 @@
+meta {
+  name: Account Request Infra Assistant Enabling
+  type: graphql
+  seq: 5
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Request an admin to enable Infra Assistant for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountRequestInfraAssistantEnabling {
+    accountRequestInfraAssistantEnabling
+  }
+}
+
+body:graphql:vars {
+  {}
+}

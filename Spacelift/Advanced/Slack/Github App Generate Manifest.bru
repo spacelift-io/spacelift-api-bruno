@@ -1,0 +1,38 @@
+meta {
+  name: Github App Generate Manifest
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Create data for the GitHub app creation form - internal.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation GithubAppGenerateManifest($input: GitHubAppManifestInput!) {
+    githubAppGenerateManifest(input: $input) {
+      endpoint
+      manifest
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "ownerType": "UNKNOWN"
+    }
+  }
+}

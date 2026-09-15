@@ -1,0 +1,39 @@
+meta {
+  name: Intent Project Attach Worker Pool
+  type: graphql
+  seq: 11
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentProjectAttachWorkerPool($intentProject: ID!, $workerPool: ID!) {
+    intentProjectAttachWorkerPool(intentProject: $intentProject, workerPool: $workerPool) {
+      allowedActions
+      id
+      name
+      description
+      labels
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE",
+    "workerPool": "WORKER_POOL_ID_HERE"
+  }
+}

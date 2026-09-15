@@ -1,0 +1,38 @@
+meta {
+  name: Viewer
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Returns the currently authenticated user.
+
+  Current user, if any.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query Viewer {
+    viewer {
+      id
+      admin
+      canCreatePersonalApiKey
+      avatarURL
+      email
+      jwt
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

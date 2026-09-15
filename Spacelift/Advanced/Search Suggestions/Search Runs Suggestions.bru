@@ -1,0 +1,42 @@
+meta {
+  name: Search Runs Suggestions
+  type: graphql
+  seq: 23
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  searchRunsSuggestions returns the filterable fields and their possible
+  values for the searchRuns query.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchRunsSuggestions($input: SearchSuggestionsInput!) {
+    searchRunsSuggestions(input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

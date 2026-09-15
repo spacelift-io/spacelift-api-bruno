@@ -1,0 +1,36 @@
+meta {
+  name: Intent Projects
+  type: graphql
+  seq: 22
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query IntentProjects {
+    intentProjects {
+      allowedActions
+      id
+      name
+      description
+      labels
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

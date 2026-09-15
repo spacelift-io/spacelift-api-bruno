@@ -1,0 +1,31 @@
+meta {
+  name: Account Toggle Allow Non Root Admin Space Creation
+  type: graphql
+  seq: 12
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Allow/Disallow non-root admins to create subspaces.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountToggleAllowNonRootAdminSpaceCreation {
+    accountToggleAllowNonRootAdminSpaceCreation
+  }
+}
+
+body:graphql:vars {
+  {}
+}

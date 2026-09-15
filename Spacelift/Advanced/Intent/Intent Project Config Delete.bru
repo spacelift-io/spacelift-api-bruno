@@ -1,0 +1,39 @@
+meta {
+  name: Intent Project Config Delete
+  type: graphql
+  seq: 13
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentProjectConfigDelete($project: ID!, $config: ID!) {
+    intentProjectConfigDelete(project: $project, config: $config) {
+      id
+      checksum
+      createdAt
+      runtime
+      type
+      value
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "project": "PROJECT_ID_HERE",
+    "config": "CONFIG_ID_HERE"
+  }
+}

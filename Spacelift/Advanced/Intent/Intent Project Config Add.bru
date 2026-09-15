@@ -1,0 +1,44 @@
+meta {
+  name: Intent Project Config Add
+  type: graphql
+  seq: 12
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentProjectConfigAdd($project: ID!, $config: ConfigInput!) {
+    intentProjectConfigAdd(project: $project, config: $config) {
+      id
+      checksum
+      createdAt
+      runtime
+      type
+      value
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "project": "PROJECT_ID_HERE",
+    "config": {
+      "id": "ID_HERE",
+      "type": "ENVIRONMENT_VARIABLE",
+      "value": "example",
+      "writeOnly": false
+    }
+  }
+}

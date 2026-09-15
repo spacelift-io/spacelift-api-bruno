@@ -1,0 +1,31 @@
+meta {
+  name: Type
+  type: graphql
+  seq: 3
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level scalar exposed as a root query field.
+
+  Type of the GitHub account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query Type {
+    type
+  }
+}
+
+body:graphql:vars {
+  {}
+}

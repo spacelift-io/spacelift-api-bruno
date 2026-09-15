@@ -1,0 +1,38 @@
+meta {
+  name: Intent Project Detach Worker Pool
+  type: graphql
+  seq: 17
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentProjectDetachWorkerPool($intentProject: ID!) {
+    intentProjectDetachWorkerPool(intentProject: $intentProject) {
+      allowedActions
+      id
+      name
+      description
+      labels
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE"
+  }
+}

@@ -1,0 +1,39 @@
+meta {
+  name: User Guide Start
+  type: graphql
+  seq: 17
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Start a user guide
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UserGuideStart($id: ID!) {
+    userGuideStart(id: $id) {
+      status
+      startedAt
+      completedAt
+      currentStep
+      progressPercent
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE"
+  }
+}

@@ -1,0 +1,41 @@
+meta {
+  name: Search Ansible Hosts Suggestions
+  type: graphql
+  seq: 5
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Information about fields available for searching AnsibleHosts.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchAnsibleHostsSuggestions($input: SearchSuggestionsInput!) {
+    searchAnsibleHostsSuggestions(input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

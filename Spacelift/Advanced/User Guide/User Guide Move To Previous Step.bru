@@ -1,0 +1,37 @@
+meta {
+  name: User Guide Move To Previous Step
+  type: graphql
+  seq: 15
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Move to the previous step for the active user guide
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UserGuideMoveToPreviousStep {
+    userGuideMoveToPreviousStep {
+      status
+      startedAt
+      completedAt
+      currentStep
+      progressPercent
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

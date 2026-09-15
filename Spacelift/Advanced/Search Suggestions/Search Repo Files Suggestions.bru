@@ -1,0 +1,42 @@
+meta {
+  name: Search Repo Files Suggestions
+  type: graphql
+  seq: 20
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Get field suggestions for Repo file search
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchRepoFilesSuggestions($repoID: ID!, $input: SearchSuggestionsInput!) {
+    searchRepoFilesSuggestions(repoID: $repoID, input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "repoID": "REPO_ID_HERE",
+    "input": {}
+  }
+}

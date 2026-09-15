@@ -1,0 +1,38 @@
+meta {
+  name: Session Delete All
+  type: graphql
+  seq: 5
+}
+
+docs {
+  ℹ **ADVANCED** — Manages your own sessions and security keys.
+
+  Invalidate all account sessions except for the session making the request. Returns the deleted sessions.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SessionDeleteAll {
+    sessionDeleteAll {
+      id
+      admin
+      createdAt
+      current
+      email
+      expiresAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

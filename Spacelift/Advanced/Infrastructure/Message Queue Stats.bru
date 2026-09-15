@@ -1,0 +1,38 @@
+meta {
+  name: Message Queue Stats
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Internal infrastructure detail.
+
+  MessageQueueStats returns the current size of every message queue the
+  backend is configured to use. Only available on Self-Hosted instances and
+  can only be fetched by admins.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query MessageQueueStats {
+    messageQueueStats {
+      queueName
+      clientType
+      visible
+      inFlight
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

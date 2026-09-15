@@ -1,0 +1,42 @@
+meta {
+  name: Evaluate Feature Flags
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Internal feature rollout state.
+
+  evaluateFeatureFlags returns the current value of the specified feature flags. This API is
+  only available on Self-Hosted installations, and trying to use it on Spacelift SaaS
+  will result in an empty array being returned.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query EvaluateFeatureFlags($input: FeatureFlagEvaluationInput!) {
+    evaluateFeatureFlags(input: $input) {
+      name
+      value
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "flags": [
+        {}
+      ]
+    }
+  }
+}

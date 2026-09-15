@@ -1,0 +1,31 @@
+meta {
+  name: Infra Assistant Build Mode Enabled
+  type: graphql
+  seq: 32
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  InfraAssistantBuildModeEnabled determines whether Infra Assistant build mode is enabled.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query InfraAssistantBuildModeEnabled {
+    infraAssistantBuildModeEnabled
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,35 @@
+meta {
+  name: Slack Oauth Redirect
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Part of a browser-based OAuth redirect flow; cannot be completed with an API key.
+
+  Get a Slack URL to redirect to. Optionally specify a Slack environment (defaults to COMMERCIAL).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SlackOauthRedirect {
+    slackOauthRedirect {
+      providerUrl
+      temporaryToken
+      enabled
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

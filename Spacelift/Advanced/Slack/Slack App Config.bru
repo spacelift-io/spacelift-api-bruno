@@ -1,0 +1,37 @@
+meta {
+  name: Slack App Config
+  type: graphql
+  seq: 3
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Returns the instance-wide Slack App config information for a Self-Hosted instance. This is used by
+  the Spacelift Slack integration to integrate with your Slack workspace. Always returns null on SaaS.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SlackAppConfig {
+    slackAppConfig {
+      clientId
+      canUpdate
+      canDelete
+      isGovSlackAvailable
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

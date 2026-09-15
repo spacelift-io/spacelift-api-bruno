@@ -1,0 +1,38 @@
+meta {
+  name: Saml Update
+  type: graphql
+  seq: 12
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Update SAML settings to change claim mappings.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SamlUpdate($input: SAMLUpdateInput!) {
+    samlUpdate(input: $input) {
+      adminLogin
+      idpMetadata
+      idpMetadataURL
+      nameIDFormat
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

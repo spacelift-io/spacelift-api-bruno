@@ -1,0 +1,31 @@
+meta {
+  name: Authorization Scheme
+  type: graphql
+  seq: 25
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Authorization scheme for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AuthorizationScheme {
+    authorizationScheme
+  }
+}
+
+body:graphql:vars {
+  {}
+}

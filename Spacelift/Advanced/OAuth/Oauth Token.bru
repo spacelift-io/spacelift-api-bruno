@@ -1,0 +1,35 @@
+meta {
+  name: Oauth Token
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Part of a browser-based OAuth redirect flow; cannot be completed with an API key.
+
+  Exchange code and temporary token for a GitHub token.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OauthToken($code: String!, $state: String!, $temporaryToken: String!) {
+    oauthToken(code: $code, state: $state, temporaryToken: $temporaryToken)
+  }
+}
+
+body:graphql:vars {
+  {
+    "code": "example",
+    "state": "example",
+    "temporaryToken": "example"
+  }
+}

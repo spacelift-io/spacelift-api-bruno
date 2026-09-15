@@ -1,0 +1,38 @@
+meta {
+  name: User Guide Groups
+  type: graphql
+  seq: 13
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  List all user guide groups
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UserGuideGroups {
+    userGuideGroups {
+      id
+      order
+      name
+      description
+      skillLevel
+      requiredEntitlements
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

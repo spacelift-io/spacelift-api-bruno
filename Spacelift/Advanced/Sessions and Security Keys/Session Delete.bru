@@ -1,0 +1,40 @@
+meta {
+  name: Session Delete
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Manages your own sessions and security keys.
+
+  Invalidate a Session. NOTE: this functionality is not available in the Starter tier.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SessionDelete($id: ID!) {
+    sessionDelete(id: $id) {
+      id
+      admin
+      createdAt
+      current
+      email
+      expiresAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE"
+  }
+}

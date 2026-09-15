@@ -1,0 +1,43 @@
+meta {
+  name: User Sessions With Access To Space Suggestions
+  type: graphql
+  seq: 33
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Returns the available search fields and their possible values for
+  userSessionsWithAccessToSpace.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UserSessionsWithAccessToSpaceSuggestions($space: ID!, $input: SearchSuggestionsInput!) {
+    userSessionsWithAccessToSpaceSuggestions(space: $space, input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {}
+  }
+}

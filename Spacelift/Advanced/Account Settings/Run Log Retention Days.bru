@@ -1,0 +1,31 @@
+meta {
+  name: Run Log Retention Days
+  type: graphql
+  seq: 37
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Amount of days that run logs will be retained for
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query RunLogRetentionDays {
+    runLogRetentionDays
+  }
+}
+
+body:graphql:vars {
+  {}
+}

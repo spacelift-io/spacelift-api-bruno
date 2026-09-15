@@ -1,0 +1,31 @@
+meta {
+  name: Dismiss All Notifications
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Manages the in-app notification inbox.
+
+  Dismisses all notifications.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DismissAllNotifications {
+    dismissAllNotifications
+  }
+}
+
+body:graphql:vars {
+  {}
+}

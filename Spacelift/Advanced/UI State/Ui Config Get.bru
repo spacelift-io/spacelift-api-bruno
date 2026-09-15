@@ -1,0 +1,32 @@
+meta {
+  name: Ui Config Get
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Stores in-app UI preferences.
+
+  Get the stored UI configuration for the user.
+  If no configuration is stored, empty string will be returned.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UiConfigGet {
+    uiConfigGet
+  }
+}
+
+body:graphql:vars {
+  {}
+}

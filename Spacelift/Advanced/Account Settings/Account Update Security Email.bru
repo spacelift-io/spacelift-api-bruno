@@ -1,0 +1,33 @@
+meta {
+  name: Account Update Security Email
+  type: graphql
+  seq: 18
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Update Account's Security Email
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountUpdateSecurityEmail($securityEmail: String!) {
+    accountUpdateSecurityEmail(securityEmail: $securityEmail)
+  }
+}
+
+body:graphql:vars {
+  {
+    "securityEmail": "example"
+  }
+}

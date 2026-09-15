@@ -1,0 +1,39 @@
+meta {
+  name: Oidc Create
+  type: graphql
+  seq: 3
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Set up OIDC integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OidcCreate($clientId: String!, $clientCredentials: String!, $identityProviderHost: String!) {
+    oidcCreate(clientId: $clientId, clientCredentials: $clientCredentials, identityProviderHost: $identityProviderHost) {
+      adminLogin
+      clientId
+      identityProviderHost
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "clientId": "example",
+    "clientCredentials": "example",
+    "identityProviderHost": "example"
+  }
+}

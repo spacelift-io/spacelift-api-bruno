@@ -1,0 +1,42 @@
+meta {
+  name: Available AIModels
+  type: graphql
+  seq: 26
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Returns the live list of models available for the given (possibly unsaved)
+  AI integration configuration, used to populate the model picker before the
+  integration is saved.
+    API-key providers (OpenAI/Anthropic/Google): pass provider + apiKey and,
+      for self-hosted gateways, baseURL. Requires admin on the given space.
+    Bedrock: pass provider + providerIntegrationId (the AWS integration) +
+      providerConfig.bedrock.region.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AvailableAIModels($provider: String!) {
+    availableAIModels(provider: $provider) {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "provider": "example"
+  }
+}

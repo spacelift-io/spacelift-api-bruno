@@ -1,0 +1,32 @@
+meta {
+  name: Account Toggle APIKey Management From Non Humans
+  type: graphql
+  seq: 11
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Enable/disable API key creation from non-human sessions.
+  When enabled, non-human sessions (API keys, Admin Stacks) can manage API keys.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountToggleAPIKeyManagementFromNonHumans {
+    accountToggleAPIKeyManagementFromNonHumans
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,36 @@
+meta {
+  name: Reset Oauth Client For SCIM
+  type: graphql
+  seq: 8
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Reset the OAuth2 client credentials for SCIM provisioning
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ResetOauthClientForSCIM {
+    resetOauthClientForSCIM {
+      clientID
+      clientSecret
+      connnectorBaseURL
+      accessTokenEndpoint
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

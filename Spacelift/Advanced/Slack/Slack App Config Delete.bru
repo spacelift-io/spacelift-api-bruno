@@ -1,0 +1,37 @@
+meta {
+  name: Slack App Config Delete
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Deletes the instance-wide Slack configuration. Only available on Self-Hosted instances.
+  Calling this mutation on a Spacelift SaaS account will result in an error.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SlackAppConfigDelete {
+    slackAppConfigDelete {
+      clientId
+      canUpdate
+      canDelete
+      isGovSlackAvailable
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

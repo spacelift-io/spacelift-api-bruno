@@ -1,0 +1,35 @@
+meta {
+  name: Available Self Service Plans
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  availableSelfServicePlans returns the list of billing plans that can be bought via self-service.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AvailableSelfServicePlans {
+    availableSelfServicePlans {
+      tier
+      monthlyPrice
+      yearlyPrice
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

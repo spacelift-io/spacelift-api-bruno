@@ -1,0 +1,31 @@
+meta {
+  name: Intent Policy Input Schema
+  type: graphql
+  seq: 7
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+
+  Returns the input schema that intent policies receive for evaluation.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query IntentPolicyInputSchema {
+    intentPolicyInputSchema
+  }
+}
+
+body:graphql:vars {
+  {}
+}

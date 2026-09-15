@@ -1,0 +1,38 @@
+meta {
+  name: Billing Subscription
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Shows Stripe Billing subscription details
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query BillingSubscription {
+    billingSubscription {
+      billingCycleStart
+      billingRenewalDate
+      billingInterval
+      billingAmount
+      isActive
+      selfServePortalUrl
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

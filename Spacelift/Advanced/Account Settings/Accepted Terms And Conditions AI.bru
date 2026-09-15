@@ -1,0 +1,31 @@
+meta {
+  name: Accepted Terms And Conditions AI
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ⚠ **DEPRECATED** — Use spaceliftIntelligenceTermsAccepted instead.
+
+  ℹ **ADVANCED** — Account-wide administrative setting.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AcceptedTermsAndConditionsAI {
+    acceptedTermsAndConditionsAI
+  }
+}
+
+body:graphql:vars {
+  {}
+}

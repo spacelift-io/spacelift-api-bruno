@@ -1,0 +1,31 @@
+meta {
+  name: Account Toggle Enforcing MFA
+  type: graphql
+  seq: 14
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Enable/disable enforcing MFA for the Account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountToggleEnforcingMFA {
+    accountToggleEnforcingMFA
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,36 @@
+meta {
+  name: Account Update Awareness Source Survey
+  type: graphql
+  seq: 16
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Update Account's Awareness Source
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountUpdateAwarenessSourceSurvey($completed: Boolean!) {
+    accountUpdateAwarenessSourceSurvey(completed: $completed) {
+      response
+      completed
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "completed": false
+  }
+}

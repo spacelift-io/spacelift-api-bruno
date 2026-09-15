@@ -1,0 +1,39 @@
+meta {
+  name: Search Tofu Workspaces Suggestions
+  type: graphql
+  seq: 28
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchTofuWorkspacesSuggestions($input: SearchSuggestionsInput!) {
+    searchTofuWorkspacesSuggestions(input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {}
+  }
+}

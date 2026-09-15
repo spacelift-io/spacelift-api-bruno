@@ -1,0 +1,41 @@
+meta {
+  name: User Guide Certification Create
+  type: graphql
+  seq: 6
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Creates a new certificate for completing a course. Returns an error if a certificate already exists for this user and group.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UserGuideCertificationCreate($groupID: String!, $displayName: String!) {
+    userGuideCertificationCreate(groupID: $groupID, displayName: $displayName) {
+      id
+      userLogin
+      displayName
+      course
+      issuedAt
+      groupID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "groupID": "example",
+    "displayName": "example"
+  }
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Api Keys Manageable By Non Humans
+  type: graphql
+  seq: 22
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Account-level setting indicating non-human sessions (API keys, Admin Stacks) can manage API keys.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ApiKeysManageableByNonHumans {
+    apiKeysManageableByNonHumans
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,42 @@
+meta {
+  name: Ai Integration Toggle
+  type: graphql
+  seq: 20
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Enable or disable an AI integration for the calling account. Works for both
+  account-owned and shared Spacelift-provided integrations.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AiIntegrationToggle($id: ID!, $enabled: Boolean!) {
+    aiIntegrationToggle(id: $id, enabled: $enabled) {
+      id
+      name
+      description
+      labels
+      provider
+      providerIntegrationId
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE",
+    "enabled": false
+  }
+}

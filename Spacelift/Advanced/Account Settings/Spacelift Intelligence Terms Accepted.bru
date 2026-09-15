@@ -1,0 +1,31 @@
+meta {
+  name: Spacelift Intelligence Terms Accepted
+  type: graphql
+  seq: 39
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  SpaceliftIntelligenceTermsAccepted informs if the account has accepted the Spacelift Intelligence terms and conditions.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SpaceliftIntelligenceTermsAccepted {
+    spaceliftIntelligenceTermsAccepted
+  }
+}
+
+body:graphql:vars {
+  {}
+}

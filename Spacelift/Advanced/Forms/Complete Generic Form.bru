@@ -1,0 +1,33 @@
+meta {
+  name: Complete Generic Form
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — In-app survey and onboarding forms.
+
+  Complete generic form with the data provided in input
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CompleteGenericForm($name: String!) {
+    completeGenericForm(name: $name)
+  }
+}
+
+body:graphql:vars {
+  {
+    "name": "example"
+  }
+}

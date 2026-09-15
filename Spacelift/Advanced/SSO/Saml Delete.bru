@@ -1,0 +1,36 @@
+meta {
+  name: Saml Delete
+  type: graphql
+  seq: 10
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Delete SAML integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SamlDelete {
+    samlDelete {
+      adminLogin
+      idpMetadata
+      idpMetadataURL
+      nameIDFormat
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

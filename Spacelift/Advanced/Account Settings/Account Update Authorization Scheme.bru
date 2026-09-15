@@ -1,0 +1,33 @@
+meta {
+  name: Account Update Authorization Scheme
+  type: graphql
+  seq: 15
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Update the authorization schema used by the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountUpdateAuthorizationScheme($schema: AuthorizationScheme!) {
+    accountUpdateAuthorizationScheme(schema: $schema)
+  }
+}
+
+body:graphql:vars {
+  {
+    "schema": "LOGIN_POLICIES"
+  }
+}

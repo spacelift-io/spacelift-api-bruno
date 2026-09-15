@@ -1,0 +1,40 @@
+meta {
+  name: Intent Resource Dependency Add
+  type: graphql
+  seq: 23
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentResourceDependencyAdd($intentProject: ID!, $fromResourceID: String!, $toResourceID: String!, $dependencyType: IntentResourceDependencyType!) {
+    intentResourceDependencyAdd(intentProject: $intentProject, fromResourceID: $fromResourceID, toResourceID: $toResourceID, dependencyType: $dependencyType) {
+      id
+      fromResourceID
+      toResourceID
+      dependencyType
+      explanation
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE",
+    "fromResourceID": "example",
+    "toResourceID": "example",
+    "dependencyType": "EXPLICIT"
+  }
+}

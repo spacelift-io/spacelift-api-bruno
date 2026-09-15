@@ -1,0 +1,31 @@
+meta {
+  name: Id
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level scalar exposed as a root query field.
+
+  ID of the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query Id {
+    id
+  }
+}
+
+body:graphql:vars {
+  {}
+}

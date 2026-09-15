@@ -1,0 +1,40 @@
+meta {
+  name: Seats
+  type: graphql
+  seq: 11
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Returns the seat limits and the number of in-use seats.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query Seats {
+    seats {
+      apiKey {
+        limit
+        inUse
+      }
+      user {
+        limit
+        inUse
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

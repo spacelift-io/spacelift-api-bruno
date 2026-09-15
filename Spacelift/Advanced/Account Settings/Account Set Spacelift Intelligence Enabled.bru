@@ -1,0 +1,33 @@
+meta {
+  name: Account Set Spacelift Intelligence Enabled
+  type: graphql
+  seq: 10
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Set Spacelift Intelligence enabled state. Enabling implies acceptance of the Spacelift Intelligence Terms of Use and enables all sub-features.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountSetSpaceliftIntelligenceEnabled($enabled: Boolean!) {
+    accountSetSpaceliftIntelligenceEnabled(enabled: $enabled)
+  }
+}
+
+body:graphql:vars {
+  {
+    "enabled": false
+  }
+}

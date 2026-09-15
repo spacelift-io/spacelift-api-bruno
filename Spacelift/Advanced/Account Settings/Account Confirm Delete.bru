@@ -1,0 +1,31 @@
+meta {
+  name: Account Confirm Delete
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Delete the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountConfirmDelete {
+    accountConfirmDelete
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Tier Features
+  type: graphql
+  seq: 13
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  The list of features available based on the billing tier of the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query TierFeatures {
+    tierFeatures
+  }
+}
+
+body:graphql:vars {
+  {}
+}

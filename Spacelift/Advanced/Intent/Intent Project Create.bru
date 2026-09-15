@@ -1,0 +1,39 @@
+meta {
+  name: Intent Project Create
+  type: graphql
+  seq: 15
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentProjectCreate($name: String!, $space: ID!) {
+    intentProjectCreate(name: $name, space: $space) {
+      allowedActions
+      id
+      name
+      description
+      labels
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "name": "example",
+    "space": "SPACE_ID_HERE"
+  }
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Infra Assistant Enabled
+  type: graphql
+  seq: 33
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  InfraAssistantEnabled determines whether Infra Assistant is enabled.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query InfraAssistantEnabled {
+    infraAssistantEnabled
+  }
+}
+
+body:graphql:vars {
+  {}
+}

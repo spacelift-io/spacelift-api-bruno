@@ -1,0 +1,38 @@
+meta {
+  name: User Guide
+  type: graphql
+  seq: 4
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  Retrieve a single user guide by ID
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UserGuide($id: ID!) {
+    userGuide(id: $id) {
+      id
+      order
+      slug
+      groupId
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE"
+  }
+}

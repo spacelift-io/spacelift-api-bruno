@@ -1,0 +1,44 @@
+meta {
+  name: Slack App Config Set
+  type: graphql
+  seq: 5
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Sets the instance-wide Slack App configuration. This is used to connect your Spacelift installation
+  to a Slack App that can be used for the Slack integration. Only available on Self-Hosted instances.
+  Calling this mutation on a Spacelift SaaS account will result in an error.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SlackAppConfigSet($input: SlackAppConfigInput!) {
+    slackAppConfigSet(input: $input) {
+      clientId
+      canUpdate
+      canDelete
+      isGovSlackAvailable
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "clientId": "example",
+      "clientSecret": "example",
+      "signingSecret": "example"
+    }
+  }
+}

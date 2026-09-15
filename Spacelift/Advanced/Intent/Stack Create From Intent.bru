@@ -1,0 +1,40 @@
+meta {
+  name: Stack Create From Intent
+  type: graphql
+  seq: 33
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+
+  Create a new stack based on existing Intent Project
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StackCreateFromIntent($project: ID!) {
+    stackCreateFromIntent(project: $project) {
+      id
+      space
+      additionalProjectGlobs
+      administrative
+      apiHost
+      repositoryTags
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "project": "PROJECT_ID_HERE"
+  }
+}

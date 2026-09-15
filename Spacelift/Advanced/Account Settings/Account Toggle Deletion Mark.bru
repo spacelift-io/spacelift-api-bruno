@@ -1,0 +1,31 @@
+meta {
+  name: Account Toggle Deletion Mark
+  type: graphql
+  seq: 13
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Mark/unmark the Account for deletion.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountToggleDeletionMark {
+    accountToggleDeletionMark
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Vcs Event Triggered Runs Limit
+  type: graphql
+  seq: 41
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Maximum number of runs triggered by a VCS event for this account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query VcsEventTriggeredRunsLimit {
+    vcsEventTriggeredRunsLimit
+  }
+}
+
+body:graphql:vars {
+  {}
+}

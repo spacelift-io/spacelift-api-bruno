@@ -1,0 +1,39 @@
+meta {
+  name: Security Key Delete
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Manages your own sessions and security keys.
+
+  Delete a security key.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SecurityKeyDelete($id: ID!) {
+    securityKeyDelete(id: $id) {
+      id
+      createdAt
+      currentOwner
+      name
+      owner
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE"
+  }
+}

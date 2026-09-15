@@ -1,0 +1,31 @@
+meta {
+  name: Tier
+  type: graphql
+  seq: 12
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Billing tier of the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query Tier {
+    tier
+  }
+}
+
+body:graphql:vars {
+  {}
+}

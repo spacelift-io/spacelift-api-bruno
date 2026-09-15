@@ -1,0 +1,42 @@
+meta {
+  name: Search Space Policies Suggestions
+  type: graphql
+  seq: 25
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Filter-dropdown suggestions scoped to the given space's policies.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchSpacePoliciesSuggestions($space: ID!, $input: SearchSuggestionsInput!) {
+    searchSpacePoliciesSuggestions(space: $space, input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {}
+  }
+}

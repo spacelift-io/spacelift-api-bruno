@@ -1,0 +1,33 @@
+meta {
+  name: Cli Confirmation Token
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Part of the spacectl CLI login flow.
+
+  Generates a confirmation token for CLI auth.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CliConfirmationToken($pubKey: String!) {
+    cliConfirmationToken(pubKey: $pubKey)
+  }
+}
+
+body:graphql:vars {
+  {
+    "pubKey": "example"
+  }
+}

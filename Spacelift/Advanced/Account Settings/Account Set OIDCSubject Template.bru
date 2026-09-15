@@ -1,0 +1,31 @@
+meta {
+  name: Account Set OIDCSubject Template
+  type: graphql
+  seq: 9
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Set the OIDC subject template for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation AccountSetOIDCSubjectTemplate {
+    accountSetOIDCSubjectTemplate
+  }
+}
+
+body:graphql:vars {
+  {}
+}

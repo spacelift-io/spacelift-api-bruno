@@ -1,0 +1,40 @@
+meta {
+  name: Dismiss Notification Group
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Manages the in-app notification inbox.
+
+  Dismisses notifications by grouping key.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DismissNotificationGroup($groupingKey: ID!) {
+    dismissNotificationGroup(groupingKey: $groupingKey) {
+      id
+      title
+      body
+      dismissed
+      severity
+      timestamp
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "groupingKey": "GROUPING_KEY_ID_HERE"
+  }
+}

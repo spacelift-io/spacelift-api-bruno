@@ -1,0 +1,35 @@
+meta {
+  name: Oauth Redirect
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Part of a browser-based OAuth redirect flow; cannot be completed with an API key.
+
+  Get a GitHub URL to redirect to.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OauthRedirect {
+    oauthRedirect {
+      providerUrl
+      temporaryToken
+      enabled
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

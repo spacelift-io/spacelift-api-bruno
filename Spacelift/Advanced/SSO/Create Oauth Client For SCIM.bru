@@ -1,0 +1,36 @@
+meta {
+  name: Create Oauth Client For SCIM
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Create an OAuth2 client for SCIM provisioning
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateOauthClientForSCIM {
+    createOauthClientForSCIM {
+      clientID
+      clientSecret
+      connnectorBaseURL
+      accessTokenEndpoint
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Security Email
+  type: graphql
+  seq: 1
+}
+
+docs {
+  ℹ **ADVANCED** — Manages your own sessions and security keys.
+
+  Returns security email for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SecurityEmail {
+    securityEmail
+  }
+}
+
+body:graphql:vars {
+  {}
+}

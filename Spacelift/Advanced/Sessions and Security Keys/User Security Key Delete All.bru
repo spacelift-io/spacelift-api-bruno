@@ -1,0 +1,37 @@
+meta {
+  name: User Security Key Delete All
+  type: graphql
+  seq: 7
+}
+
+docs {
+  ℹ **ADVANCED** — Manages your own sessions and security keys.
+
+  Delete all security keys for the current user.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UserSecurityKeyDeleteAll {
+    userSecurityKeyDeleteAll {
+      id
+      createdAt
+      currentOwner
+      name
+      owner
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

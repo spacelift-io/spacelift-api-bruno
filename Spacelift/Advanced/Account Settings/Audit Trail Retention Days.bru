@@ -1,0 +1,31 @@
+meta {
+  name: Audit Trail Retention Days
+  type: graphql
+  seq: 24
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  How many days built-in audit trails are stored
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query AuditTrailRetentionDays {
+    auditTrailRetentionDays
+  }
+}
+
+body:graphql:vars {
+  {}
+}

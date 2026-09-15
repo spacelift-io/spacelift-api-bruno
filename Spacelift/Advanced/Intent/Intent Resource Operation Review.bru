@@ -1,0 +1,39 @@
+meta {
+  name: Intent Resource Operation Review
+  type: graphql
+  seq: 25
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentResourceOperationReview($intentProject: ID!, $operationID: ID!, $decision: IntentResourceOperationReviewDecision!) {
+    intentResourceOperationReview(intentProject: $intentProject, operationID: $operationID, decision: $decision) {
+      id
+      author
+      decision
+      note
+      timestamp
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "intentProject": "INTENT_PROJECT_ID_HERE",
+    "operationID": "OPERATION_ID_HERE",
+    "decision": "ALLOW"
+  }
+}

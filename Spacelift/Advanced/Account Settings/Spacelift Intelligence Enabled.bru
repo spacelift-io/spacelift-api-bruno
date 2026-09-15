@@ -1,0 +1,31 @@
+meta {
+  name: Spacelift Intelligence Enabled
+  type: graphql
+  seq: 38
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  SpaceliftIntelligenceEnabled determines whether Spacelift Intelligence is enabled for the account (true if any sub-feature is on).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SpaceliftIntelligenceEnabled {
+    spaceliftIntelligenceEnabled
+  }
+}
+
+body:graphql:vars {
+  {}
+}

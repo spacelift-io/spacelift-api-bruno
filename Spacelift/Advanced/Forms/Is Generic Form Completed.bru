@@ -1,0 +1,33 @@
+meta {
+  name: Is Generic Form Completed
+  type: graphql
+  seq: 3
+}
+
+docs {
+  ℹ **ADVANCED** — In-app survey and onboarding forms.
+
+  Returns true if the generic form is completed
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query IsGenericFormCompleted($name: String!) {
+    isGenericFormCompleted(name: $name)
+  }
+}
+
+body:graphql:vars {
+  {
+    "name": "example"
+  }
+}

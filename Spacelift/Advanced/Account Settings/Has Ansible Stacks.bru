@@ -1,0 +1,31 @@
+meta {
+  name: Has Ansible Stacks
+  type: graphql
+  seq: 30
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  True if the account has at least one Ansible stack
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query HasAnsibleStacks {
+    hasAnsibleStacks
+  }
+}
+
+body:graphql:vars {
+  {}
+}

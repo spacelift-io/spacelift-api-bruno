@@ -1,0 +1,45 @@
+meta {
+  name: Usage Aspect
+  type: graphql
+  seq: 15
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  List of data points containing information about the account's usage along with some metadata.
+  AspectInput is used to specify the aspect of the usage to be returned.
+  The data points are returned in reverse chronological order.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UsageAspect($input: AspectInput!) {
+    usageAspect(input: $input) {
+      type
+      granularity
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "type": "RUN_MINUTES",
+      "timeFilter": {
+        "startTime": 0,
+        "endTime": 0
+      },
+      "granularity": "DAY"
+    }
+  }
+}

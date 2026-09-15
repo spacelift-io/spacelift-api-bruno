@@ -1,0 +1,31 @@
+meta {
+  name: Has SSO
+  type: graphql
+  seq: 31
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Returns true if the account has SSO enabled.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query HasSSO {
+    hasSSO
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Api Keys Managed By Non Root Admins
+  type: graphql
+  seq: 23
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Account-level setting indicating if API keys can be managed by non-root
+  admins.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ApiKeysManagedByNonRootAdmins {
+    apiKeysManagedByNonRootAdmins
+  }
+}
+
+body:graphql:vars {
+  {}
+}

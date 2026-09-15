@@ -1,0 +1,31 @@
+meta {
+  name: Enforce MFA
+  type: graphql
+  seq: 29
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  EnforceMFA determines whether MFA is required for all users in the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query EnforceMFA {
+    enforceMFA
+  }
+}
+
+body:graphql:vars {
+  {}
+}

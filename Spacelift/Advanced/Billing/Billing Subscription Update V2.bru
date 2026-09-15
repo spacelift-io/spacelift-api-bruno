@@ -1,0 +1,42 @@
+meta {
+  name: Billing Subscription Update V2
+  type: graphql
+  seq: 9
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Updates an existing billing subscription
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation BillingSubscriptionUpdateV2($input: SubscriptionUpdateV2Input!) {
+    billingSubscriptionUpdateV2(input: $input) {
+      billingCycleStart
+      billingRenewalDate
+      billingInterval
+      billingAmount
+      isActive
+      selfServePortalUrl
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "tier": "FREE"
+    }
+  }
+}

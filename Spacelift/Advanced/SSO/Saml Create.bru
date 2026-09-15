@@ -1,0 +1,39 @@
+meta {
+  name: Saml Create
+  type: graphql
+  seq: 9
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Set up SAML integration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation SamlCreate($metadata: String!, $dynamic: Boolean!) {
+    samlCreate(metadata: $metadata, dynamic: $dynamic) {
+      adminLogin
+      idpMetadata
+      idpMetadataURL
+      nameIDFormat
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "metadata": "example",
+    "dynamic": false
+  }
+}

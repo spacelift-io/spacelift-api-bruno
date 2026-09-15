@@ -1,0 +1,35 @@
+meta {
+  name: Slack Integration
+  type: graphql
+  seq: 7
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Shows the details of the integration between your Slack workspace and your Spacelift account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SlackIntegration {
+    slackIntegration {
+      teamID
+      teamName
+      slackEnvironment
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

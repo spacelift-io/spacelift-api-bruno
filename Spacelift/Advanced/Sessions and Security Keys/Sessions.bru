@@ -1,0 +1,39 @@
+meta {
+  name: Sessions
+  type: graphql
+  seq: 6
+}
+
+docs {
+  ℹ **ADVANCED** — Manages your own sessions and security keys.
+
+  List of all the active sessions in the account. NOTE: this functionality is not available in the Starter
+  tier. An empty array will be returned for Starter tier accounts.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query Sessions {
+    sessions {
+      id
+      admin
+      createdAt
+      current
+      email
+      expiresAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,36 @@
+meta {
+  name: User Guide Chapters
+  type: graphql
+  seq: 10
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  List all user guide chapters
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UserGuideChapters {
+    userGuideChapters {
+      id
+      order
+      name
+      description
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,38 @@
+meta {
+  name: Intent Project Activate
+  type: graphql
+  seq: 9
+}
+
+docs {
+  ℹ **ADVANCED** — Intent and AI chat preview feature.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IntentProjectActivate($id: ID!) {
+    intentProjectActivate(id: $id) {
+      allowedActions
+      id
+      name
+      description
+      labels
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "ID_HERE"
+  }
+}

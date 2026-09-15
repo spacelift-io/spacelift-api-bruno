@@ -1,0 +1,31 @@
+meta {
+  name: Oidc Subject Template
+  type: graphql
+  seq: 6
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Return the OIDC subject template for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OidcSubjectTemplate {
+    oidcSubjectTemplate
+  }
+}
+
+body:graphql:vars {
+  {}
+}

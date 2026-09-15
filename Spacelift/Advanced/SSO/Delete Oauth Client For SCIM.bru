@@ -1,0 +1,31 @@
+meta {
+  name: Delete Oauth Client For SCIM
+  type: graphql
+  seq: 2
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
+
+  Delete the OAuth2 client for SCIM provisioning
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteOauthClientForSCIM {
+    deleteOauthClientForSCIM
+  }
+}
+
+body:graphql:vars {
+  {}
+}

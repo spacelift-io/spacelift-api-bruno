@@ -1,0 +1,32 @@
+meta {
+  name: Slack App Manifest
+  type: graphql
+  seq: 6
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Returns the app manifest that should be used when creating a Slack App to integrate
+  Spacelift with Slack. This is only useful on Self-Hosted instances. Always returns empty on SaaS.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SlackAppManifest {
+    slackAppManifest
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,49 @@
+meta {
+  name: Billing Subscription Create
+  type: graphql
+  seq: 5
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Creates a new billing subscription
+  addons argument can be ignored because it has not implemented yet.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation BillingSubscriptionCreate($input: SubscriptionInput!, $paymentMethodID: String!) {
+    billingSubscriptionCreate(input: $input, paymentMethodID: $paymentMethodID) {
+      billingCycleStart
+      billingRenewalDate
+      billingInterval
+      billingAmount
+      isActive
+      selfServePortalUrl
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "address": "example",
+      "city": "example",
+      "country": "example",
+      "email": "example",
+      "fullName": "example",
+      "zipCode": "example"
+    },
+    "paymentMethodID": "example"
+  }
+}

@@ -1,0 +1,38 @@
+meta {
+  name: User Guide Certification List
+  type: graphql
+  seq: 7
+}
+
+docs {
+  ℹ **ADVANCED** — Drives the in-app onboarding wizard.
+
+  List all certificates for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UserGuideCertificationList {
+    userGuideCertificationList {
+      id
+      userLogin
+      displayName
+      course
+      issuedAt
+      groupID
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

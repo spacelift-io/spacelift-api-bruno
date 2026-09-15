@@ -1,0 +1,38 @@
+meta {
+  name: Usage
+  type: graphql
+  seq: 14
+}
+
+docs {
+  ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
+
+  Usage for the last 30 days.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query Usage {
+    usage {
+      allowedMinutes
+      allowedSeats
+      billingPeriodStart
+      billingPeriodEnd
+      pricePerSeat
+      pricePerWorker
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}
