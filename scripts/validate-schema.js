@@ -22,6 +22,8 @@ const {
   validate,
   getIntrospectionQuery,
   NoDeprecatedCustomRule,
+  typeFromAST,
+  coerceInputValue,
 } = require("graphql");
 const https = require("https");
 const http = require("http");
@@ -82,7 +84,15 @@ function post(url, body) {
  * Uses brace-depth tracking to handle nested braces correctly.
  */
 function extractGraphQL(content) {
-  const marker = "body:graphql {";
+  return extractBlock(content, "body:graphql {");
+}
+
+/** Extract the JSON in a .bru file's `body:graphql:vars { ... }` block. */
+function extractVars(content) {
+  return extractBlock(content, "body:graphql:vars {");
+}
+
+function extractBlock(content, marker) {
   const start = content.indexOf(marker);
   if (start === -1) return null;
 
@@ -102,9 +112,39 @@ function extractGraphQL(content) {
     i++;
   }
 
-  // Skip `body:graphql:vars` blocks — only return the operation
-  const trimmed = body.trim();
-  return trimmed || null;
+  return body.trim() || null;
+}
+
+/**
+ * Check a request's variables against the types its operation declares.
+ *
+ * graphql.validate() checks the document and never looks at the variables, so
+ * a wrong enum member or a renamed input field passes validation and then
+ * fails against a real account. Returns a list of human-readable problems.
+ */
+function checkVariables(schema, doc, varsJson) {
+  const def = doc.definitions[0];
+  if (!def?.variableDefinitions?.length) return [];
+
+  let vars;
+  try {
+    vars = varsJson ? JSON.parse(varsJson) : {};
+  } catch (err) {
+    return [`variables are not valid JSON: ${err.message}`];
+  }
+
+  const problems = [];
+  for (const varDef of def.variableDefinitions) {
+    const name = varDef.variable.name.value;
+    const type = typeFromAST(schema, varDef.type);
+    // An unknown type is already a validate() failure; don't double-report.
+    if (!type || !(name in vars)) continue;
+    coerceInputValue(vars[name], type, (path, invalid, error) => {
+      const at = path.length ? `$${name}.${path.join(".")}` : `$${name}`;
+      problems.push(`${at}: ${error.message}`);
+    });
+  }
+  return problems;
 }
 
 /** Walk a directory recursively, returning all .bru file paths. */
@@ -182,7 +222,11 @@ async function main() {
       continue;
     }
 
-    const errors = validate(schema, doc);
+    const errors = validate(schema, doc).map((e) => e.message);
+    // Variables are only worth checking once the document itself is valid.
+    if (errors.length === 0) {
+      errors.push(...checkVariables(schema, doc, extractVars(content)));
+    }
     if (errors.length === 0) {
       passed++;
       // Run only on documents that already validate — the rule assumes a
@@ -203,10 +247,9 @@ async function main() {
       }
     } else {
       failed++;
-      const msgs = errors.map((e) => e.message);
-      failures.push({ file: relativePath, errors: msgs });
+      failures.push({ file: relativePath, errors });
       console.log(`  FAIL  ${relativePath}`);
-      for (const msg of msgs) {
+      for (const msg of errors) {
         console.log(`        ${msg}`);
       }
     }
