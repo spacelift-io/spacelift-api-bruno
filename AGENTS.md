@@ -44,6 +44,9 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 - `environments/local.bru` — environment variables (`SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID`, `SPACELIFT_API_KEY_SECRET`, `jwt`). The tracked template is `local.bru.example`; the real file, `local.bru`, is gitignored.
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
 - `collection.bru` — collection-level settings. Today it holds only a `docs { }` block, written by `collection-changelog.js --sync`; it is what Bruno shows in the collection's Docs pane. Do not hand-edit the block. Collection-level auth, headers or vars added through Bruno's UI would land in this same file, and `--sync` preserves them.
+- `Advanced/folder.bru` — the only top-level folder metadata, and the only reason it exists is `seq: 99`, which pins `Advanced` to the bottom of the sidebar. See **Advanced Operations** below.
+
+Bruno sorts folders alphabetically and then splices any folder carrying a valid `seq` in at index `seq - 1`, so a folder's position is settled entirely by its `folder.bru` — no instruction in this file can move it. Every folder but `Advanced` is deliberately seq-less and therefore alphabetical.
 
 The README tells users to install the collection with Bruno's **Import Collection → Git Repository** clone, which scans the whole cloned repository for `bruno.json` files. That is why `Spacelift/` can sit in a subfolder alongside `scripts/` and `docs/` — nothing requires the collection at the repository root.
 
@@ -148,3 +151,7 @@ What `scripts/advanced-operations.js` does is _label_ them, so nobody mistakes t
 - Unlike `DEPRECATED_MARKER`, which is duplicated in `sync-docs.js` and `coverage.js`, `ADVANCED_MARKER` and the operation list live in one module both import. Nothing to keep in sync by hand.
 
 Being advanced is never a CI failure — it is a label, like deprecation. Add new entries to the appropriate category when an operation is clearly administrative or internal plumbing; when in doubt, leave it unlabelled, since a wrong label discourages legitimate use.
+
+The `Advanced/` folder is pinned to the bottom of the sidebar by `seq: 99` in its `folder.bru` — the same policy applied to navigation rather than to docs. It holds roughly 200 of the collection's requests, so alphabetical order would otherwise park all of it between `Account` and `AI Integrations`, in front of everyone looking for `Contexts` or `Runs`.
+
+`99` is deliberately far above the folder count: with every other folder seq-less, any `seq` past the end of the list appends, so adding folders later cannot displace `Advanced`, whereas a `seq` equal to today's count would leave it second-to-last the moment a folder sorting after "Advanced" appears. Deleting the file does not just lose a number — it puts the whole administrative surface back at the top. `CHANGELOG.md` follows the same order, since `buildSidebarOrder` reads this file too.
