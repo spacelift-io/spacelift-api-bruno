@@ -2,6 +2,8 @@
 
 A [Bruno](https://www.usebruno.com/) collection covering the Spacelift GraphQL API. Use it to explore, test, and script against your Spacelift account.
 
+[<img src="https://fetch.usebruno.com/button.svg" alt="Fetch in Bruno" width="128" height="32">](https://fetch.usebruno.com?url=https://github.com/spacelift-io/spacelift-api-bruno.git "target=_blank rel=noopener noreferrer")
+
 ## Prerequisites
 
 - [Bruno](https://www.usebruno.com/downloads) desktop app or the [Bruno VS Code extension](https://marketplace.visualstudio.com/items?itemName=bruno-api-client.bruno)
@@ -11,20 +13,30 @@ A [Bruno](https://www.usebruno.com/) collection covering the Spacelift GraphQL A
 
 ### 1. Get the Collection
 
-#### Option A — Clone from inside Bruno (recommended)
+#### Option A — Fetch in Bruno (recommended)
 
-No terminal, and the collection stays a git checkout you can update later.
+[<img src="https://fetch.usebruno.com/button.svg" alt="Fetch in Bruno" width="128" height="32">](https://fetch.usebruno.com?url=https://github.com/spacelift-io/spacelift-api-bruno.git "target=_blank rel=noopener noreferrer")
+
+Click the button, choose **Open In Bruno**, and pick where to keep the clone. Bruno lists
+the collections it found in the repository — select **Spacelift** and open it.
+
+You get a git checkout, so `git pull` brings down new requests later.
+
+#### Option B — Import from inside Bruno
+
+The same thing, without the button:
 
 1. In the Bruno desktop app, open **Import Collection** (the **+** menu in the sidebar) and pick the **Git Repository** tab.
 2. Paste `https://github.com/spacelift-io/spacelift-api-bruno.git` and click **Clone**.
 3. Choose a location to clone into, optionally pick a branch, and click **Clone**.
 4. Bruno scans the clone and lists the collections it finds. Select **Spacelift** and click **Open**.
 
-Bruno shells out to `git`, so it must be installed and on your `PATH`. This flow is desktop-only. The VS Code extension has no clone option, so use option B there.
+Options A and B both shell out to `git`, so it must be installed and on your `PATH`, and
+both are desktop-only. The VS Code extension has no clone option — use option C there.
 
 The collection lives in the `Spacelift/` subfolder rather than at the repository root; Bruno's clone scans the whole repository, so it finds it either way.
 
-#### Option B — Clone yourself and open the folder
+#### Option C — Clone yourself and open the folder
 
 ```bash
 git clone https://github.com/spacelift-io/spacelift-api-bruno.git
