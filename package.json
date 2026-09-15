@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "changelog": "node scripts/changelog-since.js",
+    "api-changelog": "node scripts/api-changelog.js",
     "coverage": "node scripts/coverage.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

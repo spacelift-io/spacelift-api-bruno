@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Prints Spacelift changelog entries newer than a given date.
+ * api-changelog.js — Prints entries from Spacelift's own product
+ * changelog that are newer than a given date.
  *
  * The changelog is free-form prose with no feed and no topic tags, so this
  * script does no matching — it just narrows the page down to what has not
@@ -9,10 +10,10 @@
  * Entries are delimited by `<h2 id="YYYY-MM-DD">` headings.
  *
  * Usage:
- *   node scripts/changelog-since.js                 since .changelog-checkpoint
- *   node scripts/changelog-since.js --since 2026-05-11
- *   node scripts/changelog-since.js --url <url>
- *   node scripts/changelog-since.js --list-dates    just the dates, no bodies
+ *   node scripts/api-changelog.js                 since .api-changelog-checkpoint
+ *   node scripts/api-changelog.js --since 2026-05-11
+ *   node scripts/api-changelog.js --url <url>
+ *   node scripts/api-changelog.js --list-dates    just the dates, no bodies
  */
 
 const https = require("https");
@@ -20,7 +21,7 @@ const fs = require("fs");
 const path = require("path");
 
 const DEFAULT_URL = "https://docs.spacelift.io/product/changelog";
-const CHECKPOINT_FILE = path.join(__dirname, "../.changelog-checkpoint");
+const CHECKPOINT_FILE = path.join(__dirname, "../.api-changelog-checkpoint");
 
 const args = process.argv.slice(2);
 const flag = (name) => {
@@ -149,7 +150,9 @@ async function main() {
     console.log();
   }
 
-  console.log(`Once reviewed, set .changelog-checkpoint to ${fresh[0].date}.`);
+  console.log(
+    `Once reviewed, set .api-changelog-checkpoint to ${fresh[0].date}.`,
+  );
 }
 
 main().catch((err) => {

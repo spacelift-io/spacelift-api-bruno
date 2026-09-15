@@ -16,7 +16,7 @@ npm run coverage -- --show-advanced            # list the advanced operations by
 npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
 npm run coverage -- --check-deprecated-marks   # exit 1 if a deprecated op's .bru file isn't marked deprecated
 npm run coverage -- --check-advanced-marks     # exit 1 if an advanced op's .bru file isn't marked advanced
-npm run changelog                              # changelog entries since .changelog-checkpoint
+npm run api-changelog                          # Spacelift's own changelog since .api-changelog-checkpoint
 
 npm run format                                 # format js/json/yaml/md files with prettier
 npm run format:check                           # check formatting without writing
@@ -25,7 +25,7 @@ npm run pre-commit:update                      # freeze/update pre-commit hook r
 # The three schema scripts accept --endpoint to target a non-demo account:
 node scripts/validate-schema.js --endpoint https://myaccount.app.spacelift.io/graphql
 node scripts/sync-docs.js --dry-run            # preview docs changes without writing
-node scripts/changelog-since.js --url <url>    # read a changelog page other than the default
+node scripts/api-changelog.js --url <url>      # read a changelog page other than the default
 ```
 
 No credentials are required. All scripts introspect `https://demo.app.spacelift.io/graphql` publicly.
@@ -83,13 +83,13 @@ body:graphql:vars {
 
 **`advanced-operations.js`**: The list of operations that are real but not the everyday surface — account administration, billing, SSO, in-app UI plumbing. Maps each to a category with a `folder` and a user-facing `note`. Imported by `sync-docs.js` (which writes the note) and `coverage.js` (which checks it was written), so membership and wording cannot drift between writer and checker.
 
-**`changelog-since.js`**: Fetches `https://docs.spacelift.io/product/changelog` and prints the entries dated after `.changelog-checkpoint`, split on the page's `<h2 id="YYYY-MM-DD">` anchors. It deliberately does no matching — the changelog is free-form prose, and the GraphQL lines under its Deprecations headings are verbatim `deprecationReason` strings already surfaced by `coverage.js`. Its value is removals and retirements that introspection cannot express. `--since <date>` overrides the checkpoint; `--list-dates` prints dates only. The only script that does not talk to the GraphQL endpoint.
+**`api-changelog.js`**: Fetches `https://docs.spacelift.io/product/changelog` and prints the entries dated after `.api-changelog-checkpoint`, split on the page's `<h2 id="YYYY-MM-DD">` anchors. It deliberately does no matching — the changelog is free-form prose, and the GraphQL lines under its Deprecations headings are verbatim `deprecationReason` strings already surfaced by `coverage.js`. Its value is removals and retirements that introspection cannot express. `--since <date>` overrides the checkpoint; `--list-dates` prints dates only. The only script that does not talk to the GraphQL endpoint.
 
 **`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present), then the `ℹ **ADVANCED** — ...` note if the operation is listed in `advanced-operations.js`, then its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
 
 ### Changelog Checkpoint
 
-`.changelog-checkpoint` holds a single ISO date — the newest changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed. The file itself is the source of truth for where the review stands; `npm run changelog` prints what is still pending.
+`.api-changelog-checkpoint` holds a single ISO date — the newest changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed. The file itself is the source of truth for where the review stands; `npm run api-changelog` prints what is still pending.
 
 ### Coverage Baseline
 
