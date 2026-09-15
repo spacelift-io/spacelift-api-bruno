@@ -1,7 +1,7 @@
 node_modules
 
 # Environment files hold per-account values, so they stay out of git — except
-# "My Account", the one every user starts from. Tracking it leaks nothing:
+# "my-account", the one every user starts from. Tracking it leaks nothing:
 # Bruno keeps secret-marked variables (the API key secret and the JWT) in its
 # own encrypted store and writes only their names into the file.
 #
@@ -9,4 +9,4 @@ node_modules
 # inside an excluded *directory*, so the negation below only works because the
 # rule above excludes the directory's contents instead of the directory itself.
 Spacelift/environments/*
-!Spacelift/environments/My Account.bru
+!Spacelift/environments/my-account.bru

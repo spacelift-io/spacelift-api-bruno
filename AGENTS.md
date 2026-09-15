@@ -41,7 +41,7 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 
 `Spacelift/` is the Bruno collection root (`bruno.json` marks it). It contains:
 
-- `environments/My Account.bru` — the one environment that ships with the collection, and the only one tracked in git (`.gitignore` excludes every other file in that directory). It holds `SPACELIFT_ENDPOINT` and `SPACELIFT_API_KEY_ID` as plain vars, and `SPACELIFT_API_KEY_SECRET` and `jwt` as **secret** vars.
+- `environments/my-account.bru` — the one environment that ships with the collection, and the only one tracked in git (`.gitignore` excludes every other file in that directory). It holds `SPACELIFT_ENDPOINT` and `SPACELIFT_API_KEY_ID` as plain vars, and `SPACELIFT_API_KEY_SECRET` and `jwt` as **secret** vars.
 
   Tracking it is safe because of how Bruno serializes secrets: `jsonToEnv` filters every variable marked secret out of the `vars { }` block and emits only its _name_ into `vars:secret [ ]`, keeping the value in an OS-encrypted store outside the collection. A committed environment therefore cannot leak a key secret or a token, however many times `bru.setEnvVar("jwt", …)` runs.
 

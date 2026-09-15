@@ -34,9 +34,9 @@ Then in Bruno click **Open Collection** and select the `Spacelift/` folder.
 
 ### 2. Configure Your Environment
 
-The collection ships with an environment called **My Account**, already selected in the
+The collection ships with an environment called `my-account`, already selected in the
 environment dropdown at the top right. Nothing to copy or create — open it (gear icon →
-Environments → My Account) and fill in three values:
+Environments → my-account) and fill in three values:
 
 | Variable                   | Description                                                                        |
 | -------------------------- | ---------------------------------------------------------------------------------- |
@@ -47,12 +47,12 @@ Environments → My Account) and fill in three values:
 Leave `jwt` alone — the collection mints and refreshes it for you.
 
 `SPACELIFT_API_KEY_SECRET` and `jwt` are **secret variables**. Bruno keeps their values in
-its own encrypted store and writes only their names into `My Account.bru`, so the file
+its own encrypted store and writes only their names into `my-account.bru`, so the file
 stays safe to commit and your credentials never reach git. That is why the environment can
 ship with the collection at all.
 
 Working with more than one Spacelift account? Duplicate the environment and name the copies
-after your accounts. Only `My Account` is tracked in git; anything else you add is ignored.
+after your accounts. Only `my-account` is tracked in git; anything else you add is ignored.
 
 ### 3. Send a Request
 
