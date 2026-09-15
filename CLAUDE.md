@@ -74,7 +74,7 @@ body:graphql:vars {
 - `extractGraphQL(content)` — brace-depth tracking to extract the `body:graphql { ... }` block from .bru text
 - `findBruFiles(dir)` — recursive directory walker
 
-**`validate-schema.js`**: Fetches schema via introspection, parses the GraphQL from each .bru file, runs `graphql.validate()`, reports PASS/FAIL per file.
+**`validate-schema.js`**: Fetches schema via introspection, parses the GraphQL from each .bru file, runs `graphql.validate()`, reports PASS/FAIL per file. Files that pass are then checked with `NoDeprecatedCustomRule`, which reports selections of deprecated fields, enum values and input fields. These are printed as warnings and never fail the run — deprecation is information, retirement is the defect. This is the only check that sees deprecation _inside_ a request: `coverage.js` walks root fields only, and selecting a deprecated field is valid GraphQL.
 
 **`coverage.js`**: Walks the schema's Query and Mutation root fields, maps them against which root fields appear in .bru files (`extractRootFields`), reports missing operations. Has a hardcoded `IGNORED` set for intentionally out-of-scope operations: analytics events, UI state, OAuth flows, billing, SSO/SAML, notifications, autocomplete suggestions, and internal debug fields. Run `npm run coverage -- --show-ignored` to see the current list.
 

@@ -5,6 +5,12 @@
  * No credentials required — uses the public introspection endpoint.
  * Catches: renamed mutations/queries, removed/renamed fields, wrong argument types.
  *
+ * Also reports selections of deprecated fields, enum values and input fields as
+ * warnings. Those are valid GraphQL, so nothing else in the toolchain sees them:
+ * coverage.js only walks root Query/Mutation fields, and validate() itself treats
+ * deprecation as documentation. They never fail the run — deprecation is
+ * information, retirement is the defect (see CLAUDE.md "Deprecated Operations").
+ *
  * Usage:
  *   node scripts/validate-schema.js
  *   node scripts/validate-schema.js --endpoint https://myaccount.app.spacelift.io/graphql
@@ -15,6 +21,7 @@ const {
   parse,
   validate,
   getIntrospectionQuery,
+  NoDeprecatedCustomRule,
 } = require("graphql");
 const https = require("https");
 const http = require("http");
@@ -144,6 +151,7 @@ async function main() {
   let passed = 0;
   let failed = 0;
   const failures = [];
+  const deprecated = [];
 
   for (const filePath of bruFiles.sort()) {
     const relativePath = path.relative(process.cwd(), filePath);
@@ -177,7 +185,22 @@ async function main() {
     const errors = validate(schema, doc);
     if (errors.length === 0) {
       passed++;
-      console.log(`  PASS  ${relativePath}`);
+      // Run only on documents that already validate — the rule assumes a
+      // well-formed document, and a file that fails above has a real error to
+      // fix first.
+      const notices = validate(schema, doc, [NoDeprecatedCustomRule]).map(
+        (e) => e.message,
+      );
+      if (notices.length > 0) {
+        deprecated.push({ file: relativePath, notices });
+        console.log(
+          `  PASS  ${relativePath}  (${notices.length} deprecated selection${
+            notices.length === 1 ? "" : "s"
+          })`,
+        );
+      } else {
+        console.log(`  PASS  ${relativePath}`);
+      }
     } else {
       failed++;
       const msgs = errors.map((e) => e.message);
@@ -192,6 +215,19 @@ async function main() {
   // 4. Summary
   console.log(`\n${"─".repeat(60)}`);
   console.log(`Results: ${passed} passed, ${failed} failed`);
+
+  if (deprecated.length > 0) {
+    const total = deprecated.reduce((n, d) => n + d.notices.length, 0);
+    console.log(
+      `\n⚠ ${total} deprecated selection(s) in ${deprecated.length} file(s) — not a failure:`,
+    );
+    for (const { file, notices } of deprecated) {
+      console.log(`\n  ${file}`);
+      for (const msg of notices) {
+        console.log(`    - ${msg}`);
+      }
+    }
+  }
 
   if (failures.length > 0) {
     console.log(`\nFailed files:`);
