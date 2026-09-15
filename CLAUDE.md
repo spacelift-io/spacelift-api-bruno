@@ -84,7 +84,7 @@ body:graphql:vars {
 
 ### Changelog Checkpoint
 
-`.changelog-checkpoint` holds a single ISO date — the newest changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed. It starts at `2026-05-11`, the last date the weekly sync check ran green.
+`.changelog-checkpoint` holds a single ISO date — the newest changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed. The file itself is the source of truth for where the review stands; `npm run changelog` prints what is still pending.
 
 ### Coverage Baseline
 
