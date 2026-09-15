@@ -30,7 +30,7 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 `Spacelift/` is the Bruno collection root (`bruno.json` marks it). It contains:
 
 - `environments/local.bru` — environment variables (`SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID`, `SPACELIFT_API_KEY_SECRET`, `jwt`). The tracked template is `local.bru.example`; the real file, `local.bru`, is gitignored.
-- ~54 subfolders of `.bru` request files, one operation per file, 382 request files.
+- Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
 
 ### .bru File Format
 
@@ -70,7 +70,7 @@ body:graphql:vars {
 
 **`validate-schema.js`**: Fetches schema via introspection, parses the GraphQL from each .bru file, runs `graphql.validate()`, reports PASS/FAIL per file.
 
-**`coverage.js`**: Walks the schema's Query and Mutation root fields, maps them against which root fields appear in .bru files (`extractRootFields`), reports missing operations. Has a hardcoded `IGNORED` set (~130 operations) for intentionally out-of-scope operations: analytics events, UI state, OAuth flows, billing, SSO/SAML, notifications, autocomplete suggestions, and internal debug fields.
+**`coverage.js`**: Walks the schema's Query and Mutation root fields, maps them against which root fields appear in .bru files (`extractRootFields`), reports missing operations. Has a hardcoded `IGNORED` set for intentionally out-of-scope operations: analytics events, UI state, OAuth flows, billing, SSO/SAML, notifications, autocomplete suggestions, and internal debug fields. Run `npm run coverage -- --show-ignored` to see the current list.
 
 **`changelog-since.js`**: Fetches `https://docs.spacelift.io/product/changelog` and prints the entries dated after `.changelog-checkpoint`, split on the page's `<h2 id="YYYY-MM-DD">` anchors. It deliberately does no matching — the changelog is free-form prose, and the GraphQL lines under its Deprecations headings are verbatim `deprecationReason` strings already surfaced by `coverage.js`. Its value is removals and retirements that introspection cannot express. `--since <date>` overrides the checkpoint; `--list-dates` prints dates only. The only script that does not talk to the GraphQL endpoint.
 
