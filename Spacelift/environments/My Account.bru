@@ -1,0 +1,12 @@
+vars {
+  @description("Your account's GraphQL endpoint. Replace `myaccount` with your Spacelift account name. Self-hosted installations use their own hostname.")
+  SPACELIFT_ENDPOINT: https://myaccount.app.spacelift.io/graphql
+  @description('The ID of your API key, shown when you create it under Settings → API Keys.')
+  SPACELIFT_API_KEY_ID:
+}
+vars:secret [
+  @description('The secret for your API key. Shown only once, at creation. Bruno stores it encrypted outside this file, so it never reaches git.')
+  SPACELIFT_API_KEY_SECRET,
+  @description('Filled in automatically. The collection mints and refreshes this for you; you never need to set it by hand.')
+  jwt
+]

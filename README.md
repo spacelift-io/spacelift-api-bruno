@@ -34,23 +34,25 @@ Then in Bruno click **Open Collection** and select the `Spacelift/` folder.
 
 ### 2. Configure Your Environment
 
-From the root of your clone, copy the example environment file and fill in your credentials:
+The collection ships with an environment called **My Account**, already selected in the
+environment dropdown at the top right. Nothing to copy or create — open it (gear icon →
+Environments → My Account) and fill in three values:
 
-```bash
-cp Spacelift/environments/local.bru.example Spacelift/environments/local.bru
-```
+| Variable                   | Description                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| `SPACELIFT_ENDPOINT`       | Your account's GraphQL endpoint, e.g. `https://myaccount.app.spacelift.io/graphql` |
+| `SPACELIFT_API_KEY_ID`     | The ID of your API key (shown after creation)                                      |
+| `SPACELIFT_API_KEY_SECRET` | The secret for your API key (shown only once at creation)                          |
 
-If you cloned from inside Bruno and would rather not hunt for the directory, create the environment in the app instead: gear icon → Environments → **Create**, name it `local`, and add the variables below by hand.
+Leave `jwt` alone — the collection mints and refreshes it for you.
 
-Open the **local** environment in Bruno (gear icon → Environments → local) and fill in:
+`SPACELIFT_API_KEY_SECRET` and `jwt` are **secret variables**. Bruno keeps their values in
+its own encrypted store and writes only their names into `My Account.bru`, so the file
+stays safe to commit and your credentials never reach git. That is why the environment can
+ship with the collection at all.
 
-| Variable                   | Description                                                                             |
-| -------------------------- | --------------------------------------------------------------------------------------- |
-| `SPACELIFT_ENDPOINT`       | Your account's GraphQL endpoint, e.g. `https://myaccount.app.spacelift.io/graphql`      |
-| `SPACELIFT_API_KEY_ID`     | The ID of your API key (shown after creation)                                           |
-| `SPACELIFT_API_KEY_SECRET` | The secret for your API key (shown only once at creation) — stored as a secret variable |
-
-Leave `jwt` blank — it is filled in automatically in the next step.
+Working with more than one Spacelift account? Duplicate the environment and name the copies
+after your accounts. Only `My Account` is tracked in git; anything else you add is ignored.
 
 ### 3. Get a Token
 

@@ -41,7 +41,12 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 
 `Spacelift/` is the Bruno collection root (`bruno.json` marks it). It contains:
 
-- `environments/local.bru` — environment variables (`SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID`, `SPACELIFT_API_KEY_SECRET`, `jwt`). The tracked template is `local.bru.example`; the real file, `local.bru`, is gitignored.
+- `environments/My Account.bru` — the one environment that ships with the collection, and the only one tracked in git (`.gitignore` excludes every other file in that directory). It holds `SPACELIFT_ENDPOINT` and `SPACELIFT_API_KEY_ID` as plain vars, and `SPACELIFT_API_KEY_SECRET` and `jwt` as **secret** vars.
+
+  Tracking it is safe because of how Bruno serializes secrets: `jsonToEnv` filters every variable marked secret out of the `vars { }` block and emits only its _name_ into `vars:secret [ ]`, keeping the value in an OS-encrypted store outside the collection. A committed environment therefore cannot leak a key secret or a token, however many times `bru.setEnvVar("jwt", …)` runs.
+
+  This is load-bearing, not incidental. It is what lets setup be "fill in three fields in the app" instead of "find the clone on disk, copy a template, create an environment by hand" — the step users dropped out at. Never move `jwt` out of `vars:secret`: it would start writing live tokens into a tracked file.
+
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
 - `collection.bru` — collection-level settings. Today it holds only a `docs { }` block, written by `collection-changelog.js --sync`; it is what Bruno shows in the collection's Docs pane. Do not hand-edit the block. Collection-level auth, headers or vars added through Bruno's UI would land in this same file, and `--sync` preserves them.
 - `Advanced/folder.bru` — the only top-level folder metadata, and the only reason it exists is `seq: 99`, which pins `Advanced` to the bottom of the sidebar. See **Advanced Operations** below.

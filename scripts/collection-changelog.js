@@ -647,7 +647,7 @@ function buildCollectionDocs() {
     "",
     "## Start here",
     "",
-    "1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the **local** environment.",
+    "1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the **My Account** environment (top-right dropdown).",
     "2. Send **Auth → Get Token**. It stores the `jwt` that every other request authenticates with.",
     "",
     "Tokens last a few hours — send it again when requests start coming back unauthorized.",
