@@ -12,13 +12,19 @@ npm run sync-docs                              # sync schema descriptions + depr
 npm run coverage                               # show which schema operations have no .bru file
 npm run coverage -- --ignore-deprecated        # same, hiding deprecated operations
 npm run coverage -- --show-covered             # also list covered operations
+npm run coverage -- --show-ignored             # list what the IGNORED set filters out
 npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
 npm run coverage -- --check-deprecated-marks   # exit 1 if a deprecated op's .bru file isn't marked deprecated
 npm run changelog                              # changelog entries since .changelog-checkpoint
 
-# All three scripts accept --endpoint to target a non-demo account:
+npm run format                                 # format js/json/yaml/md files with prettier
+npm run format:check                           # check formatting without writing
+npm run pre-commit:update                      # freeze/update pre-commit hook revisions
+
+# The three schema scripts accept --endpoint to target a non-demo account:
 node scripts/validate-schema.js --endpoint https://myaccount.app.spacelift.io/graphql
 node scripts/sync-docs.js --dry-run            # preview docs changes without writing
+node scripts/changelog-since.js --url <url>    # read a changelog page other than the default
 ```
 
 No credentials are required. All scripts introspect `https://demo.app.spacelift.io/graphql` publicly.
