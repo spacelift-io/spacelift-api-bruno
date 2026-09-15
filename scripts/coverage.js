@@ -15,6 +15,7 @@
  *   node scripts/coverage.js --ignore-deprecated   hide deprecated operations
  *   node scripts/coverage.js --show-ignored        show what the ignore list filters out
  *   node scripts/coverage.js --fail-on-deprecated  exit 1 if a covered op is deprecated
+ *   node scripts/coverage.js --check-baseline      exit 1 if coverage regressed past .coverage-baseline
  */
 
 const { buildClientSchema, getIntrospectionQuery, parse } = require("graphql");
@@ -29,6 +30,7 @@ const path = require("path");
 
 const DEFAULT_ENDPOINT = "https://demo.app.spacelift.io/graphql";
 const COLLECTION_DIR = path.join(__dirname, "../Spacelift");
+const BASELINE_FILE = path.join(__dirname, "../.coverage-baseline");
 
 const args = process.argv.slice(2);
 const endpointFlag = args.indexOf("--endpoint");
@@ -38,6 +40,17 @@ const SHOW_COVERED = args.includes("--show-covered");
 const IGNORE_DEPRECATED = args.includes("--ignore-deprecated");
 const SHOW_IGNORED = args.includes("--show-ignored");
 const FAIL_ON_DEPRECATED = args.includes("--fail-on-deprecated");
+const CHECK_BASELINE = args.includes("--check-baseline");
+
+function readBaseline() {
+  try {
+    const raw = fs.readFileSync(BASELINE_FILE, "utf8").trim();
+    const n = parseInt(raw, 10);
+    return Number.isFinite(n) ? n : null;
+  } catch {
+    return null;
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Ignore list — operations that exist in the schema but are intentionally
@@ -365,6 +378,11 @@ async function main() {
   // 2. Collect all Query and Mutation root fields from schema
   const schemaOps = { Query: new Map(), Mutation: new Map() };
 
+  // The set the baseline check measures against: non-ignored, non-deprecated
+  // ops, collected regardless of --ignore-deprecated so the CLI flag can't
+  // change what the baseline compares against.
+  const baselineOps = new Set();
+
   for (const typeName of ["Query", "Mutation"]) {
     const type = schema.getType(typeName);
     if (!type) continue;
@@ -372,6 +390,7 @@ async function main() {
       if (name.startsWith("__")) continue;
       if (IGNORED.has(name)) continue;
       const deprecated = !!field.deprecationReason;
+      if (!deprecated) baselineOps.add(name);
       if (IGNORE_DEPRECATED && deprecated) continue;
       schemaOps[typeName].set(name, {
         deprecated,
@@ -493,6 +512,34 @@ async function main() {
         console.log(`     ✓  ${name}${tag}`);
       }
       console.log();
+    }
+  }
+
+  if (CHECK_BASELINE) {
+    const totalMissing = [...baselineOps].filter(
+      (name) => !covered.has(name),
+    ).length;
+    const baseline = readBaseline();
+    if (baseline === null) {
+      console.log("⚠ No .coverage-baseline found — skipping baseline check.");
+    } else if (totalMissing > baseline) {
+      console.log(
+        `\n✗ Coverage regressed: ${totalMissing} operations missing (baseline: ${baseline}).`,
+      );
+      console.log(
+        `  New schema operations have no .bru file. Run 'npm run coverage -- --ignore-deprecated --show-covered'`,
+      );
+      console.log(
+        `  to see what's new, add .bru files (or extend IGNORED in scripts/coverage.js for out-of-scope`,
+      );
+      console.log(
+        `  ones), then update .coverage-baseline to ${totalMissing}.`,
+      );
+      process.exitCode = 1;
+    } else {
+      console.log(
+        `\n✓ Coverage baseline OK (${totalMissing} missing, baseline ${baseline}).`,
+      );
     }
   }
 

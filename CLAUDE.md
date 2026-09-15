@@ -13,6 +13,7 @@ npm run coverage                               # show which schema operations ha
 npm run coverage -- --ignore-deprecated        # same, hiding deprecated operations
 npm run coverage -- --show-covered             # also list covered operations
 npm run coverage -- --fail-on-deprecated       # exit 1 if a covered op is deprecated
+npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
 npm run changelog                              # changelog entries since .changelog-checkpoint
 
 # All three scripts accept --endpoint to target a non-demo account:
@@ -78,6 +79,10 @@ body:graphql:vars {
 ### Changelog Checkpoint
 
 `.changelog-checkpoint` holds a single ISO date — the newest changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed. It starts at `2026-05-11`, the last date the weekly sync check ran green.
+
+### Coverage Baseline
+
+`.coverage-baseline` holds a single integer: the maximum acceptable count of missing (non-deprecated, non-ignored) schema operations. `npm run coverage -- --check-baseline` fails CI if live coverage regresses past it. The count is always computed over non-deprecated operations, independent of whether `--ignore-deprecated` was passed for display purposes. When intentionally adding scope to the collection (or deciding to leave new operations uncovered), update this number to the current missing count reported by `npm run coverage -- --ignore-deprecated`.
 
 ### Coverage Ignore List
 
