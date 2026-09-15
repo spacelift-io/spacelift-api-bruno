@@ -125,7 +125,11 @@ cancels the request — so you can't destroy anything by opening a request and s
 out of curiosity.
 
 This also means Bruno's collection runner and the CLI **skip** these requests entirely,
-since neither can show a prompt. A collection run cannot delete anything.
+since neither can show a prompt.
+
+That is a helpful safety net rather than a guarantee, though: a handful of destructive
+operations take no ID at all, so they have nothing to prompt for and a bulk run would
+send them. Don't run the whole collection against an account you care about.
 
 ## Collection Structure
 
