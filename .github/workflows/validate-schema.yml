@@ -24,5 +24,11 @@ jobs:
 
       - uses: pre-commit/action@v3.0.1
 
+      - name: Check destructive requests prompt for their IDs
+        run: npm run destructive-prompts:check
+
+      - name: Check every folder is documented
+        run: npm run sync-docs:check-folders
+
       - name: Check changelog
         run: npm run collection-changelog:check

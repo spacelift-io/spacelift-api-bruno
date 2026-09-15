@@ -37,3 +37,10 @@ repos:
         language: system
         pass_filenames: false
         files: (\.bru$|^scripts/folder-docs\.js$)
+
+      - id: destructive-prompts
+        name: Check destructive requests prompt for their IDs
+        entry: npm run destructive-prompts:check
+        language: system
+        pass_filenames: false
+        files: (\.bru$|^scripts/destructive-prompts\.js$)

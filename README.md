@@ -99,6 +99,22 @@ not a constraint.
 Outside those workflows, requests that need an ID use an obvious placeholder like
 `STACK_ID_HERE`. Replace it in the **Variables** panel before sending.
 
+## Destructive Requests
+
+Requests that delete, revoke, reset or yank something don't carry a placeholder. They
+ask:
+
+```
+"id": "{{?Stack ID}}"
+```
+
+Bruno opens a dialog for each of these when you hit send, and cancelling the dialog
+cancels the request — so you can't destroy anything by opening a request and sending it
+out of curiosity.
+
+This also means Bruno's collection runner and the CLI **skip** these requests entirely,
+since neither can show a prompt. A collection run cannot delete anything.
+
 ## Collection Structure
 
 The collection covers all Spacelift API endpoints, organized into folders by resource type.

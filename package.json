@@ -9,6 +9,8 @@
     "collection-changelog:collect": "node scripts/collection-changelog.js --collect",
     "collection-changelog:sync": "node scripts/collection-changelog.js --sync",
     "coverage": "node scripts/coverage.js",
+    "destructive-prompts": "node scripts/destructive-prompts.js",
+    "destructive-prompts:check": "node scripts/destructive-prompts.js --check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "pre-commit:update": "pre-commit autoupdate --freeze",

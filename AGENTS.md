@@ -11,6 +11,8 @@ npm run validate                               # validate all .bru files against
 npm run sync-docs                              # sync schema descriptions + deprecations into docs {} blocks, and folder docs into folder.bru
 npm run sync-docs:check                        # exit 1 if any request or folder docs block is stale (needs the schema)
 npm run sync-docs:check-folders                # exit 1 if a folder is undocumented or stale (offline, instant)
+npm run destructive-prompts                    # convert placeholders in destructive requests to prompt variables
+npm run destructive-prompts:check              # exit 1 if a destructive request still sends a plain placeholder
 npm run coverage                               # show which schema operations have no .bru file
 npm run coverage -- --ignore-deprecated        # same, hiding deprecated operations
 npm run coverage -- --show-covered             # also list covered operations
@@ -98,6 +100,27 @@ The workflows documented in the README run end to end without copying IDs betwee
 The expressions use optional chaining (`res.body.data.stacks?.[0]?.id`) so an empty list leaves the variable unset rather than throwing inside Bruno's var evaluation.
 
 This is deliberately limited to the documented workflows. Chaining every request that takes an ID would mean 352 files silently depending on execution order, and a request whose variable was never set fails less legibly than one still holding `STACK_ID_HERE` — the placeholder at least says what it wants. Each chained request carries a note saying which request feeds it.
+
+### Destructive Requests
+
+Requests whose name contains a destructive verb take their IDs as Bruno **prompt variables** rather than placeholders:
+
+```
+"id": "{{?Stack ID}}"
+```
+
+Two things follow from that, and both are the point:
+
+- Bruno opens a dialog at send time, and cancelling it cancels the request. Deleting something takes a deliberate act rather than an idle send.
+- Bruno's collection runner and CLI **skip** any request containing a prompt variable, because neither can prompt. A collection run therefore cannot delete anything, whatever it is pointed at.
+
+`scripts/destructive-prompts.js` both applies and checks this, with `DESTRUCTIVE_VERBS` deciding what counts — matched whole-word against the request name, so `Delete`, `Revoke`, `Reset`, `Yank`, `Unlink`, `Clean`, `Purge`, `Eject` and `Destroy` all qualify. The match is coarse on purpose: `Create Scheduled Delete` is caught because it schedules a stack's destruction, and being wrong in the cautious direction costs one dialog.
+
+The run lifecycle is deliberately excluded. `Discard`, `Cancel`, `Stop` and `Kill` all end a run, but a run is re-triggerable, and putting a dialog in front of the most common action in the collection would be a worse trade.
+
+Fourteen destructive operations take no arguments at all (`Delete Audit Trail Webhook`, `Clean Migration Queue`, …), so there is nothing to prompt for and a runner would happily send them. Prompt-skip is therefore a useful safety net, not a guarantee: anything that runs the collection automatically must be pointed at an explicit allowlist of read-only requests rather than trusting it.
+
+`npm run destructive-prompts:check` runs in pre-commit and CI, so a newly added `Delete …` request cannot ship with a plain placeholder.
 
 ### Hand-Written Notes in Request Docs
 

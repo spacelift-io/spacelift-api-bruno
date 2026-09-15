@@ -130,3 +130,15 @@ Folders carry their own documentation, and it is not generated — the schema ca
 If you add a folder, add an entry for it to [`scripts/folder-docs.js`](./scripts/folder-docs.js) and run `npm run sync-docs`. The pre-commit hook and CI both fail on an undocumented folder, so you will not get far without it.
 
 Keep entries to three or four sentences: what the folder is for, what order things happen in, and the one thing that will otherwise trip someone up. Anything specific to a single operation belongs in the schema description, where `sync-docs` picks it up on its own.
+
+## Destructive Requests
+
+Requests whose name contains `Delete`, `Destroy`, `Revoke`, `Reset`, `Yank`, `Unlink`, `Clean`, `Purge` or `Eject` take their IDs as prompt variables instead of placeholders:
+
+```
+"id": "{{?Stack ID}}"
+```
+
+Bruno asks for each one at send time, and cancelling the dialog cancels the request. It also means the collection runner and CLI skip these requests, since neither can prompt — so a collection run can't delete anything.
+
+Add a destructive request the normal way, then run `npm run destructive-prompts` to convert its placeholders. The pre-commit hook and CI fail if you forget.
