@@ -16,6 +16,9 @@ npm run coverage -- --show-advanced            # list the advanced operations by
 npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
 npm run coverage -- --check-deprecated-marks   # exit 1 if a deprecated op's .bru file isn't marked deprecated
 npm run coverage -- --check-advanced-marks     # exit 1 if an advanced op's .bru file isn't marked advanced
+npm run collection-changelog:collect            # write changelog entries for new commits
+npm run collection-changelog:sync              # mirror the newest entries into Bruno's docs pane
+npm run collection-changelog:check             # exit 1 if either of those is out of date
 npm run api-changelog                          # Spacelift's own changelog since .api-changelog-checkpoint
 
 npm run format                                 # format js/json/yaml/md files with prettier
@@ -24,8 +27,10 @@ npm run pre-commit:update                      # freeze/update pre-commit hook r
 
 # The three schema scripts accept --endpoint to target a non-demo account:
 node scripts/validate-schema.js --endpoint https://myaccount.app.spacelift.io/graphql
-node scripts/sync-docs.js --dry-run            # preview docs changes without writing
-node scripts/api-changelog.js --url <url>      # read a changelog page other than the default
+node scripts/sync-docs.js --dry-run                       # preview docs changes without writing
+node scripts/api-changelog.js --url <url>                 # read a changelog page other than the default
+node scripts/collection-changelog.js --sync --entries 8   # show fewer entries in Bruno's docs pane
+node scripts/collection-changelog.js --collect --dry-run  # preview changelog entries without writing
 ```
 
 No credentials are required. All scripts introspect `https://demo.app.spacelift.io/graphql` publicly.
@@ -38,6 +43,7 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 
 - `environments/local.bru` — environment variables (`SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID`, `SPACELIFT_API_KEY_SECRET`, `jwt`). The tracked template is `local.bru.example`; the real file, `local.bru`, is gitignored.
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
+- `collection.bru` — collection-level settings. Today it holds only a `docs { }` block, written by `collection-changelog.js --sync`; it is what Bruno shows in the collection's Docs pane. Do not hand-edit the block. Collection-level auth, headers or vars added through Bruno's UI would land in this same file, and `--sync` preserves them.
 
 The README tells users to install the collection with Bruno's **Import Collection → Git Repository** clone, which scans the whole cloned repository for `bruno.json` files. That is why `Spacelift/` can sit in a subfolder alongside `scripts/` and `docs/` — nothing requires the collection at the repository root.
 
@@ -87,9 +93,20 @@ body:graphql:vars {
 
 **`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present), then the `ℹ **ADVANCED** — ...` note if the operation is listed in `advanced-operations.js`, then its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
 
-### Changelog Checkpoint
+**`collection-changelog.js`**: Maintains the collection's own changelog — `CHANGELOG.md` for the full history, and a "What's New" `docs { }` block in `Spacelift/collection.bru` for the newest `DEFAULT_ENTRIES` of it, which is what a user sees in Bruno without leaving the app. Three modes: `--collect` derives entries from git and appends them, `--sync` rewrites the docs block, `--check` fails if either is stale.
 
-`.api-changelog-checkpoint` holds a single ISO date — the newest changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed. The file itself is the source of truth for where the review stands; `npm run api-changelog` prints what is still pending.
+Entries are derived, not written, because per-request granularity is only sustainable if a coverage sprint doesn't cost two hundred hand-written lines: a `.bru` file appearing is `Added`, disappearing is `Removed`, gaining `DEPRECATED_MARKER` in its docs block is `Deprecated`, and changing in a `fix:` commit is `Fixed` with the reason taken from the commit subject. A change that leaves the file identical once its docs block is stripped produces nothing — a resynced description is not news.
+
+Ordering, within a date section: grouped by kind as `Removed`, `Deprecated`, `Fixed`, `Added`, so a retirement is never buried under two hundred additions or pushed out of Bruno's pane; and inside each group, the order Bruno draws the sidebar, so scanning the changelog and scanning the sidebar are the same motion. That order is neither alphabetical nor file order — `buildSidebarOrder` reimplements it from Bruno's own `sortItemsBySidebarOrder` and `sortByNameThenSequence` (folders first, alphabetical with `seq` folders spliced in at `seq - 1`, then requests by `seq`). Removed requests have no sidebar position left, so they fall to the end of their group alphabetically. If Bruno changes its sort this drifts silently, which is acceptable: it is cosmetic ordering, not correctness.
+
+`--collect` never rewrites the text of an entry, so wording polished by hand survives; it only ever moves lines, re-sorting every section on each run. That makes it idempotent — running it with nothing new to collect is how a hand-edit that landed in the wrong place gets put back. Polish is expected on `Fixed` entries in particular: a commit subject describes the repository, and the reader needs to know what was wrong with the request they may have copied.
+
+### Changelog Checkpoints
+
+Two, for two different changelogs. Keep them straight:
+
+- `.api-changelog-checkpoint` holds a single ISO date — the newest _Spacelift product_ changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed; `npm run api-changelog` prints what is still pending.
+- `.collection-changelog-commit` holds a commit SHA — the last commit whose request changes are in `CHANGELOG.md`. `npm run collection-changelog:collect` reads `<sha>..HEAD` and advances it. A squash or rebase merge can orphan that SHA; the script says so and asks for a re-point rather than failing with a raw git error. Emptying the file means "from the first commit" — a range needs a commit on its left and the first commit has no parent, so this is the only way to rebuild the whole history. Emptying it does not clear `CHANGELOG.md`; delete the entries first or the rebuild lands on top of them.
 
 ### Coverage Baseline
 

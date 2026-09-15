@@ -52,6 +52,13 @@ Validate all Bruno requests against the live Spacelift GraphQL schema, fix any f
 18. Do not add counts to this section. A reader here is deciding whether the collection covers the API at all — "all" versus "some" is the useful distinction, not whether the figure is 355 or 358. Anyone who needs exact numbers runs `npm run coverage`; a digit in the README only rots between runs of this command.
 19. Only edit this section if the _shape_ of the collection changed — for example if requests stop being organized by resource type. Report any such change rather than rewriting the section unprompted.
 
+## Step 6 — Record What Changed
+
+20. If Step 1 fixed any request, or requests were added or removed, those changes belong in `CHANGELOG.md`. Entries are derived from commits, so this step only works once the request changes are committed — if they are still in the working tree, say so and stop here rather than committing on the user's behalf.
+21. Run `npm run collection-changelog:collect`, then `npm run collection-changelog:sync`.
+22. Read the `Fixed` entries it wrote. Each one takes its reason from the commit subject, which describes the repository rather than the request — reword it to say what was wrong with the request itself, since anyone who copied it is still holding the broken version. "correct invalid variable payloads in 34 requests" becomes "its sample variables used values the API rejects".
+23. Re-run `npm run collection-changelog:sync` after rewording, and report the entries added.
+
 ## How to Introspect
 
 Use a single `curl` to batch-check multiple types or mutations at once rather than one call per issue. Examples:

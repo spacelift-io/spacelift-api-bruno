@@ -83,6 +83,10 @@ Requests that require IDs use obvious placeholder strings like `STACK_ID_HERE`. 
 
 The collection covers all Spacelift API endpoints, organized into folders by resource type.
 
+## What's Changed
+
+[CHANGELOG.md](./CHANGELOG.md) lists every request added, corrected, deprecated or removed, one line each. The newest entries also show up in Bruno itself — open the collection's **Docs** pane — so you can see what moved without leaving the app.
+
 ## Contributing
 
 For information about how to contribute, please see our [CONTRIBUTING.md](./CONTRIBUTING.md) file.

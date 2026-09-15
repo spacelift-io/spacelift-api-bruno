@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # collection-changelog:check reads history back to .collection-changelog-commit
+          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         with:
@@ -20,3 +23,6 @@ jobs:
       - run: npm ci
 
       - uses: pre-commit/action@v3.0.1
+
+      - name: Check changelog
+        run: npm run collection-changelog:check

@@ -24,6 +24,25 @@ No credentials are required — all three scripts use public schema introspectio
 
 If you have Claude Code installed, run `/sync-schema` to validate, fix any issues, sync docs, and report coverage in one step.
 
+## Updating the Changelog
+
+[CHANGELOG.md](./CHANGELOG.md) records what changed for the people sending these requests. Entries are collected from git rather than written by hand, so the workflow is: commit your request changes first, then collect.
+
+```bash
+npm run collection-changelog:collect   # write entries for commits since .collection-changelog-commit
+npm run collection-changelog:sync      # mirror the newest entries into Bruno's Docs pane
+```
+
+To rebuild the file from scratch, empty `.collection-changelog-commit` and delete the entries below the preamble; `collect` then reads from the first commit. Note that rewording is lost, so this is a bootstrap step, not routine maintenance.
+
+`collect` reads every commit since the one recorded in `.collection-changelog-commit` and derives an entry from each `.bru` file that appeared, disappeared, gained a deprecation notice, or changed in a `fix:` commit. Everything else — doc syncs, chores, refactors — is invisible to users and produces no entry.
+
+Reword anything that reads like a commit subject rather than a note to a user, particularly the reason on a `Fixed` entry: it should say what was wrong with the request, since anyone who copied that request is still holding the broken version. Entries already in the file are never rewritten by a later `collect`, so polish survives.
+
+Don't worry about where an entry goes. Each run re-sorts every section — grouped by kind, then in the order Bruno draws the requests in its sidebar — so a line pasted anywhere in its date's section ends up in the right place. Running `collect` with nothing new to collect does the sort on its own.
+
+Commit the changelog, the checkpoint and `Spacelift/collection.bru` together. `npm run collection-changelog:check` is what CI runs; it fails if request changes have no entries, or if Bruno's docs pane has fallen behind the file.
+
 ## Pre-Commit Hook
 
 A [pre-commit](https://pre-commit.com/) config is included. It runs `npm run validate` automatically whenever `.bru` files are staged, catching schema errors before they reach CI.

@@ -1,0 +1,35 @@
+docs {
+  # Spacelift API
+
+  Every operation in the Spacelift GraphQL API, one request per operation.
+
+  ## Start here
+
+  1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the **local** environment.
+  2. Send **Auth → Get Token**. It stores the `jwt` that every other request authenticates with.
+
+  Tokens last a few hours — send it again when requests start coming back unauthorized.
+
+  See the [README](https://github.com/spacelift-io/spacelift-api-bruno#setup) for detailed setup instructions.
+
+  ## What's New
+
+  ✚ added · ✎ corrected · ⚠ deprecated · ✖ removed
+
+  **2026-09-15**
+
+  - ✖ Runs → Delete Run State Summary
+  - ✖ Runs → Delete Run Summary
+  - ✖ Runs → Summarize Run
+  - ✖ Runs → Summarize Run State
+  - ⚠ Blueprints → Deployments → List Deployments — Use searchTemplateDeployments instead
+  - ⚠ Blueprints → Deployments → Get Deployment — Use templateDeployment instead
+  - ⚠ Blueprints → Deployments → Create Deployment — Use templateDeploymentCreate instead
+  - ⚠ Blueprints → Deployments → Update Deployment — Use templateDeploymentUpdate instead
+  - ⚠ Blueprints → Deployments → Delete Deployment — Use templateDeploymentDelete instead
+  - ⚠ Blueprints → Versioned Groups → List Versioned Groups — Use searchTemplates instead
+  - ⚠ Blueprints → Versioned Groups → Get Versioned Group — Use template instead
+  - ⚠ Blueprints → Versioned Groups → Create Versioned Group — Use templateCreate instead
+
+  _… and 697 earlier changes — see the [full changelog](https://github.com/spacelift-io/spacelift-api-bruno/blob/main/CHANGELOG.md)._
+}

@@ -3,6 +3,9 @@
  * api-changelog.js — Prints entries from Spacelift's own product
  * changelog that are newer than a given date.
  *
+ * This is the API's changelog, not the collection's. For what changed in the
+ * requests themselves, see collection-changelog.js and CHANGELOG.md.
+ *
  * The changelog is free-form prose with no feed and no topic tags, so this
  * script does no matching — it just narrows the page down to what has not
  * been reviewed yet and leaves the judgement to a human (or to /sync-schema).

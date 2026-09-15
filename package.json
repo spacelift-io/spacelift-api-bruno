@@ -5,6 +5,9 @@
   "license": "MIT",
   "scripts": {
     "api-changelog": "node scripts/api-changelog.js",
+    "collection-changelog:check": "node scripts/collection-changelog.js --check",
+    "collection-changelog:collect": "node scripts/collection-changelog.js --collect",
+    "collection-changelog:sync": "node scripts/collection-changelog.js --sync",
     "coverage": "node scripts/coverage.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
