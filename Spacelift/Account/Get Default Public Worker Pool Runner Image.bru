@@ -1,0 +1,25 @@
+meta {
+  name: Get Default Public Worker Pool Runner Image
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Return default public worker pool runner image for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    defaultPublicWorkerPoolRunnerImage
+  }
+}

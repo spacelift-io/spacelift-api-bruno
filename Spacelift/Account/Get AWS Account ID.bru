@@ -1,0 +1,26 @@
+meta {
+  name: Get AWS Account ID
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns the AWS account used by Spacelift during role assumption. This can be used for
+  generating AssumeRole policies.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  {
+    spaceliftAwsAccountId
+  }
+}

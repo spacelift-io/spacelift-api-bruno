@@ -206,11 +206,7 @@ const IGNORED = new Set([
   "githubAppGenerateManifest",
 
   // Internal infra info
-  "outgoingIPAddresses",
-  "spaceliftAwsAccountId",
   "installationId",
-  "defaultPrivateWorkerPoolRunnerImage",
-  "defaultPublicWorkerPoolRunnerImage",
   "policyRuntime",
 
   // Generic forms — in-app survey/onboarding
