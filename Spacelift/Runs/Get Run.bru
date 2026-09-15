@@ -31,3 +31,59 @@ body:graphql:vars {
     "id": "RUN_ID_HERE"
   }
 }
+
+example {
+  name: Example response
+  description: Illustrative, generated from the schema — not captured from a live account. The shape and field names are exact; the values are placeholders.
+
+  request: {
+    url: {{SPACELIFT_ENDPOINT}}
+    method: POST
+    mode: graphql
+    body:graphql: {
+      query GetRun($id: ID!) {
+        run(id: $id) {
+          id
+          stackId
+          branch
+          canConfirm
+          canRetry
+        }
+      }
+    }
+
+    body:graphql:vars: {
+      {
+        "id": "RUN_ID_HERE"
+      }
+    }
+  }
+
+  response: {
+    headers: {
+      content-type: application/json
+    }
+
+    status: {
+      code: 200
+      text: OK
+    }
+
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "run": {
+              "id": "example-run",
+              "stackId": "example-stack",
+              "branch": "main",
+              "canConfirm": true,
+              "canRetry": true
+            }
+          }
+        }
+      '''
+    }
+  }
+}

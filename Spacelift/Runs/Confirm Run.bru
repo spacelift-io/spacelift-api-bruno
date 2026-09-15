@@ -40,3 +40,57 @@ body:graphql:vars {
     "note": "Approved"
   }
 }
+
+example {
+  name: Example response
+  description: Illustrative, generated from the schema — not captured from a live account. The shape and field names are exact; the values are placeholders.
+
+  request: {
+    url: {{SPACELIFT_ENDPOINT}}
+    method: POST
+    mode: graphql
+    body:graphql: {
+      mutation ConfirmRun($stack: ID!, $run: ID, $note: String) {
+        runConfirm(stack: $stack, run: $run, note: $note) {
+          id
+          state
+          type
+        }
+      }
+    }
+
+    body:graphql:vars: {
+      {
+        "stack": "{{stackId}}",
+        "run": "{{runId}}",
+        "note": "Approved"
+      }
+    }
+  }
+
+  response: {
+    headers: {
+      content-type: application/json
+    }
+
+    status: {
+      code: 200
+      text: OK
+    }
+
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "runConfirm": {
+              "id": "example-run",
+              "state": "QUEUED",
+              "type": "PROPOSED"
+            }
+          }
+        }
+      '''
+    }
+  }
+}

@@ -14,10 +14,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "pre-commit:update": "pre-commit autoupdate --freeze",
+    "response-examples": "node scripts/response-examples.js",
+    "response-examples:check": "node scripts/response-examples.js --check",
     "sync-docs": "node scripts/sync-docs.js",
-    "test": "node scripts/test.js",
     "sync-docs:check": "node scripts/sync-docs.js --check",
     "sync-docs:check-folders": "node scripts/sync-docs.js --check-folders",
+    "test": "node scripts/test.js",
     "validate": "node scripts/validate-schema.js"
   },
   "dependencies": {

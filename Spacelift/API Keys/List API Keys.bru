@@ -28,3 +28,61 @@ body:graphql {
     }
   }
 }
+
+example {
+  name: Example response
+  description: Illustrative, generated from the schema — not captured from a live account. The shape and field names are exact; the values are placeholders.
+
+  request: {
+    url: {{SPACELIFT_ENDPOINT}}
+    method: POST
+    mode: graphql
+    body:graphql: {
+      {
+        apiKeys {
+          id
+          name
+          admin
+          description
+          isMachineUser
+          expiresAt
+          createdAt
+          lastUsedAt
+        }
+      }
+    }
+  }
+
+  response: {
+    headers: {
+      content-type: application/json
+    }
+
+    status: {
+      code: 200
+      text: OK
+    }
+
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "apiKeys": [
+              {
+                "id": "example-apikey",
+                "name": "Example Api Key",
+                "admin": true,
+                "description": "Example Api Key description",
+                "isMachineUser": true,
+                "expiresAt": 1758000000,
+                "createdAt": 1758000000,
+                "lastUsedAt": 1758000000
+              }
+            ]
+          }
+        }
+      '''
+    }
+  }
+}

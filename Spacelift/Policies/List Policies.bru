@@ -38,3 +38,65 @@ body:graphql {
 vars:post-response {
   policyId: res.body.data.policies?.[0]?.id
 }
+
+example {
+  name: Example response
+  description: Illustrative, generated from the schema — not captured from a live account. The shape and field names are exact; the values are placeholders.
+
+  request: {
+    url: {{SPACELIFT_ENDPOINT}}
+    method: POST
+    mode: graphql
+    body:graphql: {
+      {
+        policies {
+          id
+          name
+          body
+          type
+          description
+          labels
+          space
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+
+  response: {
+    headers: {
+      content-type: application/json
+    }
+
+    status: {
+      code: 200
+      text: OK
+    }
+
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "policies": [
+              {
+                "id": "example-policy",
+                "name": "Example Policy",
+                "body": "example-body",
+                "type": "ACCESS",
+                "description": "Example Policy description",
+                "labels": [
+                  "example-label"
+                ],
+                "space": "root",
+                "createdAt": 1758000000,
+                "updatedAt": 1758000000
+              }
+            ]
+          }
+        }
+      '''
+    }
+  }
+}

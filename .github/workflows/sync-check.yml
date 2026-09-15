@@ -29,6 +29,11 @@ jobs:
       - name: Check docs are in sync with the schema
         run: npm run sync-docs:check
 
+      # Response examples are generated from the schema too, so a new field on a
+      # type a request selects makes them stale the same way docs go stale.
+      - name: Check response examples are in sync with the schema
+        run: npm run response-examples:check
+
       - name: Open issue on failure
         if: failure()
         uses: actions/github-script@v9
@@ -42,6 +47,7 @@ jobs:
               "- New operations were added that have no `.bru` file (coverage regressed past `.coverage-baseline`)",
               "- An operation was newly deprecated and its `.bru` file isn't marked yet (run `npm run sync-docs`)",
               "- A schema description changed, so a request's `docs { }` block is stale (run `npm run sync-docs`)",
+              "- A selected type gained or lost a field, so a response example is stale (run `npm run response-examples`)",
               "",
               `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               "",

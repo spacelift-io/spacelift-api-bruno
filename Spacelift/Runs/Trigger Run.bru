@@ -53,3 +53,61 @@ body:graphql:vars {
 vars:post-response {
   runId: res.body.data.runTrigger?.id
 }
+
+example {
+  name: Example response
+  description: Illustrative, generated from the schema — not captured from a live account. The shape and field names are exact; the values are placeholders.
+
+  request: {
+    url: {{SPACELIFT_ENDPOINT}}
+    method: POST
+    mode: graphql
+    body:graphql: {
+      mutation TriggerRun($stack: ID!, $commitSha: String, $runType: RunType) {
+        runTrigger(stack: $stack, commitSha: $commitSha, runType: $runType) {
+          id
+          state
+          type
+          createdAt
+          triggeredBy
+        }
+      }
+    }
+
+    body:graphql:vars: {
+      {
+        "stack": "{{stackId}}",
+        "commitSha": null,
+        "runType": "PROPOSED"
+      }
+    }
+  }
+
+  response: {
+    headers: {
+      content-type: application/json
+    }
+
+    status: {
+      code: 200
+      text: OK
+    }
+
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "runTrigger": {
+              "id": "example-run",
+              "state": "QUEUED",
+              "type": "PROPOSED",
+              "createdAt": 1758000000,
+              "triggeredBy": "example-triggeredBy"
+            }
+          }
+        }
+      '''
+    }
+  }
+}

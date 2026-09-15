@@ -42,3 +42,83 @@ body:graphql:vars {
     }
   }
 }
+
+example {
+  name: Example response
+  description: Illustrative, generated from the schema — not captured from a live account. The shape and field names are exact; the values are placeholders.
+
+  request: {
+    url: {{SPACELIFT_ENDPOINT}}
+    method: POST
+    mode: graphql
+    body:graphql: {
+      query SearchStacks($input: SearchInput!) {
+        searchStacks(input: $input) {
+          edges {
+            node {
+              id
+              name
+              state
+              description
+              labels
+              space
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    }
+
+    body:graphql:vars: {
+      {
+        "input": {
+          "first": 50
+        }
+      }
+    }
+  }
+
+  response: {
+    headers: {
+      content-type: application/json
+    }
+
+    status: {
+      code: 200
+      text: OK
+    }
+
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "searchStacks": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "example-stack",
+                    "name": "Example Stack",
+                    "state": "INITIALIZING",
+                    "description": "Example Stack description",
+                    "labels": [
+                      "example-label"
+                    ],
+                    "space": "root"
+                  }
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": true,
+                "endCursor": "example-endCursor"
+              }
+            }
+          }
+        }
+      '''
+    }
+  }
+}

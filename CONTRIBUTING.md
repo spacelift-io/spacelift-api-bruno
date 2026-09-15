@@ -151,4 +151,14 @@ npm test   # offline, no credentials, about a second
 
 This checks the things `npm run validate` cannot see: that Bruno can actually parse every file, that authentication still resolves through the collection, that the API key secret and JWT are still secret variables, and that the token-refresh script behaves. It runs in pre-commit and on every pull request.
 
-Nothing in this repository sends a request to a real Spacelift account, in CI or otherwise — every check works from public schema introspection, with no credentials. Please keep it that way; it is why anyone can clone this and run the whole suite.
+Nothing in this repository sends a request to a real Spacelift account, in CI or otherwise — every check works from public schema introspection, with no credentials. Please keep it that way; it is why anyone can clone this and run the full suite.
+
+## Response Examples
+
+A handful of requests carry a saved response example, which Bruno shows beside the request so you can see the shape of the answer before you have credentials.
+
+These are generated from the schema by `npm run response-examples`, not captured from a real account, and each one says so in its description. Please keep that wording — an example that stops declaring itself illustrative is a fabricated response presented as a real one. The field names and nesting are exact; only the values are invented.
+
+To give another request an example, add it to `EXAMPLE_REQUESTS` in [`scripts/response-examples.js`](./scripts/response-examples.js) and re-run the script. The list is deliberately short: generating all 649 would add a few hundred kilobytes of synthetic JSON to every clone.
+
+If you captured a genuine response and want to keep it, save it from Bruno under any name other than "Example response" and the generator will leave it alone.

@@ -12,6 +12,8 @@ npm run validate                               # validate all .bru files against
 npm run sync-docs                              # sync schema descriptions + deprecations into docs {} blocks, and folder docs into folder.bru
 npm run sync-docs:check                        # exit 1 if any request or folder docs block is stale (needs the schema)
 npm run sync-docs:check-folders                # exit 1 if a folder is undocumented or stale (offline, instant)
+npm run response-examples                      # regenerate the illustrative response examples from the schema
+npm run response-examples:check                # exit 1 if any example no longer matches its request
 npm run destructive-prompts                    # convert placeholders in destructive requests to prompt variables
 npm run destructive-prompts:check              # exit 1 if a destructive request still sends a plain placeholder
 npm run coverage                               # show which schema operations have no .bru file
@@ -102,6 +104,20 @@ The expressions use optional chaining (`res.body.data.stacks?.[0]?.id`) so an em
 
 This is deliberately limited to the documented workflows. Chaining every request that takes an ID would mean 352 files silently depending on execution order, and a request whose variable was never set fails less legibly than one still holding `STACK_ID_HERE` — the placeholder at least says what it wants. Each chained request carries a note saying which request feeds it.
 
+### Response Examples
+
+Fifteen requests carry an `example { }` block, which Bruno shows beside the request — so you can see the shape of a response before you have an account, credentials, or any stacks to list.
+
+**They are generated from the schema, not captured from a live account,** and every one carries a description saying exactly that. This matters: a synthesized response passed off as a real one is worse than no example at all. What they are accurate about is _shape_ — every field, its nesting and its type come from the request's own selection set walked against the schema, so an example cannot silently disagree with the request it sits next to. The values are obvious placeholders (`example-stack`, `Example Stack`) so nobody mistakes them for somebody's data.
+
+`npm test` asserts the "generated from the schema" wording is still there; deleting it would turn documentation into fabrication.
+
+A few value choices are deliberate: enum fields skip placeholder members (`RunState` starts at `UNKNOWN`, which would make every example look broken), `space` is `root` because that genuinely is every account's top-level space, and timestamps use a fixed epoch so regenerating produces no diff.
+
+`scripts/response-examples.js` **splices only the example block** rather than reserializing the file with `jsonToBruV2`. Bruno's serializer and `sync-docs.js` disagree about whether a blank line inside a docs block is empty or two spaces, and reserializing put the two writers in a loop, each undoing the other with `--check` failing in between. Bruno's serializer still formats the example — it is the authority on that syntax — but only its example blocks are taken, and they are spliced onto an otherwise byte-identical file. If you extend this script, keep that property.
+
+`EXAMPLE_REQUESTS` is a curated list. Generating all 649 would add a few hundred kilobytes of synthetic JSON to every clone for little gain.
+
 ### Tests
 
 `npm test` (`scripts/test.js`) — offline, no credentials, about a second. It uses Bruno's own parser rather than a reimplementation, and runs the pre-request script the way Bruno runs it: in an async wrapper with `require()` limited to the Safe Mode allowlist. It asserts that
@@ -109,7 +125,8 @@ This is deliberately limited to the documented workflows. Chaining every request
 - every `.bru` file parses and has a `meta.name`, and every `folder.bru` has docs;
 - `SPACELIFT_API_KEY_SECRET` and `jwt` are both **secret** variables — the assertion that stops a token ever being written into a tracked file;
 - every request resolves to a bearer token through `inherit`, with exactly one at `auth: none`;
-- the token script mints, refreshes, skips and fails in the ten ways it is supposed to.
+- the token script mints, refreshes, skips and fails in the ten ways it is supposed to;
+- every generated response example still declares itself illustrative.
 
 This exists because `validate` cannot see any of it. A search-and-replace once put backticks inside a template literal in `collection.bru`, breaking authentication for every user, while `npm run validate` stayed green.
 

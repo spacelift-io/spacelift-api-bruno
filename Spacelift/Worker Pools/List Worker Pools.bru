@@ -26,3 +26,59 @@ body:graphql {
     }
   }
 }
+
+example {
+  name: Example response
+  description: Illustrative, generated from the schema — not captured from a live account. The shape and field names are exact; the values are placeholders.
+
+  request: {
+    url: {{SPACELIFT_ENDPOINT}}
+    method: POST
+    mode: graphql
+    body:graphql: {
+      {
+        workerPools {
+          id
+          name
+          description
+          labels
+          space
+          createdAt
+        }
+      }
+    }
+  }
+
+  response: {
+    headers: {
+      content-type: application/json
+    }
+
+    status: {
+      code: 200
+      text: OK
+    }
+
+    body: {
+      type: json
+      content: '''
+        {
+          "data": {
+            "workerPools": [
+              {
+                "id": "example-workerpool",
+                "name": "Example Worker Pool",
+                "description": "Example Worker Pool description",
+                "labels": [
+                  "example-label"
+                ],
+                "space": "root",
+                "createdAt": 1758000000
+              }
+            ]
+          }
+        }
+      '''
+    }
+  }
+}
