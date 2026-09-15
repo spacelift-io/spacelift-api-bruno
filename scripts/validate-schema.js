@@ -147,6 +147,25 @@ function checkVariables(schema, doc, varsJson) {
   return problems;
 }
 
+/**
+ * Extract the token mutation embedded in collection.bru's pre-request script.
+ *
+ * That script mints the JWT every other request authenticates with, so its
+ * GraphQL is as load-bearing as any request file's — but it lives in a
+ * `script:pre-request` block rather than a `body:graphql` one, so the file
+ * loop below skips it. Left unchecked, a rename of `apiKeyUser` would break
+ * authentication for every user while `npm run validate` stayed green.
+ *
+ * The extraction is deliberately literal: the script must assign the mutation
+ * to a `GET_TOKEN` template literal, and a miss is reported as a failure
+ * rather than a skip, so renaming the variable can't silently drop the check.
+ */
+function extractCollectionScriptGraphQL(content) {
+  if (!content.includes("script:pre-request")) return null;
+  const match = content.match(/const GET_TOKEN = `([\s\S]*?)`/);
+  return match ? match[1].trim() : null;
+}
+
 /** Walk a directory recursively, returning all .bru file paths. */
 function findBruFiles(dir) {
   const results = [];
@@ -196,6 +215,45 @@ async function main() {
   for (const filePath of bruFiles.sort()) {
     const relativePath = path.relative(process.cwd(), filePath);
     const content = fs.readFileSync(filePath, "utf8");
+
+    // collection.bru carries no request body, but its pre-request script
+    // embeds the token mutation — check that instead.
+    if (path.basename(filePath) === "collection.bru") {
+      if (!content.includes("script:pre-request")) continue;
+
+      const scriptGql = extractCollectionScriptGraphQL(content);
+      if (!scriptGql) {
+        failed++;
+        failures.push({
+          file: relativePath,
+          errors: [
+            "pre-request script found, but no `const GET_TOKEN = ` template " +
+              "literal to validate — rename it back, or teach " +
+              "extractCollectionScriptGraphQL where the mutation moved to.",
+          ],
+        });
+        console.log(`  FAIL  ${relativePath}`);
+        continue;
+      }
+
+      let scriptErrors;
+      try {
+        scriptErrors = validate(schema, parse(scriptGql)).map((e) => e.message);
+      } catch (err) {
+        scriptErrors = [`Parse error: ${err.message}`];
+      }
+
+      if (scriptErrors.length === 0) {
+        passed++;
+        console.log(`  PASS  ${relativePath}  (token mutation)`);
+      } else {
+        failed++;
+        failures.push({ file: relativePath, errors: scriptErrors });
+        console.log(`  FAIL  ${relativePath}`);
+        for (const msg of scriptErrors) console.log(`        ${msg}`);
+      }
+      continue;
+    }
 
     // Skip non-GraphQL requests (e.g. the environment file)
     if (!content.includes("body:graphql")) {

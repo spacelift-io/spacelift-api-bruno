@@ -54,9 +54,18 @@ ship with the collection at all.
 Working with more than one Spacelift account? Duplicate the environment and name the copies
 after your accounts. Only `My Account` is tracked in git; anything else you add is ignored.
 
-### 3. Get a Token
+### 3. Send a Request
 
-Run **Auth → Get Token**. Bruno will store the token and use it for all subsequent requests. Tokens expire after a few hours — just re-run this request if you start getting authentication errors.
+That's it — open any request and send it. The collection authenticates itself: a
+collection-level pre-request script mints a token the first time you need one and
+replaces it a couple of minutes before it expires, so you should never see an
+authentication error or have to think about tokens.
+
+**Auth → Get Token** is still there if you want a token explicitly — to copy one out for
+use elsewhere, say — but nothing requires you to run it.
+
+If the environment isn't filled in yet, the first request stops with a message naming
+exactly which variables are still missing, rather than a bare 401.
 
 ## Typical Workflows
 

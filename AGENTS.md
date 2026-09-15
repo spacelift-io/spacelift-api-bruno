@@ -48,7 +48,7 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
   This is load-bearing, not incidental. It is what lets setup be "fill in three fields in the app" instead of "find the clone on disk, copy a template, create an environment by hand" — the step users dropped out at. Never move `jwt` out of `vars:secret`: it would start writing live tokens into a tracked file.
 
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
-- `collection.bru` — collection-level settings. Today it holds only a `docs { }` block, written by `collection-changelog.js --sync`; it is what Bruno shows in the collection's Docs pane. Do not hand-edit the block. Collection-level auth, headers or vars added through Bruno's UI would land in this same file, and `--sync` preserves them.
+- `collection.bru` — collection-level settings. It holds a `script:pre-request` block (see **Authentication Flow**) and a `docs { }` block written by `collection-changelog.js --sync`, which is what Bruno shows in the collection's Docs pane. Do not hand-edit the docs block; `--sync` replaces it wholesale and leaves every other block alone, so the script, and any auth, headers or vars added through Bruno's UI, survive.
 - `Advanced/folder.bru` — the only top-level folder metadata, and the only reason it exists is `seq: 99`, which pins `Advanced` to the bottom of the sidebar. See **Advanced Operations** below.
 
 Bruno sorts folders alphabetically and then splices any folder carrying a valid `seq` in at index `seq - 1`, so a folder's position is settled entirely by its `folder.bru` — no instruction in this file can move it. Every folder but `Advanced` is deliberately seq-less and therefore alphabetical.
@@ -81,7 +81,17 @@ body:graphql:vars {
 
 ### Authentication Flow
 
-`Auth/Get Token.bru` is the only request without `auth: bearer`. Its `script:post-response` block extracts `data.apiKeyUser.jwt` and calls `bru.setEnvVar("jwt", ...)`. All other requests reference `{{jwt}}`.
+Authentication is automatic. `collection.bru`'s `script:pre-request` block runs before every request, decodes the `exp` claim of the `jwt` environment variable, and mints a replacement via `apiKeyUser` when the token is missing, unreadable or within two minutes of expiring. Users never send a token request; requests just work.
+
+Details that matter if you touch it:
+
+- **It calls `axios` directly, not `bru.runRequest("Auth/Get Token")`.** Bruno documents that `runRequest` from a _collection-level_ pre-request script can recurse infinitely, because the request it runs triggers the same script again. `axios` and `atob` are both in Bruno's Safe Mode allowlist, so this needs no sandbox change — keep it that way.
+- **A token it cannot read counts as unusable**, not as good. Being wrong in that direction costs one round trip; the other direction is the authentication failure the script exists to prevent.
+- **`MANAGES_ITS_OWN_TOKEN` skips `Get Token`, `Refresh Token` and `Logout`** by `req.getName()`. Without that, the script would mint a token purely for those requests to replace or discard.
+- **An unconfigured environment throws with the missing variable names**, before any network call. The default `SPACELIFT_ENDPOINT` counts as unset — otherwise the failure is a DNS error for the literal host `myaccount.app.spacelift.io`.
+- **`npm run validate` checks the mutation inside the script.** It has no `body:graphql` block, so the file loop would skip it; `extractCollectionScriptGraphQL` pulls the `GET_TOKEN` template literal out instead. Renaming that variable fails the run on purpose rather than silently dropping the check — the alternative is a rename of `apiKeyUser` breaking authentication for every user while CI stays green.
+
+`Auth/Get Token.bru` remains, as the explicit way to obtain a token (to copy one out for use elsewhere), and is still the only request with `auth: none`.
 
 ### Scripts
 

@@ -1,3 +1,114 @@
+script:pre-request {
+  // Keep a valid Spacelift JWT in the environment, minting one when it is
+  // missing and replacing it shortly before it expires.
+  //
+  // Spacelift tokens last a few hours. Without this, the first request after
+  // an expiry fails with an authentication error that says nothing about
+  // tokens, and the fix — "go and re-send Auth → Get Token" — is something
+  // you can only know by having been told.
+  //
+  // Uses axios directly rather than bru.runRequest("Auth/Get Token"): Bruno
+  // documents that calling runRequest from a *collection-level* pre-request
+  // script can recurse infinitely, since the request it runs triggers this
+  // same script again.
+  //
+  // axios and atob are both available in Bruno's default Safe Mode, so this
+  // needs no sandbox change.
+
+  const axios = require("axios");
+  const atob = require("atob");
+
+  // These three manage the token themselves; running this first would mint a
+  // token only to have them immediately replace or discard it.
+  const MANAGES_ITS_OWN_TOKEN = ["Get Token", "Refresh Token", "Logout"];
+
+  // Refresh this far ahead of expiry, so a token cannot lapse between the
+  // check and the response coming back.
+  const REFRESH_BEFORE_EXPIRY_MS = 120 * 1000;
+
+  const GET_TOKEN = `
+    mutation GetSpaceliftToken($apiKeyId: ID!, $apiKeySecret: String!) {
+      apiKeyUser(id: $apiKeyId, secret: $apiKeySecret) {
+        jwt
+      }
+    }
+  `;
+
+  /**
+   * True if `token` is absent, malformed, or close enough to expiry to be
+   * worth replacing.
+   *
+   * A token we cannot read is treated as unusable rather than assumed good:
+   * being wrong in that direction costs one extra round trip, while the other
+   * direction is the authentication error this script exists to prevent.
+   */
+  function needsRefresh(token) {
+    if (!token) return true;
+
+    const segments = String(token).split(".");
+    if (segments.length !== 3) return true;
+
+    try {
+      // JWT payloads are base64url; atob expects plain base64.
+      const base64 = segments[1].replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
+      const { exp } = JSON.parse(atob(padded));
+
+      if (typeof exp !== "number") return true;
+      return exp * 1000 - Date.now() < REFRESH_BEFORE_EXPIRY_MS;
+    } catch (err) {
+      return true;
+    }
+  }
+
+  if (!MANAGES_ITS_OWN_TOKEN.includes(req.getName()) && needsRefresh(bru.getEnvVar("jwt"))) {
+    const endpoint = bru.getEnvVar("SPACELIFT_ENDPOINT");
+    const apiKeyId = bru.getEnvVar("SPACELIFT_API_KEY_ID");
+    const apiKeySecret = bru.getEnvVar("SPACELIFT_API_KEY_SECRET");
+
+    // Name the missing field. Left to itself this surfaces as a connection
+    // error against the literal string "myaccount", or as an unhelpful 401.
+    const missing = [];
+    if (!endpoint || endpoint.includes("myaccount.app.spacelift.io")) {
+      missing.push("SPACELIFT_ENDPOINT");
+    }
+    if (!apiKeyId) missing.push("SPACELIFT_API_KEY_ID");
+    if (!apiKeySecret) missing.push("SPACELIFT_API_KEY_SECRET");
+
+    if (missing.length) {
+      throw new Error(
+        `Spacelift credentials are not set up yet. Fill in ${missing.join(", ")} ` +
+          `in the "My Account" environment (top right), then send this request again. ` +
+          `See the collection's Docs tab for where to find these values.`
+      );
+    }
+
+    const response = await axios.post(
+      endpoint,
+      {
+        query: GET_TOKEN,
+        variables: { apiKeyId, apiKeySecret },
+      },
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    const jwt = response.data?.data?.apiKeyUser?.jwt;
+
+    if (!jwt) {
+      const reason =
+        response.data?.errors?.map((e) => e.message).join("; ") ||
+        "the API returned no token";
+      throw new Error(
+        `Could not authenticate with Spacelift: ${reason}. ` +
+          `Check SPACELIFT_API_KEY_ID and SPACELIFT_API_KEY_SECRET in the "My Account" environment.`
+      );
+    }
+
+    bru.setEnvVar("jwt", jwt);
+    console.log("Spacelift token refreshed.");
+  }
+}
+
 docs {
   # Spacelift API
 
@@ -6,9 +117,9 @@ docs {
   ## Start here
 
   1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the **My Account** environment (top-right dropdown).
-  2. Send **Auth → Get Token**. It stores the `jwt` that every other request authenticates with.
+  2. Send any request.
 
-  Tokens last a few hours — send it again when requests start coming back unauthorized.
+  There is no token step. The collection mints a token the first time it needs one and replaces it shortly before it expires, so authentication stays out of your way. **Auth → Get Token** is still there if you want one explicitly.
 
   See the [README](https://github.com/spacelift-io/spacelift-api-bruno#setup) for detailed setup instructions.
 
