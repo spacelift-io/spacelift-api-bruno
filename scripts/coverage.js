@@ -14,6 +14,7 @@
  *   node scripts/coverage.js --show-covered        also list covered operations
  *   node scripts/coverage.js --ignore-deprecated   hide deprecated operations
  *   node scripts/coverage.js --show-ignored        show what the ignore list filters out
+ *   node scripts/coverage.js --fail-on-deprecated  exit 1 if a covered op is deprecated
  */
 
 const { buildClientSchema, getIntrospectionQuery, parse } = require("graphql");
@@ -36,6 +37,7 @@ const ENDPOINT =
 const SHOW_COVERED = args.includes("--show-covered");
 const IGNORE_DEPRECATED = args.includes("--ignore-deprecated");
 const SHOW_IGNORED = args.includes("--show-ignored");
+const FAIL_ON_DEPRECATED = args.includes("--fail-on-deprecated");
 
 // ---------------------------------------------------------------------------
 // Ignore list — operations that exist in the schema but are intentionally
@@ -371,7 +373,23 @@ async function main() {
       if (IGNORED.has(name)) continue;
       const deprecated = !!field.deprecationReason;
       if (IGNORE_DEPRECATED && deprecated) continue;
-      schemaOps[typeName].set(name, { deprecated });
+      schemaOps[typeName].set(name, {
+        deprecated,
+        reason: field.deprecationReason,
+      });
+    }
+  }
+
+  // Every deprecated root field, collected before --ignore-deprecated filtering
+  // so that "deprecated but still in use" is reported either way.
+  const deprecatedOps = new Map();
+  for (const typeName of ["Query", "Mutation"]) {
+    const type = schema.getType(typeName);
+    if (!type) continue;
+    for (const [name, field] of Object.entries(type.getFields())) {
+      if (name.startsWith("__")) continue;
+      if (!field.deprecationReason) continue;
+      deprecatedOps.set(name, { typeName, reason: field.deprecationReason });
     }
   }
 
@@ -389,6 +407,7 @@ async function main() {
   // 3. Scan .bru files and collect covered root fields
   const bruFiles = findBruFiles(COLLECTION_DIR);
   const covered = new Set();
+  const coveredBy = new Map();
 
   for (const filePath of bruFiles) {
     const content = fs.readFileSync(filePath, "utf8");
@@ -397,6 +416,8 @@ async function main() {
     if (!gql) continue;
     for (const field of extractRootFields(gql)) {
       covered.add(field);
+      if (!coveredBy.has(field)) coveredBy.set(field, []);
+      coveredBy.get(field).push(path.relative(COLLECTION_DIR, filePath));
     }
   }
 
@@ -416,6 +437,25 @@ async function main() {
     `\nCoverage: ${coveredCount}/${totalOps} operations (${pct}%)${filterNote}`,
   );
   console.log(`Scanned:  ${bruFiles.length} .bru files\n`);
+
+  const deprecatedInUse = [...deprecatedOps.entries()]
+    .filter(([name]) => coveredBy.has(name))
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  if (deprecatedInUse.length > 0) {
+    console.log(`── Deprecated but still in use ${"─".repeat(30)}`);
+    console.log(
+      `   ${deprecatedInUse.length} operation(s) have a .bru file but are deprecated in the schema.\n`,
+    );
+    for (const [name, { typeName, reason }] of deprecatedInUse) {
+      console.log(`   !  ${typeName}.${name}`);
+      console.log(`      ${reason}`);
+      for (const file of coveredBy.get(name)) {
+        console.log(`      → ${file}`);
+      }
+    }
+    console.log();
+  }
 
   if (SHOW_IGNORED) {
     console.log(`── Ignored (out of scope) ${"─".repeat(35)}`);
@@ -454,6 +494,10 @@ async function main() {
       }
       console.log();
     }
+  }
+
+  if (FAIL_ON_DEPRECATED && deprecatedInUse.length > 0) {
+    process.exitCode = 1;
   }
 }
 
