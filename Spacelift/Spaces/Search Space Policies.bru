@@ -1,0 +1,45 @@
+meta {
+  name: Search Space Policies
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Paginated policies created in or inherited by the given space.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchSpacePolicies($space: ID!, $input: SearchInput!) {
+    searchSpacePolicies(space: $space, input: $input) {
+      edges {
+        node {
+          id
+          space
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

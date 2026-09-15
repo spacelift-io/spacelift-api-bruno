@@ -1,0 +1,35 @@
+meta {
+  name: Check OpenTofu Features
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Returns all OpenTofu features and whether they are supported for the given version constraint.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OpenTofuFeatures($version: String!) {
+    openTofuFeatures(version: $version) {
+      feature
+      supported
+      requiredVersion
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "version": "1.8.0"
+  }
+}

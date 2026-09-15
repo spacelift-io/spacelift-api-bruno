@@ -1,0 +1,43 @@
+meta {
+  name: Batch Create Project Role Bindings
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Assigns a batch of (space, role) bindings to Flows projects. Requires admin
+  access to every target space. Returns the created bindings.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation FlowsProjectRoleBindingBatchCreate($input: FlowsProjectRoleBindingBatchInput!) {
+    flowsProjectRoleBindingBatchCreate(input: $input) {
+      id
+      flowsProjectID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "bindings": [
+        {
+          "flowsProjectID": "FLOWS_PROJECT_ID_HERE",
+          "spaceID": "SPACE_ID_HERE",
+          "roleID": "ROLE_ID_HERE"
+        }
+      ]
+    }
+  }
+}

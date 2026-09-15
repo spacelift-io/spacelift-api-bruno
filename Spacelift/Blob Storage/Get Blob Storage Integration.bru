@@ -1,0 +1,41 @@
+meta {
+  name: Get Blob Storage Integration
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Shows Blob Storage integration details.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetBlobStorageIntegration($id: ID) {
+    blobStorageIntegration(id: $id) {
+      id
+      subtype
+      authMethod
+      baseURI
+      region
+      endpoint
+      roleArn
+      accessKeyId
+      hasCredentials
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLOB_STORAGE_INTEGRATION_ID_HERE"
+  }
+}

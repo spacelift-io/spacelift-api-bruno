@@ -1,0 +1,32 @@
+meta {
+  name: Get Install URL
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns the Origin (Cursor) consent URL that an account admin should be sent
+  to in order to install the global Spacelift Origin app on their namespace.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OriginIntegrationInstallURL($spaceID: ID) {
+    originIntegrationInstallURL(spaceID: $spaceID)
+  }
+}
+
+body:graphql:vars {
+  {
+    "spaceID": "SPACE_ID_HERE"
+  }
+}

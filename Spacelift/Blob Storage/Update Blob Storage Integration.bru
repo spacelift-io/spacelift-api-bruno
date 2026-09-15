@@ -1,0 +1,44 @@
+meta {
+  name: Update Blob Storage Integration
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Updates a Blob Storage integration with new properties.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation UpdateBlobStorageIntegration($subtype: BlobStorageSubtype!, $authMethod: BlobStorageAuthMethod!, $baseURI: String!, $region: String) {
+    blobStorageIntegrationUpdate(subtype: $subtype, authMethod: $authMethod, baseURI: $baseURI, region: $region) {
+      id
+      subtype
+      authMethod
+      baseURI
+      region
+      endpoint
+      roleArn
+      accessKeyId
+      hasCredentials
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "subtype": "AWS_S3",
+    "authMethod": "AWS_ROLE",
+    "baseURI": "s3://my-bucket/prefix",
+    "region": "eu-west-1"
+  }
+}

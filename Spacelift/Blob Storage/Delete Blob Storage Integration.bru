@@ -1,0 +1,34 @@
+meta {
+  name: Delete Blob Storage Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Deletes a Blob Storage integration. Fails while stacks are still attached to it.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteBlobStorageIntegration($id: ID) {
+    blobStorageIntegrationDelete(id: $id) {
+      id
+      baseURI
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "BLOB_STORAGE_INTEGRATION_ID_HERE"
+  }
+}

@@ -1,0 +1,51 @@
+meta {
+  name: Stacks With Access To Space
+  type: graphql
+  seq: 12
+}
+
+docs {
+  Returns stacks that can act in the space. RESIDING lists the space's own stacks;
+  ALL_WITH_ACCESS additionally lists every stack whose self-read or explicit role
+  binding reaches the space, whether that is on the space itself, an ancestor
+  (propagates down), or an inheriting descendant (read propagates up).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query StacksWithAccessToSpace($space: ID!, $input: SearchInput!, $mode: StackAccessMode!) {
+    stacksWithAccessToSpace(space: $space, input: $input, mode: $mode) {
+      edges {
+        node {
+          stack {
+            id
+            name
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "first": 50
+    },
+    "mode": "ALL_WITH_ACCESS"
+  }
+}

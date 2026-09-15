@@ -1,0 +1,33 @@
+meta {
+  name: Unlink Identity Federation
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Unlink an external provider from the current user's identity.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation IdentityFederationUnlink($provider: FederationProvider!) {
+    identityFederationUnlink(provider: $provider) {
+      id
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "provider": "GITHUB_OAUTH"
+  }
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Clean Migration Queue
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Removes all pending (TO_MIGRATE / TO_ROLLBACK) entries from the migration
+  queue. Already-processed entries (MIGRATED, ROLLEDBACK, FAILED) are not affected.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OpenTofuMigrationQueueClean {
+    openTofuMigrationQueueClean {
+      removed
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,46 @@
+meta {
+  name: Users With Access To Space
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Returns users with RBAC access to the space, directly or via an ancestor space, searchable by username.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UsersWithAccessToSpace($space: ID!, $input: SearchInput!) {
+    usersWithAccessToSpace(space: $space, input: $input) {
+      edges {
+        node {
+          user {
+            id
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

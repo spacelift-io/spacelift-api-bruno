@@ -1,0 +1,35 @@
+meta {
+  name: Migrate Vendor For All Stacks
+  type: graphql
+  seq: 23
+}
+
+docs {
+  Migrate stack vendor configuration for all stacks that need it.
+  The operation has a time limit and may not migrate all stacks in a single call.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StackMigrateVendorAll($targetVendor: StackVendor!) {
+    stackMigrateVendorAll(targetVendor: $targetVendor) {
+      migrated
+      left
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "targetVendor": "OpenTofu"
+  }
+}

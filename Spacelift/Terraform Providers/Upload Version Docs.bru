@@ -1,0 +1,39 @@
+meta {
+  name: Upload Version Docs
+  type: graphql
+  seq: 16
+}
+
+docs {
+  Upload documentation for a Terraform provider version.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TerraformProviderVersionUploadDocs($version: ID!, $archive: String!) {
+    terraformProviderVersionUploadDocs(version: $version, archive: $archive) {
+      id
+      number
+      description
+      createdAt
+      deleted
+      protocolVersions
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "version": "TERRAFORM_PROVIDER_VERSION_ID_HERE",
+    "archive": "BASE64_ARCHIVE_HERE"
+  }
+}

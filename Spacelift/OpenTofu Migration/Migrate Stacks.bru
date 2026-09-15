@@ -1,0 +1,50 @@
+meta {
+  name: Migrate Stacks
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Enqueues OpenTofu vendor migration (or rollback) for every stack that matches
+  the given search filter. The mutation is asynchronous.
+
+  The target argument determines direction:
+  - target=OpenTofu: migrate matching legacy stacks (vendor=Terraform,
+    workflow_tool=OPEN_TOFU) to native OpenTofu vendor.
+  - target=Terraform: roll back previously migrated stacks to the legacy shape.
+
+  When triggerRun=true, the drain queues a tracked run on each stack after it
+  successfully migrates — useful for validating the new vendor against the
+  customer's existing configuration.
+
+  Stacks already in the target state, already in the queue, or in conflict
+  are silently skipped.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation OpenTofuMigrate($input: SearchInput!, $target: StackVendor!, $triggerRun: Boolean) {
+    openTofuMigrate(input: $input, target: $target, triggerRun: $triggerRun) {
+      queued
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    },
+    "target": "OpenTofu",
+    "triggerRun": false
+  }
+}

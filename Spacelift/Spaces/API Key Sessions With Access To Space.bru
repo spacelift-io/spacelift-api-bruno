@@ -1,0 +1,49 @@
+meta {
+  name: API Key Sessions With Access To Space
+  type: graphql
+  seq: 16
+}
+
+docs {
+  Lists API keys currently holding access to a space through live
+  sessions. The login-policy counterpart of apiKeysWithAccessToSpace:
+  returns an empty page for MANAGED_USERS accounts. Requires space admin.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ApiKeySessionsWithAccessToSpace($space: ID!, $input: SearchInput!) {
+    apiKeySessionsWithAccessToSpace(space: $space, input: $input) {
+      edges {
+        node {
+          apiKey {
+            id
+          }
+          sessionCount
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

@@ -1,0 +1,62 @@
+meta {
+  name: Search Runs
+  type: graphql
+  seq: 28
+}
+
+docs {
+  Paginated, account-wide run history ordered newest-first.
+  Scope the window with a TimeInRange predicate on the `createdAt` field.
+
+  Paginate with either input.after (keyset cursor, sequential) or offset
+  (random-access, for loading pages concurrently), not both. offset skips
+  that many rows in the ordered result; use input.first as the page size and
+  SearchRunsOutput.total to compute the page count.
+
+  Offset paging trades keyset's stability for random access, so pages can
+  skip or repeat rows if runs are created or deleted mid-scan.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchRuns($input: SearchInput!, $offset: Int) {
+    searchRuns(input: $input, offset: $offset) {
+      edges {
+        node {
+          run {
+            id
+            branch
+          }
+          stack {
+            id
+            name
+          }
+          isModule
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      total
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    },
+    "offset": 0
+  }
+}

@@ -1,0 +1,50 @@
+meta {
+  name: Search Migration Queue
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Searches the OpenTofu migration queue (opentofu_migration_stacks table). Powers
+  the dashboard widget, per-stack migration status checks, and the in-progress UI.
+  Uses the same SearchInput envelope as other search queries; predicates apply to
+  the queue row fields (state, createdAt, updatedAt) and to the migrated stack
+  (stackName, stackSlug, space, label).
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OpenTofuMigrationQueueSearch($input: SearchInput!) {
+    openTofuMigrationQueueSearch(input: $input) {
+      edges {
+        node {
+          id
+          state
+          note
+          createdAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

@@ -1,0 +1,44 @@
+meta {
+  name: Run Minutes Usage
+  type: graphql
+  seq: 29
+}
+
+docs {
+  Run-minutes over a window of completed UTC days, served from the
+  run_minutes_by_day rollup on both SaaS and self-hosted.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query RunMinutesUsage($input: RunMinutesUsageInput!) {
+    runMinutesUsage(input: $input) {
+      window {
+        start
+        end
+      }
+      totals {
+        publicMinutes
+        privateMinutes
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "startTime": 1767225600,
+      "endTime": 1769904000
+    }
+  }
+}

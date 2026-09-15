@@ -1,0 +1,32 @@
+meta {
+  name: List Flows Instances
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns all configured Flows instances available for linking.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListFlowsInstances {
+    flowsInstances {
+      redirectURL
+      apiURL
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

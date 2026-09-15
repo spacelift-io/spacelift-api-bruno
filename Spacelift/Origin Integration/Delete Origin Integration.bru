@@ -1,0 +1,29 @@
+meta {
+  name: Delete Origin Integration
+  type: graphql
+  seq: 4
+}
+
+docs {
+  Uninstalls the built-in Origin (Cursor) integration for the account.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteOriginIntegration {
+    originIntegrationDelete
+  }
+}
+
+body:graphql:vars {
+  {}
+}

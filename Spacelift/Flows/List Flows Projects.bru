@@ -1,0 +1,33 @@
+meta {
+  name: List Flows Projects
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Returns the projects of the linked Flows organization, each with the Space
+  role bindings currently assigned to it. Empty when no Flows org is linked.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListFlowsProjects {
+    flowsProjects {
+      id
+      name
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

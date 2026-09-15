@@ -1,0 +1,39 @@
+meta {
+  name: Verify Version
+  type: graphql
+  seq: 17
+}
+
+docs {
+  Verify the GPG signature of the SHA256SUMS file, confirm the file
+  contains entries for all registered platform archives and verify their checksums.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TerraformProviderVersionVerify($version: ID!) {
+    terraformProviderVersionVerify(version: $version) {
+      id
+      number
+      description
+      createdAt
+      deleted
+      protocolVersions
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "version": "TERRAFORM_PROVIDER_VERSION_ID_HERE"
+  }
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Get Run
+  type: graphql
+  seq: 27
+}
+
+docs {
+  Details of a single Run by ID, without needing to know the stack.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetRun($id: ID!) {
+    run(id: $id) {
+      id
+      stackId
+      branch
+      canConfirm
+      canRetry
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "RUN_ID_HERE"
+  }
+}

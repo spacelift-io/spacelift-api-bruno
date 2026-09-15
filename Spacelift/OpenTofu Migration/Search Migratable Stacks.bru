@@ -1,0 +1,48 @@
+meta {
+  name: Search Migratable Stacks
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Returns a paginated list of stacks eligible for OpenTofu vendor migration or
+  rollback. This is the "preview" counterpart to openTofuMigrate: same eligible
+  cohort and same predicate surface, but returns the matching stacks instead of
+  enqueueing them.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OpenTofuMigrateSearch($input: SearchInput!, $target: StackVendor!) {
+    openTofuMigrateSearch(input: $input, target: $target) {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    },
+    "target": "OpenTofu"
+  }
+}

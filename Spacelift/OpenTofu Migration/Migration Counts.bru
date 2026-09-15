@@ -1,0 +1,38 @@
+meta {
+  name: Migration Counts
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Returns the headline counters for the Terraform -> OpenTofu migration, for
+  every stack in the account the caller can see. Meant for the migration
+  dashboard: one call instead of four counting searches.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query OpenTofuMigrationCounts {
+    openTofuMigrationCounts {
+      eligibleToMigrate
+      queuedToMigrate
+      queuedToRollback
+      migrated
+      rolledBack
+      failed
+    }
+  }
+}
+
+body:graphql:vars {
+  {}
+}

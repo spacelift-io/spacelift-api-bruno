@@ -1,0 +1,52 @@
+meta {
+  name: User Sessions With Access To Space
+  type: graphql
+  seq: 17
+}
+
+docs {
+  Lists the users currently holding access to a space through live
+  sessions. The login-policy counterpart of usersWithAccessToSpace:
+  returns an empty page for MANAGED_USERS accounts. Requires space admin.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UserSessionsWithAccessToSpace($space: ID!, $input: SearchInput!) {
+    userSessionsWithAccessToSpace(space: $space, input: $input) {
+      edges {
+        node {
+          user {
+            login
+            name
+            email
+            sessionCount
+            lastLoginAt
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

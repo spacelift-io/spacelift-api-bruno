@@ -1,0 +1,34 @@
+meta {
+  name: Delete Project Role Binding
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Removes a single Flows project role binding by its ID.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation FlowsProjectRoleBindingDelete($id: ID!) {
+    flowsProjectRoleBindingDelete(id: $id) {
+      id
+      flowsProjectID
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "FLOWS_PROJECT_ROLE_BINDING_ID_HERE"
+  }
+}

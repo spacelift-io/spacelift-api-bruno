@@ -1,0 +1,46 @@
+meta {
+  name: API Keys With Access To Space
+  type: graphql
+  seq: 15
+}
+
+docs {
+  Returns API keys with RBAC access to the space, directly or via an ancestor space, searchable by name.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ApiKeysWithAccessToSpace($space: ID!, $input: SearchInput!) {
+    apiKeysWithAccessToSpace(space: $space, input: $input) {
+      edges {
+        node {
+          apiKey {
+            id
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

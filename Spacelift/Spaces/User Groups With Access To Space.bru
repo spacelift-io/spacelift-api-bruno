@@ -1,0 +1,46 @@
+meta {
+  name: User Groups With Access To Space
+  type: graphql
+  seq: 14
+}
+
+docs {
+  Returns IdP groups with RBAC access to the space, directly or via an ancestor space, searchable by group name.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query UserGroupsWithAccessToSpace($space: ID!, $input: SearchInput!) {
+    userGroupsWithAccessToSpace(space: $space, input: $input) {
+      edges {
+        node {
+          userGroup {
+            id
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}
