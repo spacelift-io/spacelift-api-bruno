@@ -102,6 +102,21 @@ Deprecated operations are **not** removed from the collection — they stay supp
 - The marker string is duplicated as `DEPRECATED_MARKER` in both `sync-docs.js` (writer) and `coverage.js` (checker); change both together.
 - Deprecation is never itself a CI failure. `coverage.js` lists deprecated covered operations informationally, under "Deprecated operations kept in the collection". Retirement — the operation actually being removed from the schema — is what fails CI, via `npm run validate`: the request's GraphQL stops validating ("Cannot query field"). That is the signal to act on, and it arrives through the normal validation path with no extra flag.
 
+### Values Introspection Cannot Give You
+
+A few arguments are typed `String!` in the schema but only accept certain values,
+decided in the API backend. A wrong one passes `npm run validate` and fails
+against a real account — `ScanProviderConfigInput.version` is the known case.
+
+[`docs/backend-lookups.md`](docs/backend-lookups.md) explains how to find them in
+the `spacelift-io/backend` repository, with worked examples. It expects
+`$SPACELIFT_BACKEND` to point at a local clone; there is no default, since the
+path differs per person.
+
+None of the scripts read the backend — they work from public introspection with
+no credentials and no clone. This is a manual reference only, for the rare value
+the schema cannot express.
+
 ### Advanced Operations
 
 **Everything in the schema gets documented.** Deciding which operations are worth exposing is not this collection's job — Spacelift staff and advanced users have real reasons to call the administrative and internal corners of the API, and hiding them only makes them harder to find.
