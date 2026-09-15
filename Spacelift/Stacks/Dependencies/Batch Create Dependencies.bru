@@ -22,7 +22,9 @@ body:graphql {
   mutation BatchCreateStackDependencies($input: StackDependencyBatchInput!) {
     stackDependenciesCreateInBatch(input: $input) {
       id
-      dependsOnStackId
+      dependsOnStack {
+        id
+      }
     }
   }
 }
