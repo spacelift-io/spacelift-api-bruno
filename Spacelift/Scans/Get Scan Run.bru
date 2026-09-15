@@ -1,0 +1,46 @@
+meta {
+  name: Get Scan Run
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Details of a single ScanRun.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetScanRun($id: ID!) {
+    scanRun(id: $id) {
+      id
+      state
+      resourceCount
+      resourceStats {
+        managed
+        unmanaged
+      }
+      note
+      stateChangedAt
+      createdAt
+      scan {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SCAN_RUN_ID_HERE"
+  }
+}

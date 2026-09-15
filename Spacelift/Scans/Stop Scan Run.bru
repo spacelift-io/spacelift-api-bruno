@@ -1,0 +1,44 @@
+meta {
+  name: Stop Scan Run
+  type: graphql
+  seq: 9
+}
+
+docs {
+  Ask the worker running a Scan run to abandon it. The run becomes STOPPED
+  once the worker reports back.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation StopScanRun($id: ID!, $note: String) {
+    scanRunStop(id: $id, note: $note) {
+      id
+      state
+      resourceCount
+      resourceStats {
+        managed
+        unmanaged
+      }
+      note
+      stateChangedAt
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SCAN_RUN_ID_HERE",
+    "note": "Stopped via API"
+  }
+}

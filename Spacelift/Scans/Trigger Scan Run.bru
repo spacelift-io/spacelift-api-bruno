@@ -1,0 +1,42 @@
+meta {
+  name: Trigger Scan Run
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Queue a new run of an existing Scan.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TriggerScanRun($scan: ID!) {
+    scanRunTrigger(scan: $scan) {
+      id
+      state
+      resourceCount
+      resourceStats {
+        managed
+        unmanaged
+      }
+      note
+      stateChangedAt
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "scan": "SCAN_ID_HERE"
+  }
+}

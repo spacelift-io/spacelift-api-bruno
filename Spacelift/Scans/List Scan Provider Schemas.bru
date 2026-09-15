@@ -1,0 +1,36 @@
+meta {
+  name: List Scan Provider Schemas
+  type: graphql
+  seq: 10
+}
+
+docs {
+  Providers a Scan can target, with the versions and list schemas available
+  for each. Anything absent here cannot be scanned. Pass a provider to get just
+  that one.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query ListScanProviderSchemas($provider: ScanProvider) {
+    scanProviderSchemas(provider: $provider) {
+      type
+      majorVersions
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "provider": "AWS"
+  }
+}

@@ -1,0 +1,70 @@
+meta {
+  name: Create Scan
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Create a new Scan configuration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CreateScan($input: ScanInput!) {
+    scanCreate(input: $input) {
+      id
+      name
+      description
+      labels
+      space {
+        id
+      }
+      workerPool
+      integration
+      runnerImage
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "space": "SPACE_ID_HERE",
+      "name": "example-scan",
+      "description": "Example scan configuration",
+      "labels": ["example"],
+      "providerConfigs": [
+        {
+          "version": "5",
+          "aws": {
+            "region": "eu-west-1"
+          }
+        }
+      ],
+      "scope": [
+        {
+          "type": "aws_s3_bucket",
+          "filters": [
+            {
+              "key": "region",
+              "value": "eu-west-1"
+            }
+          ]
+        }
+      ],
+      "workerPool": "WORKER_POOL_ID_HERE",
+      "integration": "AWS_INTEGRATION_ID_HERE"
+    }
+  }
+}

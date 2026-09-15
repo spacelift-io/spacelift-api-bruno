@@ -1,0 +1,43 @@
+meta {
+  name: Cancel Scan Run
+  type: graphql
+  seq: 8
+}
+
+docs {
+  Cancel a queued Scan run before a worker picks it up.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation CancelScanRun($id: ID!, $note: String) {
+    scanRunCancel(id: $id, note: $note) {
+      id
+      state
+      resourceCount
+      resourceStats {
+        managed
+        unmanaged
+      }
+      note
+      stateChangedAt
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SCAN_RUN_ID_HERE",
+    "note": "Cancelled via API"
+  }
+}

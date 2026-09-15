@@ -1,0 +1,41 @@
+meta {
+  name: Search Scans Suggestions
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Information about fields available for searching Scans.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchScansSuggestions($input: SearchSuggestionsInput!) {
+    searchScansSuggestions(input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "fields": []
+    }
+  }
+}

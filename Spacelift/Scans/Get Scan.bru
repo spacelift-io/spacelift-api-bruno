@@ -1,0 +1,48 @@
+meta {
+  name: Get Scan
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Scan.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query GetScan($id: ID!) {
+    scan(id: $id) {
+      id
+      name
+      description
+      labels
+      space {
+        id
+      }
+      workerPool
+      integration
+      runnerImage
+      createdAt
+      updatedAt
+      latestRun {
+        id
+        state
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SCAN_ID_HERE"
+  }
+}

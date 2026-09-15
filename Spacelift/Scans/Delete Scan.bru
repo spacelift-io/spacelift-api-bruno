@@ -1,0 +1,35 @@
+meta {
+  name: Delete Scan
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Delete a Scan configuration.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DeleteScan($id: ID!) {
+    scanDelete(id: $id) {
+      id
+      name
+      deleted
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SCAN_ID_HERE"
+  }
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Enable Personal API Key
+  type: graphql
+  seq: 3
+}
+
+docs {
+  Re-enable a personal API key you own.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation EnablePersonalApiKey($id: ID!) {
+    personalApiKeyEnable(id: $id) {
+      id
+      name
+      type
+      description
+      createdAt
+      expiresAt
+      disabled
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "API_KEY_ID_HERE"
+  }
+}

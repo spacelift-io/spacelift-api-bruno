@@ -1,0 +1,54 @@
+meta {
+  name: Search Scans
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Search Scans with a set of predicates, ordering and paging.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  query SearchScans($input: SearchInput!) {
+    searchScans(input: $input) {
+      edges {
+        node {
+          id
+          name
+          description
+          labels
+          space {
+            id
+          }
+          workerPool
+          integration
+          runnerImage
+          createdAt
+          updatedAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "first": 50
+    }
+  }
+}

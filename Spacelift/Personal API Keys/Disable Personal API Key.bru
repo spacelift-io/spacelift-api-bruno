@@ -1,0 +1,39 @@
+meta {
+  name: Disable Personal API Key
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Disable a personal API key you own. Tokens already issued stop working.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation DisablePersonalApiKey($id: ID!) {
+    personalApiKeyDisable(id: $id) {
+      id
+      name
+      type
+      description
+      createdAt
+      expiresAt
+      disabled
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "API_KEY_ID_HERE"
+  }
+}

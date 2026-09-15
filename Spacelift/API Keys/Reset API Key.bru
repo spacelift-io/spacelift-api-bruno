@@ -1,0 +1,39 @@
+meta {
+  name: Reset API Key
+  type: graphql
+  seq: 7
+}
+
+docs {
+  Reset the secret of an API key.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation ResetApiKey($id: ID!) {
+    apiKeyReset(id: $id) {
+      id
+      name
+      type
+      description
+      createdAt
+      expiresAt
+      secret
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "API_KEY_ID_HERE"
+  }
+}

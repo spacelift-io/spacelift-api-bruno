@@ -1,0 +1,51 @@
+meta {
+  name: Trigger Run Batch
+  type: graphql
+  seq: 26
+}
+
+docs {
+  Trigger runs for multiple stacks as a single batch with a shared dependency tree.
+  For tracked runs, downstream dependents are resolved across all input stacks together,
+  so a shared dependent only gets a single run.
+  The output contains the runs created for the requested stacks as well as any runs
+  created for their dependents, in no particular order — correlate results to the input
+  via each run's stack rather than by position. A run's full details are only exposed
+  when you have read access to its stack; otherwise only its id is returned.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:graphql {
+  mutation TriggerRunBatch($input: RunTriggerBatchInput!) {
+    runTriggerBatch(input: $input) {
+      runs {
+        runId
+        run {
+          id
+          state
+        }
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "stacks": [
+        {
+          "stack": "STACK_ID_HERE"
+        }
+      ]
+    }
+  }
+}
