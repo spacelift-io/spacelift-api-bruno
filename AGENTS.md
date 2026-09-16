@@ -143,9 +143,42 @@ Two things follow from that, and both are the point:
 
 The run lifecycle is deliberately excluded. `Discard`, `Cancel`, `Stop` and `Kill` all end a run, but a run is re-triggerable, and putting a dialog in front of the most common action in the collection would be a worse trade.
 
-Fourteen destructive operations take no arguments at all (`Delete Audit Trail Webhook`, `Clean Migration Queue`, …), so there is nothing to prompt for and a runner would happily send them. Prompt-skip is therefore a useful safety net, not a guarantee. Nothing in the collection makes it safe to run in bulk against an account you care about, and nothing in the repository tries to.
+Some requests have no placeholder to convert, so a dialog cannot cover them and a runner would send them. They get the second mechanism instead.
 
-`npm run destructive-prompts:check` runs in pre-commit and CI, so a newly added `Delete …` request cannot ship with a plain placeholder.
+### Danger Zone
+
+`Spacelift/Danger Zone`, pinned below `Advanced` by `seq: 100`, holds the requests that are **hard or impossible to revert**, and the collection's pre-request script refuses each one unless `CONFIRM_DESTRUCTIVE` holds the request's exact name:
+
+```js
+const REQUIRES_CONFIRMATION = [ /* 14 names */ ];
+
+if (REQUIRES_CONFIRMATION.includes(req.getName()) &&
+    bru.getEnvVar("CONFIRM_DESTRUCTIVE") !== req.getName()) {
+  throw new Error(…);
+}
+```
+
+Why a throw rather than a prompt: it is the only mechanism that reaches the runner and the CLI, which is exactly where the fourteen were dangerous. Matching on the exact name rather than a boolean means arming one does not arm the other thirteen — `CONFIRM_DESTRUCTIVE=true` protecting `Saml Delete` and `Account Confirm Delete` equally would be the whole hole again.
+
+The guard is placed ahead of the token logic, so a blocked request never mints a token.
+
+Membership is the folder, and nothing else. Two kinds of request belong:
+
+- **Deletes that name nothing to delete** — `sessionDeleteAll`, `accountConfirmDelete`, `samlDelete`. Mechanically identifiable: destructive verb, no placeholder.
+- **Overwrites that cannot be put back** — `Update GitLab Integration` (replaces the host every GitLab stack builds from), `Slack App Config Set` (replaces secrets Spacelift will not show again), `Migrate Vendor For All Stacks`, the billing tier changes. A judgment call, made once by moving the file rather than twice in two lists that can disagree.
+
+The line is revertibility, not blast radius. `Account Toggle Enforcing MFA` is account-wide and alarming, but you can toggle it back, so it stays where it is; `Billing Subscription Update Tier` moves the account to `FREE` and nothing here undoes that, so it moves.
+
+`scripts/destructive-prompts.js` reads the folder, writes the array into `collection.bru`, and enforces two invariants on `--check`:
+
+- **A destructive request with nothing to prompt for must be in the folder.** That half is mechanical, so a newly added `Delete …` taking no ID cannot ship unguarded. The judgment half cannot be checked — a reviewer has to make it.
+- **A Danger Zone name must be unique in the collection.** The guard matches on `req.getName()` alone, so a name shared with a request elsewhere silently guards that one too. Not hypothetical: `Delete Webhook Headers` existed in both `Audit Trail` and `Webhooks`, and the first version of this guard blocked both. The Danger Zone copy is now `Delete Audit Trail Webhook Headers`.
+
+`npm test` asserts the same set a second way, against the directory listing. Moving a request into or out of the folder is therefore the whole operation: run `npm run destructive-prompts`, and the guard follows.
+
+Two things the folder does not do. It does not stop anything by itself — Bruno's runner has no notion of an off-limits folder, and the guard is what refuses the request. And it splits families: `Saml Delete` and `Saml Update` now sit away from `Saml Create`, which is why both folders' docs cross-reference each other in `folder-docs.js`.
+
+`npm run destructive-prompts:check` runs in pre-commit and CI, so neither half can drift.
 
 ### Hand-Written Notes in Request Docs
 

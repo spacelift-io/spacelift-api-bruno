@@ -26,6 +26,56 @@ script:pre-request {
   const axios = require("axios");
   const atob = require("atob");
 
+  // Requests in "Danger Zone" destroy something and take no ID, so
+  // destructive-prompts.js has no placeholder to turn into a prompt and Bruno's
+  // runner has nothing to skip on. They are refused here instead, which also
+  // stops a collection run from sending them.
+  //
+  // Written and verified by scripts/destructive-prompts.js — edit it there.
+  const REQUIRES_CONFIRMATION = [
+    "Account Confirm Delete",
+    "Account Toggle Deletion Mark",
+    "Billing Subscription Create",
+    "Billing Subscription Delete",
+    "Billing Subscription Update Tier",
+    "Billing Subscription Update V2",
+    "Clean Migration Queue",
+    "Delete Audit Trail Webhook",
+    "Delete Audit Trail Webhook Headers",
+    "Delete Oauth Client For SCIM",
+    "Delete Origin Integration",
+    "Migrate Stacks",
+    "Migrate Vendor For All Stacks",
+    "Oidc Delete",
+    "Oidc Update",
+    "Reset Oauth Client For SCIM",
+    "Saml Delete",
+    "Saml Update",
+    "Session Delete All",
+    "Set Audit Trail Webhook Headers",
+    "Slack App Config Delete",
+    "Slack App Config Set",
+    "Unlink Identity Federation",
+    "Update Azure DevOps Integration",
+    "Update Bitbucket Cloud Integration",
+    "Update Bitbucket Datacenter Integration",
+    "Update Blob Storage Integration",
+    "Update GitHub Enterprise Integration",
+    "Update GitLab Integration",
+    "User Security Key Delete All",
+  ];
+
+  if (
+    REQUIRES_CONFIRMATION.includes(req.getName()) &&
+    bru.getEnvVar("CONFIRM_DESTRUCTIVE") !== req.getName()
+  ) {
+    throw new Error(
+      `"${req.getName()}" destroys something and takes no ID, so nothing prompts ` +
+        `before it runs. To send it, set CONFIRM_DESTRUCTIVE to exactly that name ` +
+        `in the "my-account" environment, then clear it afterwards.`
+    );
+  }
+
   // These three manage the token themselves; running this first would mint a
   // token only to have them immediately replace or discard it.
   const MANAGES_ITS_OWN_TOKEN = ["Get Token", "Refresh Token", "Logout"];

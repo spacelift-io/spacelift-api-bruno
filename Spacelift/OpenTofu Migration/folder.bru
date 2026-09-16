@@ -5,7 +5,11 @@ meta {
 docs {
   Tooling for moving stacks from Terraform to OpenTofu.
 
-  Work in order: **Check OpenTofu Features** and **Search Migratable Stacks** to see
-  what can move, then **Migrate Stacks**. **Search Migration Queue** follows
-  progress.
+  Work in order:
+
+  1. **Check OpenTofu Features** and **Search Migratable Stacks** — see what can move
+  2. **Migrate Stacks** — in **Danger Zone**, since it moves every stack it matches
+  3. **Search Migration Queue** — follow progress
+
+  **Clean Migration Queue** empties the queue and is in **Danger Zone** too.
 }

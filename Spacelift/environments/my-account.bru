@@ -3,6 +3,8 @@ vars {
   SPACELIFT_ENDPOINT: https://myaccount.app.spacelift.io/graphql
   @description('The ID of your API key, shown when you create it under Settings → API Keys.')
   SPACELIFT_API_KEY_ID:
+  @description('Arms one Danger Zone request. Set it to the exact name of the request you want to send, then clear it afterwards. Leave empty otherwise.')
+  CONFIRM_DESTRUCTIVE:
 }
 vars:secret [
   @description('The secret for your API key. Shown only once, at creation. Bruno stores it encrypted outside this file, so it never reaches git.')

@@ -48,7 +48,9 @@ A key starts with no permissions. Grant them under
   "Audit Trail": `The account's audit log, and the webhook Spacelift delivers audit entries to.
 
 **Search Audit Trail Entries** is the read path. The rest configure delivery —
-set the webhook, then add any headers your receiver needs to authenticate it.`,
+set the webhook, then add any headers your receiver needs to authenticate it.
+
+The webhook delete and both header requests are in **Danger Zone**.`,
 
   Auth: `Getting a token by hand.
 
@@ -60,7 +62,9 @@ Use **Get Token** when you want a token to use elsewhere — in curl, a script, 
 \`spacectl\`. **Logout** invalidates the current session.`,
 
   "Blob Storage": `Integration that keeps large run artifacts in your own object storage rather
-than Spacelift's.`,
+than Spacelift's.
+
+**Update Blob Storage Integration** is in **Danger Zone**.`,
 
   Blueprints: `Blueprints stamp out stacks from a parameterized definition. **Get Blueprint
 Schema** tells you which inputs one expects, **Parse Template** checks a
@@ -128,7 +132,9 @@ registries.`,
 
 Invite, update and remove them here, along with the self-service requests a user
 makes on their own behalf. What a user may actually *do* is decided separately,
-by role bindings under **Roles**.`,
+by role bindings under **Roles**.
+
+**Unlink Identity Federation** is in **Danger Zone**.`,
 
   "Managed Users/User Groups": `Groups of managed users, and the mapping from an identity provider's groups onto
 them.
@@ -150,12 +156,18 @@ Workspace** tests uncommitted local changes before you push anything.`,
 
   "OpenTofu Migration": `Tooling for moving stacks from Terraform to OpenTofu.
 
-Work in order: **Check OpenTofu Features** and **Search Migratable Stacks** to see
-what can move, then **Migrate Stacks**. **Search Migration Queue** follows
-progress.`,
+Work in order:
+
+1. **Check OpenTofu Features** and **Search Migratable Stacks** — see what can move
+2. **Migrate Stacks** — in **Danger Zone**, since it moves every stack it matches
+3. **Search Migration Queue** — follow progress
+
+**Clean Migration Queue** empties the queue and is in **Danger Zone** too.`,
 
   "Origin Integration": `Settings for the built-in Origin (Cursor) integration. The read returns null
-when the Origin app is not installed on the account.`,
+when the Origin app is not installed on the account.
+
+**Delete Origin Integration** is in **Danger Zone**.`,
 
   "Personal API Keys": `API keys scoped to you rather than to the account, for personal tooling.
 Created, then enabled or disabled.`,
@@ -240,7 +252,9 @@ branch and a project root.
 **Create Stack** and **Update Stack** take a large input — running **Get Stack**
 against an existing stack is the quickest way to see the shape you need.
 **Lock Stack** reserves a stack so nobody else can run against it while you work.
-The state requests move Terraform state in and out, including a rollback.`,
+The state requests move Terraform state in and out, including a rollback.
+
+**Migrate Vendor For All Stacks** is in **Danger Zone**.`,
 
   "Stacks/Dependencies": `Ordering between stacks — run this one only after that one — and the outputs
 passed along the edge.
@@ -293,7 +307,9 @@ browse repositories and branches. Per-provider setup lives in the subfolders.
 
 **Test VCS Integration** is worth sending after any change — it reports the
 connection problem directly, instead of leaving you to infer it from a run that
-fails to check out.`,
+fails to check out.
+
+The requests that overwrite an integration's host or credentials are in **Danger Zone**.`,
 
   "VCS Integrations/Azure DevOps": `Setup for Azure DevOps. **Get Webhooks Endpoint** returns the URL to register on
 the provider side so Spacelift receives push events.`,
@@ -338,6 +354,37 @@ way to take it out of service. **Cycle Worker Pool** rotates the whole pool, and
 **Get Worker Usage** shows how busy it has been.`,
 
   // ---------------------------------------------------------------------
+  // Danger Zone — the destructive requests nothing can prompt for, pinned
+  // below Advanced by Danger Zone/folder.bru's seq.
+  // ---------------------------------------------------------------------
+
+  "Danger Zone": `# ⚠ DANGER ZONE
+
+**Requests you cannot take back.**
+
+Some destroy something outright:
+
+- **Session Delete All** — ends every session in the account
+- **Saml Delete** — removes the SSO configuration
+- **Account Confirm Delete** — finishes deleting the account
+
+The rest overwrite account-wide settings with whatever is in the request body:
+
+- **Update GitLab Integration** — replaces the host every GitLab stack builds from
+- **Slack App Config Set** — replaces secrets Spacelift will not show you again
+- **Migrate Vendor For All Stacks** — moves every stack to another vendor
+- **Billing Subscription Update Tier** — changes what you are charged
+
+Putting any of them back needs values you may no longer have.
+
+To send one, set \`CONFIRM_DESTRUCTIVE\` in your environment to that request's exact
+name. It arms that request and no other, and everything else here stays refused —
+including during a run of the whole collection. Clear it when you are done.
+
+Reading is unaffected, and the create and read requests these belong with are
+still under **Advanced → SSO**, **VCS Integrations**, **Audit Trail** and the rest.`,
+
+  // ---------------------------------------------------------------------
   // Advanced — administrative and in-app plumbing, pinned to the bottom of
   // the sidebar by Advanced/folder.bru's seq.
   // ---------------------------------------------------------------------
@@ -361,7 +408,9 @@ windows, AI features, and who may manage API keys or create spaces.
 
 Most come in pairs — a query that reads the current value, and an \`account…\`
 mutation that sets it. Read before you write; these apply to everyone in the
-account.`,
+account.
+
+**Account Confirm Delete** is in **Danger Zone**.`,
 
   "Advanced/Analytics": `Product analytics events the web UI emits. Present for completeness; there is no
 reason to call these from your own tooling.`,
@@ -369,7 +418,9 @@ reason to call these from your own tooling.`,
   "Advanced/Billing": `Subscription, tier, seats and usage.
 
 The mutations change what you are charged. Read **Billing Subscription** and
-**Tier Features** before sending any of them.`,
+**Tier Features** before sending any of them.
+
+The subscription create, tier change and cancellation are in **Danger Zone**.`,
 
   "Advanced/CLI": `The confirmation token behind \`spacectl\`'s browser login flow.`,
 
@@ -407,16 +458,22 @@ how you discover the valid filter keys for a search instead of guessing.`,
 
   "Advanced/Sessions and Security Keys": `Active login sessions and WebAuthn security keys for the current user, with
 revocation for both. The security email is where Spacelift sends security
-notices.`,
+notices.
+
+The two bulk revocations are in **Danger Zone**.`,
 
   "Advanced/Slack": `Slack workspace integration, and the GitHub App manifest flow that lives
-alongside it.`,
+alongside it.
+
+**Slack App Config Set** and **Slack App Config Delete** are in **Danger Zone**.`,
 
   "Advanced/SSO": `SAML, OIDC and SCIM configuration for the account.
 
 ⚠ Getting these wrong can lock every user out. Read the current settings before
 writing, and keep a working API key to hand — an API key authenticates
-independently of SSO and is how you recover.`,
+independently of SSO and is how you recover.
+
+The updates, deletes and the SCIM reset are in **Danger Zone**.`,
 
   "Advanced/UI State": `Key/value store the web UI uses to remember layout preferences.`,
 

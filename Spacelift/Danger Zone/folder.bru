@@ -1,0 +1,32 @@
+meta {
+  name: ⚠ Danger Zone
+  seq: 100
+}
+
+docs {
+  # ⚠ DANGER ZONE
+
+  **Requests you cannot take back.**
+
+  Some destroy something outright:
+
+  - **Session Delete All** — ends every session in the account
+  - **Saml Delete** — removes the SSO configuration
+  - **Account Confirm Delete** — finishes deleting the account
+
+  The rest overwrite account-wide settings with whatever is in the request body:
+
+  - **Update GitLab Integration** — replaces the host every GitLab stack builds from
+  - **Slack App Config Set** — replaces secrets Spacelift will not show you again
+  - **Migrate Vendor For All Stacks** — moves every stack to another vendor
+  - **Billing Subscription Update Tier** — changes what you are charged
+
+  Putting any of them back needs values you may no longer have.
+
+  To send one, set `CONFIRM_DESTRUCTIVE` in your environment to that request's exact
+  name. It arms that request and no other, and everything else here stays refused —
+  including during a run of the whole collection. Clear it when you are done.
+
+  Reading is unaffected, and the create and read requests these belong with are
+  still under **Advanced → SSO**, **VCS Integrations**, **Audit Trail** and the rest.
+}

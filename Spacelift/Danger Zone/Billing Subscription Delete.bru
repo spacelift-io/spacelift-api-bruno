@@ -1,13 +1,13 @@
 meta {
-  name: Billing Subscription Update V2
+  name: Billing Subscription Delete
   type: graphql
-  seq: 9
+  seq: 4
 }
 
 docs {
   ℹ **ADVANCED** — Subscription and billing management, normally handled through Spacelift sales.
 
-  Updates an existing billing subscription
+  Cancels current subscription
 }
 
 post {
@@ -17,8 +17,8 @@ post {
 }
 
 body:graphql {
-  mutation BillingSubscriptionUpdateV2($input: SubscriptionUpdateV2Input!) {
-    billingSubscriptionUpdateV2(input: $input) {
+  mutation BillingSubscriptionDelete {
+    billingSubscriptionDelete {
       billingCycleStart
       billingRenewalDate
       billingInterval
@@ -30,9 +30,5 @@ body:graphql {
 }
 
 body:graphql:vars {
-  {
-    "input": {
-      "tier": "FREE"
-    }
-  }
+  {}
 }

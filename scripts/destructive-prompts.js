@@ -16,11 +16,17 @@
  * act — you cannot destroy anything by opening a request and hitting send.
  *
  * Bruno's collection runner and CLI *skip* any request containing a prompt
- * variable, since neither can prompt. That is a useful second effect, but not a
- * guarantee: fourteen destructive operations take no arguments at all, so they
- * have nothing to prompt for and a bulk run would send them. Treat this as
- * making the common mistake hard, not as making the collection safe to run
- * wholesale against an account you care about.
+ * variable, since neither can prompt. That is a useful second effect, but it
+ * reaches only the requests that have an ID to prompt for.
+ *
+ * Fourteen destructive operations name nothing to delete — `sessionDeleteAll`,
+ * `samlDelete`, `accountConfirmDelete` and the like. There is no placeholder to
+ * convert, so those live in `Spacelift/Danger Zone` and are guarded in the
+ * collection's pre-request script instead: it refuses them unless the
+ * CONFIRM_DESTRUCTIVE environment variable holds the request's exact name. This
+ * script owns that list too, writing it into collection.bru and failing
+ * --check when it has drifted, so a newly added one cannot slip through
+ * unguarded.
  *
  * Destructiveness is decided by the verb in the request name (DESTRUCTIVE_VERBS
  * below), matched whole-word. That is coarse but predictable, and being wrong
@@ -29,6 +35,7 @@
  * Usage:
  *   node scripts/destructive-prompts.js            apply
  *   node scripts/destructive-prompts.js --check    exit 1 if any are unprompted
+ *                                                  or the guard list is stale
  *   node scripts/destructive-prompts.js --dry-run  show what would change
  */
 
@@ -36,6 +43,11 @@ const fs = require("fs");
 const path = require("path");
 
 const COLLECTION_DIR = path.join(__dirname, "../Spacelift");
+
+const COLLECTION_BRU = path.join(COLLECTION_DIR, "collection.bru");
+
+// The array in collection.bru's pre-request script that this file maintains.
+const GUARD_LIST_RE = /(const REQUIRES_CONFIRMATION = \[\n)([\s\S]*?)(\n  \];)/;
 
 /**
  * Verbs that mean "this removes or invalidates something", matched whole-word
@@ -148,6 +160,77 @@ function varsBlockSpan(content) {
   return [match.index, j];
 }
 
+const DANGER_ZONE_DIR = path.join(COLLECTION_DIR, "Danger Zone");
+
+/** Request names in Danger Zone, which is what the guard list must hold. */
+function dangerZoneNames() {
+  return fs
+    .readdirSync(DANGER_ZONE_DIR)
+    .filter((f) => f.endsWith(".bru") && f !== "folder.bru")
+    .map((f) => f.slice(0, -".bru".length))
+    .sort();
+}
+
+/**
+ * The names the pre-request script currently guards, in the order it lists them.
+ */
+function guardedNames(content) {
+  const match = content.match(GUARD_LIST_RE);
+  if (!match) return null;
+  return [...match[2].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+}
+
+/**
+ * Keep collection.bru's REQUIRES_CONFIRMATION in step with Danger Zone.
+ * Returns a problem string, or null when fine.
+ *
+ * The folder is the membership list: a request is guarded because it is in
+ * Danger Zone, and it is in Danger Zone because sending it by accident is hard
+ * or impossible to undo. That is a judgment, so it is made once, by moving the
+ * file, rather than twice in two places that can disagree.
+ */
+function syncGuardList(expected) {
+  const content = fs.readFileSync(COLLECTION_BRU, "utf8");
+  const current = guardedNames(content);
+
+  if (current === null) {
+    return "collection.bru has no REQUIRES_CONFIRMATION list. The pre-request script's guard is gone; restore it before adding requests that cannot prompt.";
+  }
+
+  const same =
+    current.length === expected.length &&
+    current.every((name, i) => name === expected[i]);
+  if (same) return null;
+
+  if (CHECK) {
+    const missing = expected.filter((n) => !current.includes(n));
+    const extra = current.filter((n) => !expected.includes(n));
+    const detail = [
+      missing.length ? `unguarded: ${missing.join(", ")}` : null,
+      extra.length ? `no longer exists: ${extra.join(", ")}` : null,
+    ]
+      .filter(Boolean)
+      .join("; ");
+    return `collection.bru's guard list is out of date${detail ? ` (${detail})` : ""}. Run \`npm run destructive-prompts\`.`;
+  }
+
+  if (!DRY_RUN) {
+    const listing = expected.map((name) => `    "${name}",`).join("\n");
+    fs.writeFileSync(
+      COLLECTION_BRU,
+      content.replace(
+        GUARD_LIST_RE,
+        (_, open, __, close) => open + listing + close,
+      ),
+      "utf8",
+    );
+  }
+  console.log(
+    `  ${DRY_RUN ? "(dry-run) " : ""}guarded   collection.bru — ${expected.length} request(s)`,
+  );
+  return null;
+}
+
 function main() {
   const files = findBruFiles(COLLECTION_DIR).sort();
 
@@ -155,10 +238,15 @@ function main() {
   let alreadyPrompted = 0;
   let noPlaceholders = 0;
   const stale = [];
+  const cannotPrompt = [];
+  const allNames = new Map();
 
   for (const filePath of files) {
     const rel = path.relative(COLLECTION_DIR, filePath);
     const name = path.basename(filePath, ".bru");
+    if (name !== "folder") {
+      allNames.set(name, [...(allNames.get(name) ?? []), rel]);
+    }
     if (!isDestructive(name)) continue;
 
     const content = fs.readFileSync(filePath, "utf8");
@@ -169,6 +257,7 @@ function main() {
     // is a safety net rather than a guarantee — see the note above.
     if (!span) {
       noPlaceholders++;
+      cannotPrompt.push(name);
       continue;
     }
 
@@ -176,8 +265,12 @@ function main() {
     const placeholders = [...new Set(block.match(/"[A-Z0-9_]*_HERE"/g) ?? [])];
 
     if (placeholders.length === 0) {
-      if (block.includes("{{?")) alreadyPrompted++;
-      else noPlaceholders++;
+      if (block.includes("{{?")) {
+        alreadyPrompted++;
+      } else {
+        noPlaceholders++;
+        cannotPrompt.push(name);
+      }
       continue;
     }
 
@@ -205,16 +298,45 @@ function main() {
     console.log(`  ${DRY_RUN ? "(dry-run) " : ""}prompted  ${rel}`);
   }
 
+  const dangerZone = dangerZoneNames();
+  const problems = [];
+
+  // The guard matches on req.getName(), so a name shared with a request
+  // outside the folder would guard that one too.
+  const collisions = dangerZone.filter(
+    (name) => (allNames.get(name) ?? []).length > 1,
+  );
+  for (const name of collisions) {
+    problems.push(
+      `"${name}" is in Danger Zone but the name is also used by ${allNames
+        .get(name)
+        .filter((f) => !f.startsWith("Danger Zone"))
+        .join(
+          ", ",
+        )}. The guard matches on the name alone, so rename one of them.`,
+    );
+  }
+
+  // Nothing to prompt for and not in the folder means nothing stops it.
+  const unguarded = cannotPrompt.filter((name) => !dangerZone.includes(name));
+  for (const name of unguarded) {
+    problems.push(
+      `"${name}" destroys something and has no ID to prompt for, but is not in Danger Zone. Move it there.`,
+    );
+  }
+
+  const guardProblem = syncGuardList(dangerZone);
+
   console.log(
     `\n${converted} converted, ${alreadyPrompted} already prompting, ` +
-      `${noPlaceholders} with nothing to prompt for`,
+      `${dangerZone.length} in Danger Zone guarded by CONFIRM_DESTRUCTIVE`,
   );
 
+  if (guardProblem) problems.push(guardProblem);
+  stale.push(...problems);
+
   if (stale.length > 0) {
-    console.log(
-      `\n✖ ${stale.length} destructive request(s) still carry a plain placeholder.` +
-        ` Run \`npm run destructive-prompts\`:\n`,
-    );
+    console.log(`\n✖ ${stale.length} problem(s):\n`);
     for (const line of stale) console.log(`  ${line}`);
     process.exit(1);
   }

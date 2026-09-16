@@ -112,23 +112,34 @@ lists the IDs it wants.
 
 ## Destructive Requests
 
-Requests that delete, revoke, reset or yank something don't carry a placeholder. They
-ask:
+Requests that delete, revoke, reset or yank something ask for the ID in a dialog when you
+hit send, rather than carrying one in the request. Cancel the dialog and nothing is sent,
+so you can't destroy anything by opening a request and hitting send out of curiosity.
+
+Bruno's collection runner and the CLI **skip** these requests, since neither can show you
+the dialog.
+
+A dialog can't help when the request names nothing to delete, or when what it overwrites
+is worse than what it removes. Those are in **Danger Zone**, at the bottom of the
+sidebar:
+
+- **Deletes that name nothing.** **Session Delete All** ends every session in the
+  account; **Account Confirm Delete** finishes deleting the account. There is no ID to
+  ask for.
+- **Overwrites you cannot undo.** **Update GitLab Integration** replaces the host every
+  GitLab stack builds from, **Slack App Config Set** replaces secrets Spacelift will not
+  show you again, **Migrate Vendor For All Stacks** moves every stack to another vendor.
+  Putting them back needs values you may no longer have.
+
+The collection refuses all of them unless `CONFIRM_DESTRUCTIVE` in your environment holds
+the exact name of the one you are sending:
 
 ```
-"id": "{{?Stack ID}}"
+CONFIRM_DESTRUCTIVE = Saml Delete
 ```
 
-Bruno opens a dialog for each of these when you hit send, and canceling the dialog
-cancels the request — so you can't destroy anything by opening a request and sending it
-out of curiosity.
-
-This also means Bruno's collection runner and the CLI **skip** these requests entirely,
-since neither can show a prompt.
-
-That is a helpful safety net rather than a guarantee, though: a handful of destructive
-operations take no ID at all, so they have nothing to prompt for and a bulk run would
-send them. Don't run the whole collection against an account you care about.
+Arming one arms only that one, running the whole collection sends none of them, and
+clearing the variable disarms everything. Read the folder's **Docs** pane first.
 
 ## Collection Structure
 

@@ -1,13 +1,13 @@
 meta {
-  name: Delete Oauth Client For SCIM
+  name: Saml Delete
   type: graphql
-  seq: 2
+  seq: 17
 }
 
 docs {
   ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
 
-  Delete the OAuth2 client for SCIM provisioning
+  Delete SAML integration.
 }
 
 post {
@@ -17,8 +17,13 @@ post {
 }
 
 body:graphql {
-  mutation DeleteOauthClientForSCIM {
-    deleteOauthClientForSCIM
+  mutation SamlDelete {
+    samlDelete {
+      adminLogin
+      idpMetadata
+      idpMetadataURL
+      nameIDFormat
+    }
   }
 }
 

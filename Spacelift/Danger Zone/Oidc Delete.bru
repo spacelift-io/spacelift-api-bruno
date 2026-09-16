@@ -1,13 +1,13 @@
 meta {
-  name: Saml Delete
+  name: Oidc Delete
   type: graphql
-  seq: 10
+  seq: 14
 }
 
 docs {
   ℹ **ADVANCED** — Account-level SSO, SAML, SCIM or OIDC configuration.
 
-  Delete SAML integration.
+  Delete OIDC integration.
 }
 
 post {
@@ -17,12 +17,11 @@ post {
 }
 
 body:graphql {
-  mutation SamlDelete {
-    samlDelete {
+  mutation OidcDelete {
+    oidcDelete {
       adminLogin
-      idpMetadata
-      idpMetadataURL
-      nameIDFormat
+      clientId
+      identityProviderHost
     }
   }
 }

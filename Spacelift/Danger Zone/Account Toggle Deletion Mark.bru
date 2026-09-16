@@ -1,13 +1,13 @@
 meta {
-  name: Account Confirm Delete
+  name: Account Toggle Deletion Mark
   type: graphql
-  seq: 4
+  seq: 2
 }
 
 docs {
   ℹ **ADVANCED** — Account-wide administrative setting.
 
-  Delete the account
+  Mark/unmark the Account for deletion.
 }
 
 post {
@@ -17,8 +17,8 @@ post {
 }
 
 body:graphql {
-  mutation AccountConfirmDelete {
-    accountConfirmDelete
+  mutation AccountToggleDeletionMark {
+    accountToggleDeletionMark
   }
 }
 

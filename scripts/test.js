@@ -321,6 +321,34 @@ async function exerciseScript() {
 
   try {
     await runPreRequest({
+      requestName: "Saml Delete",
+      env: { ...CREDENTIALS },
+      tokenResponse: TOKEN_RESPONSE,
+    });
+    scriptResults.unconfirmedDanger = null;
+  } catch (err) {
+    scriptResults.unconfirmedDanger = err;
+  }
+
+  try {
+    await runPreRequest({
+      requestName: "Saml Delete",
+      env: { ...CREDENTIALS, CONFIRM_DESTRUCTIVE: "Session Delete All" },
+      tokenResponse: TOKEN_RESPONSE,
+    });
+    scriptResults.confirmedWrongDanger = null;
+  } catch (err) {
+    scriptResults.confirmedWrongDanger = err;
+  }
+
+  scriptResults.confirmedDanger = await runPreRequest({
+    requestName: "Saml Delete",
+    env: { ...CREDENTIALS, CONFIRM_DESTRUCTIVE: "Saml Delete" },
+    tokenResponse: TOKEN_RESPONSE,
+  });
+
+  try {
+    await runPreRequest({
       requestName: "List Stacks",
       env: { SPACELIFT_ENDPOINT: "https://myaccount.app.spacelift.io/graphql" },
       tokenResponse: TOKEN_RESPONSE,
@@ -392,6 +420,45 @@ function assertScriptBehavior() {
     assert(
       err.message.includes("invalid API key"),
       `error does not quote the API: ${err.message}`,
+    );
+  });
+
+  test("refuses a Danger Zone request that was not confirmed", () => {
+    assert(scriptResults.unconfirmedDanger, "request was allowed through");
+    assert(
+      /CONFIRM_DESTRUCTIVE/.test(scriptResults.unconfirmedDanger.message),
+      "error does not name CONFIRM_DESTRUCTIVE",
+    );
+  });
+
+  test("refuses one confirmed under a different request's name", () => {
+    assert(scriptResults.confirmedWrongDanger, "request was allowed through");
+  });
+
+  test("allows a Danger Zone request confirmed by exact name", () => {
+    equal(scriptResults.confirmedDanger.calls.length, 1, "token requests made");
+  });
+
+  test("guards every request that has nothing to prompt for", () => {
+    const guarded = [
+      ...(
+        collection.script.req.match(
+          /const REQUIRES_CONFIRMATION = \[([\s\S]*?)\n\s*\];/,
+        )?.[1] ?? ""
+      ).matchAll(/"([^"]+)"/g),
+    ].map((m) => m[1]);
+
+    const dangerZone = fs
+      .readdirSync(path.join(COLLECTION_DIR, "Danger Zone"))
+      .filter((f) => f.endsWith(".bru") && f !== "folder.bru")
+      .map((f) => f.slice(0, -".bru".length))
+      .sort();
+
+    assert(dangerZone.length > 0, "Danger Zone is empty");
+    equal(
+      guarded.sort().join("\n"),
+      dangerZone.join("\n"),
+      "guard list does not match Danger Zone",
     );
   });
 
