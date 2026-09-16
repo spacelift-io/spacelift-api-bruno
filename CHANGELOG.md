@@ -6,10 +6,78 @@ changes to the Spacelift API itself, see the
 
 ## 2026-09-16
 
+- Removed **Advanced → Account Settings → Account Confirm Delete** (`accountConfirmDelete`) — moved to **Danger Zone**
+- Removed **Advanced → Account Settings → Account Toggle Deletion Mark** (`accountToggleDeletionMark`) — moved to **Danger Zone**
+- Removed **Advanced → Billing → Billing Subscription Create** (`billingSubscriptionCreate`) — moved to **Danger Zone**
+- Removed **Advanced → Billing → Billing Subscription Delete** (`billingSubscriptionDelete`) — moved to **Danger Zone**
+- Removed **Advanced → Billing → Billing Subscription Update Tier** (`billingSubscriptionUpdateTier`) — moved to **Danger Zone**
+- Removed **Advanced → Billing → Billing Subscription Update V2** (`billingSubscriptionUpdateV2`) — moved to **Danger Zone**
+- Removed **Advanced → Sessions and Security Keys → Session Delete All** (`sessionDeleteAll`) — moved to **Danger Zone**
+- Removed **Advanced → Sessions and Security Keys → User Security Key Delete All** (`userSecurityKeyDeleteAll`) — moved to **Danger Zone**
+- Removed **Advanced → Slack → Slack App Config Delete** (`slackAppConfigDelete`) — moved to **Danger Zone**
+- Removed **Advanced → Slack → Slack App Config Set** (`slackAppConfigSet`) — moved to **Danger Zone**
+- Removed **Advanced → SSO → Delete Oauth Client For SCIM** (`deleteOauthClientForSCIM`) — moved to **Danger Zone**
+- Removed **Advanced → SSO → Oidc Delete** (`oidcDelete`) — moved to **Danger Zone**
+- Removed **Advanced → SSO → Oidc Update** (`oidcUpdate`) — moved to **Danger Zone**
+- Removed **Advanced → SSO → Reset Oauth Client For SCIM** (`resetOauthClientForSCIM`) — moved to **Danger Zone**
+- Removed **Advanced → SSO → Saml Delete** (`samlDelete`) — moved to **Danger Zone**
+- Removed **Advanced → SSO → Saml Update** (`samlUpdate`) — moved to **Danger Zone**
+- Removed **Audit Trail → Delete Audit Trail Webhook** (`auditTrailDeleteWebhook`) — moved to **Danger Zone**
+- Removed **Audit Trail → Delete Webhook Headers** (`auditTrailWebhookDeleteHeaders`) — moved to **Danger Zone**
+- Removed **Audit Trail → Set Webhook Headers** (`auditTrailWebhookSetHeaders`) — moved to **Danger Zone**
+- Removed **Blob Storage → Update Blob Storage Integration** (`blobStorageIntegrationUpdate`) — moved to **Danger Zone**
+- Removed **Managed Users → Unlink Identity Federation** (`identityFederationUnlink`) — moved to **Danger Zone**
+- Removed **OpenTofu Migration → Clean Migration Queue** (`openTofuMigrationQueueClean`) — moved to **Danger Zone**
+- Removed **OpenTofu Migration → Migrate Stacks** (`openTofuMigrate`) — moved to **Danger Zone**
+- Removed **Origin Integration → Delete Origin Integration** (`originIntegrationDelete`) — moved to **Danger Zone**
+- Removed **Stacks → Migrate Vendor For All Stacks** (`stackMigrateVendorAll`) — moved to **Danger Zone**
+- Removed **VCS Integrations → Azure DevOps → Update Azure DevOps Integration** (`azureDevOpsRepoIntegrationUpdate`) — moved to **Danger Zone**
+- Removed **VCS Integrations → Bitbucket Cloud → Update Bitbucket Cloud Integration** (`bitbucketCloudIntegrationUpdate`) — moved to **Danger Zone**
+- Removed **VCS Integrations → Bitbucket Datacenter → Update Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegrationUpdate`) — moved to **Danger Zone**
+- Removed **VCS Integrations → GitHub Enterprise → Update GitHub Enterprise Integration** (`githubEnterpriseIntegrationUpdate`) — moved to **Danger Zone**
+- Removed **VCS Integrations → GitLab → Update GitLab Integration** (`gitlabIntegrationUpdate`) — moved to **Danger Zone**
+- Fixed **Contexts → List Contexts** (`contexts`) — no longer sets a variable for **Add Config**; copy the `id` of the context you want from the response
+- Fixed **Contexts → Add Config** (`contextConfigAdd`) — `context` is a placeholder again, rather than whichever context **List Contexts** returned first
+- Fixed **Policies → List Policies** (`policies`) — no longer sets a variable for **Attach Policy**; copy the `id` of the policy you want from the response
+- Fixed **Policies → Attach Policy** (`policyAttach`) — both ids are placeholders again, rather than whichever policy and stack came back first
+- Fixed **Runs → Trigger Run** (`runTrigger`) — `stack` is a placeholder again — it used to be whichever stack **List Stacks** returned first, which is not a stack you chose
+- Fixed **Runs → Confirm Run** (`runConfirm`) — `stack` and `run` are placeholders again, so confirming applies to the run you name rather than the last one triggered
 - Fixed **Scans → Search Scans** (`searchScans`) — `integration` moved onto `providerConfigs`; the API rejects it at the top level
 - Fixed **Scans → Get Scan** (`scan`) — `integration` moved onto `providerConfigs`; the API rejects it at the top level
 - Fixed **Scans → Create Scan** (`scanCreate`) — `integration` now goes inside each `providerConfigs` entry, not at the top level
 - Fixed **Scans → Update Scan** (`scanUpdate`) — `integration` now goes inside each `providerConfigs` entry, not at the top level
+- Fixed **Stacks → List Stacks** (`stacks`) — no longer sets a variable other requests consume; copy the `id` of the stack you want from the response
+- Fixed **Stacks → Get Stack** (`stack`) — `id` is a placeholder again, rather than whichever stack **List Stacks** returned first
+- Added **Danger Zone → Account Confirm Delete** (`accountConfirmDelete`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Account Toggle Deletion Mark** (`accountToggleDeletionMark`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Billing Subscription Create** (`billingSubscriptionCreate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Billing Subscription Delete** (`billingSubscriptionDelete`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Billing Subscription Update Tier** (`billingSubscriptionUpdateTier`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Billing Subscription Update V2** (`billingSubscriptionUpdateV2`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Clean Migration Queue** (`openTofuMigrationQueueClean`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Delete Audit Trail Webhook Headers** (`auditTrailWebhookDeleteHeaders`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Delete Audit Trail Webhook** (`auditTrailDeleteWebhook`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Delete Oauth Client For SCIM** (`deleteOauthClientForSCIM`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Delete Origin Integration** (`originIntegrationDelete`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Migrate Stacks** (`openTofuMigrate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Migrate Vendor For All Stacks** (`stackMigrateVendorAll`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Oidc Delete** (`oidcDelete`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Oidc Update** (`oidcUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Reset Oauth Client For SCIM** (`resetOauthClientForSCIM`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Saml Delete** (`samlDelete`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Saml Update** (`samlUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Session Delete All** (`sessionDeleteAll`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Set Audit Trail Webhook Headers** (`auditTrailWebhookSetHeaders`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Slack App Config Delete** (`slackAppConfigDelete`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Slack App Config Set** (`slackAppConfigSet`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Unlink Identity Federation** (`identityFederationUnlink`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Update Azure DevOps Integration** (`azureDevOpsRepoIntegrationUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Update Bitbucket Cloud Integration** (`bitbucketCloudIntegrationUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Update Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegrationUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Update Blob Storage Integration** (`blobStorageIntegrationUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Update GitHub Enterprise Integration** (`githubEnterpriseIntegrationUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → Update GitLab Integration** (`gitlabIntegrationUpdate`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
+- Added **Danger Zone → User Security Key Delete All** (`userSecurityKeyDeleteAll`) — moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
 
 ## 2026-09-15
 
@@ -35,8 +103,6 @@ changes to the Spacelift API itself, see the
 - Deprecated **Runs → Prioritize Run** (`runPrioritizeSet`) — Use runPrioritySet instead.
 - Fixed **Ansible → List Ansible Hosts** (`ansibleHosts`) — its sample variables used values the API rejects
 - Fixed **Ansible → List Ansible Tasks** (`ansibleTasks`) — its sample variables used values the API rejects
-- Fixed **Audit Trail → Set Webhook Headers** (`auditTrailWebhookSetHeaders`) — its sample variables used values the API rejects
-- Fixed **Audit Trail → Delete Webhook Headers** (`auditTrailWebhookDeleteHeaders`) — its sample variables used values the API rejects
 - Fixed **Blueprints → Versioned Groups → Create Versioned Group** (`blueprintVersionedGroupCreate`) — its sample variables used values the API rejects
 - Fixed **Blueprints → Versioned Groups → Update Versioned Group** (`blueprintVersionedGroupUpdate`) — its sample variables used values the API rejects
 - Fixed **Blueprints → Versions → Create Version** (`blueprintVersionCreate`) — its sample variables used values the API rejects
@@ -69,6 +135,8 @@ changes to the Spacelift API itself, see the
 - Fixed **Terraform Providers → Register Platform** (`terraformProviderVersionRegisterPlatform`) — its sample variables used values the API rejects
 - Fixed **Terraform Providers → Register Platform V2** (`terraformProviderVersionRegisterPlatformV2`) — its sample variables used values the API rejects
 - Fixed **VCS Integrations → GitHub → Update GitHub Integration** (`githubIntegrationUpdate`) — its sample variables used values the API rejects
+- Fixed **Audit Trail → Delete Webhook Headers** (`auditTrailWebhookDeleteHeaders`) — its sample variables used values the API rejects
+- Fixed **Audit Trail → Set Webhook Headers** (`auditTrailWebhookSetHeaders`) — its sample variables used values the API rejects
 - Added **Account → List Outgoing IP Addresses** (`outgoingIPAddresses`)
 - Added **Account → Get AWS Account ID** (`spaceliftAwsAccountId`)
 - Added **Account → Get Default Private Worker Pool Runner Image** (`defaultPrivateWorkerPoolRunnerImage`)
@@ -76,24 +144,19 @@ changes to the Spacelift API itself, see the
 - Added **API Keys → Reset API Key** (`apiKeyReset`)
 - Added **Blob Storage → Get Blob Storage Integration** (`blobStorageIntegration`)
 - Added **Blob Storage → Create Blob Storage Integration** (`blobStorageIntegrationCreate`)
-- Added **Blob Storage → Update Blob Storage Integration** (`blobStorageIntegrationUpdate`)
 - Added **Blob Storage → Delete Blob Storage Integration** (`blobStorageIntegrationDelete`)
 - Added **Flows → Get Flows Integration** (`flowsIntegration`)
 - Added **Flows → List Flows Instances** (`flowsInstances`)
 - Added **Flows → List Flows Projects** (`flowsProjects`)
 - Added **Flows → Batch Create Project Role Bindings** (`flowsProjectRoleBindingBatchCreate`)
 - Added **Flows → Delete Project Role Binding** (`flowsProjectRoleBindingDelete`)
-- Added **Managed Users → Unlink Identity Federation** (`identityFederationUnlink`)
 - Added **OpenTofu Migration → Check OpenTofu Features** (`openTofuFeatures`)
 - Added **OpenTofu Migration → Migration Counts** (`openTofuMigrationCounts`)
 - Added **OpenTofu Migration → Search Migratable Stacks** (`openTofuMigrateSearch`)
 - Added **OpenTofu Migration → Search Migration Queue** (`openTofuMigrationQueueSearch`)
-- Added **OpenTofu Migration → Migrate Stacks** (`openTofuMigrate`)
-- Added **OpenTofu Migration → Clean Migration Queue** (`openTofuMigrationQueueClean`)
 - Added **Origin Integration → Get Origin Integration** (`originIntegration`)
 - Added **Origin Integration → Get Install URL** (`originIntegrationInstallURL`)
 - Added **Origin Integration → Update Origin Integration** (`originIntegrationUpdate`)
-- Added **Origin Integration → Delete Origin Integration** (`originIntegrationDelete`)
 - Added **Personal API Keys → Create Personal API Key** (`personalApiKeyCreate`)
 - Added **Personal API Keys → Disable Personal API Key** (`personalApiKeyDisable`)
 - Added **Personal API Keys → Enable Personal API Key** (`personalApiKeyEnable`)
@@ -121,7 +184,6 @@ changes to the Spacelift API itself, see the
 - Added **Spaces → API Keys With Access To Space** (`apiKeysWithAccessToSpace`)
 - Added **Spaces → API Key Sessions With Access To Space** (`apiKeySessionsWithAccessToSpace`)
 - Added **Spaces → User Sessions With Access To Space** (`userSessionsWithAccessToSpace`)
-- Added **Stacks → Migrate Vendor For All Stacks** (`stackMigrateVendorAll`)
 - Added **Templates → Deployments → Search Deployments** (`searchTemplateDeployments`)
 - Added **Templates → Deployments → Get Deployment** (`templateDeployment`)
 - Added **Templates → Deployments → Create Deployment** (`templateDeploymentCreate`)
@@ -150,7 +212,6 @@ changes to the Spacelift API itself, see the
 - Added **Advanced → Account Settings → Accepted Terms And Conditions AI** (`acceptedTermsAndConditionsAI`)
 - Added **Advanced → Account Settings → Account Can Be Deleted** (`accountCanBeDeleted`)
 - Added **Advanced → Account Settings → Account Can Be Deleted At** (`accountCanBeDeletedAt`)
-- Added **Advanced → Account Settings → Account Confirm Delete** (`accountConfirmDelete`)
 - Added **Advanced → Account Settings → Account Request Infra Assistant Enabling** (`accountRequestInfraAssistantEnabling`)
 - Added **Advanced → Account Settings → Account Set Infra Assistant Build Mode Enabled** (`accountSetInfraAssistantBuildModeEnabled`)
 - Added **Advanced → Account Settings → Account Set Infra Assistant Enabled** (`accountSetInfraAssistantEnabled`)
@@ -159,7 +220,6 @@ changes to the Spacelift API itself, see the
 - Added **Advanced → Account Settings → Account Set Spacelift Intelligence Enabled** (`accountSetSpaceliftIntelligenceEnabled`)
 - Added **Advanced → Account Settings → Account Toggle APIKey Management From Non Humans** (`accountToggleAPIKeyManagementFromNonHumans`)
 - Added **Advanced → Account Settings → Account Toggle Allow Non Root Admin Space Creation** (`accountToggleAllowNonRootAdminSpaceCreation`)
-- Added **Advanced → Account Settings → Account Toggle Deletion Mark** (`accountToggleDeletionMark`)
 - Added **Advanced → Account Settings → Account Toggle Enforcing MFA** (`accountToggleEnforcingMFA`)
 - Added **Advanced → Account Settings → Account Update Authorization Scheme** (`accountUpdateAuthorizationScheme`)
 - Added **Advanced → Account Settings → Account Update Awareness Source Survey** (`accountUpdateAwarenessSourceSurvey`)
@@ -196,11 +256,7 @@ changes to the Spacelift API itself, see the
 - Added **Advanced → Billing → Available Self Service Plans** (`availableSelfServicePlans`)
 - Added **Advanced → Billing → Billed Externally** (`billedExternally`)
 - Added **Advanced → Billing → Billing Subscription** (`billingSubscription`)
-- Added **Advanced → Billing → Billing Subscription Create** (`billingSubscriptionCreate`)
-- Added **Advanced → Billing → Billing Subscription Delete** (`billingSubscriptionDelete`)
 - Added **Advanced → Billing → Billing Subscription Update Info** (`billingSubscriptionUpdateInfo`)
-- Added **Advanced → Billing → Billing Subscription Update Tier** (`billingSubscriptionUpdateTier`)
-- Added **Advanced → Billing → Billing Subscription Update V2** (`billingSubscriptionUpdateV2`)
 - Added **Advanced → Billing → On Trial Until** (`onTrialUntil`)
 - Added **Advanced → Billing → Seats** (`seats`)
 - Added **Advanced → Billing → Tier** (`tier`)
@@ -296,28 +352,18 @@ changes to the Spacelift API itself, see the
 - Added **Advanced → Sessions and Security Keys → Security Key Delete** (`securityKeyDelete`)
 - Added **Advanced → Sessions and Security Keys → Security Keys** (`securityKeys`)
 - Added **Advanced → Sessions and Security Keys → Session Delete** (`sessionDelete`)
-- Added **Advanced → Sessions and Security Keys → Session Delete All** (`sessionDeleteAll`)
 - Added **Advanced → Sessions and Security Keys → Sessions** (`sessions`)
-- Added **Advanced → Sessions and Security Keys → User Security Key Delete All** (`userSecurityKeyDeleteAll`)
 - Added **Advanced → Slack → Github App Create From Manifest** (`githubAppCreateFromManifest`)
 - Added **Advanced → Slack → Github App Generate Manifest** (`githubAppGenerateManifest`)
 - Added **Advanced → Slack → Slack App Config** (`slackAppConfig`)
-- Added **Advanced → Slack → Slack App Config Delete** (`slackAppConfigDelete`)
-- Added **Advanced → Slack → Slack App Config Set** (`slackAppConfigSet`)
 - Added **Advanced → Slack → Slack App Manifest** (`slackAppManifest`)
 - Added **Advanced → Slack → Slack Integration** (`slackIntegration`)
 - Added **Advanced → SSO → Create Oauth Client For SCIM** (`createOauthClientForSCIM`)
-- Added **Advanced → SSO → Delete Oauth Client For SCIM** (`deleteOauthClientForSCIM`)
 - Added **Advanced → SSO → Oidc Create** (`oidcCreate`)
-- Added **Advanced → SSO → Oidc Delete** (`oidcDelete`)
 - Added **Advanced → SSO → Oidc Settings** (`oidcSettings`)
 - Added **Advanced → SSO → Oidc Subject Template** (`oidcSubjectTemplate`)
-- Added **Advanced → SSO → Oidc Update** (`oidcUpdate`)
-- Added **Advanced → SSO → Reset Oauth Client For SCIM** (`resetOauthClientForSCIM`)
 - Added **Advanced → SSO → Saml Create** (`samlCreate`)
-- Added **Advanced → SSO → Saml Delete** (`samlDelete`)
 - Added **Advanced → SSO → Saml Settings** (`samlSettings`)
-- Added **Advanced → SSO → Saml Update** (`samlUpdate`)
 - Added **Advanced → SSO → Scim Settings** (`scimSettings`)
 - Added **Advanced → UI State → Ui Config Get** (`uiConfigGet`)
 - Added **Advanced → UI State → Ui Config Store** (`uiConfigStore`)
@@ -340,6 +386,28 @@ changes to the Spacelift API itself, see the
 - Added **Advanced → User Guide → User Guide Start** (`userGuideStart`)
 - Added **Advanced → User Guide → User Guides** (`userGuides`)
 - Added **Advanced → Viewer → Viewer** (`viewer`)
+- Added **Advanced → Account Settings → Account Confirm Delete** (`accountConfirmDelete`)
+- Added **Advanced → Account Settings → Account Toggle Deletion Mark** (`accountToggleDeletionMark`)
+- Added **Advanced → Billing → Billing Subscription Create** (`billingSubscriptionCreate`)
+- Added **Advanced → Billing → Billing Subscription Delete** (`billingSubscriptionDelete`)
+- Added **Advanced → Billing → Billing Subscription Update Tier** (`billingSubscriptionUpdateTier`)
+- Added **Advanced → Billing → Billing Subscription Update V2** (`billingSubscriptionUpdateV2`)
+- Added **Advanced → Sessions and Security Keys → Session Delete All** (`sessionDeleteAll`)
+- Added **Advanced → Sessions and Security Keys → User Security Key Delete All** (`userSecurityKeyDeleteAll`)
+- Added **Advanced → Slack → Slack App Config Delete** (`slackAppConfigDelete`)
+- Added **Advanced → Slack → Slack App Config Set** (`slackAppConfigSet`)
+- Added **Advanced → SSO → Delete Oauth Client For SCIM** (`deleteOauthClientForSCIM`)
+- Added **Advanced → SSO → Oidc Delete** (`oidcDelete`)
+- Added **Advanced → SSO → Oidc Update** (`oidcUpdate`)
+- Added **Advanced → SSO → Reset Oauth Client For SCIM** (`resetOauthClientForSCIM`)
+- Added **Advanced → SSO → Saml Delete** (`samlDelete`)
+- Added **Advanced → SSO → Saml Update** (`samlUpdate`)
+- Added **Blob Storage → Update Blob Storage Integration** (`blobStorageIntegrationUpdate`)
+- Added **Managed Users → Unlink Identity Federation** (`identityFederationUnlink`)
+- Added **OpenTofu Migration → Clean Migration Queue** (`openTofuMigrationQueueClean`)
+- Added **OpenTofu Migration → Migrate Stacks** (`openTofuMigrate`)
+- Added **Origin Integration → Delete Origin Integration** (`originIntegrationDelete`)
+- Added **Stacks → Migrate Vendor For All Stacks** (`stackMigrateVendorAll`)
 
 ## 2026-03-11
 
@@ -362,9 +430,6 @@ changes to the Spacelift API itself, see the
 - Added **Audit Trail → Get Audit Trail Webhook** (`auditTrailWebhook`)
 - Added **Audit Trail → Search Audit Trail Entries** (`searchAuditTrailEntries`)
 - Added **Audit Trail → Set Audit Trail Webhook** (`auditTrailSetWebhook`)
-- Added **Audit Trail → Delete Audit Trail Webhook** (`auditTrailDeleteWebhook`)
-- Added **Audit Trail → Set Webhook Headers** (`auditTrailWebhookSetHeaders`)
-- Added **Audit Trail → Delete Webhook Headers** (`auditTrailWebhookDeleteHeaders`)
 - Added **Auth → Get Token** (`apiKeyUser`)
 - Added **Auth → Logout** (`logout`)
 - Added **Blueprints → Deployments → List Deployments** (`searchBlueprintDeployments`)
@@ -655,13 +720,11 @@ changes to the Spacelift API itself, see the
 - Added **VCS Agent Pools → Reset VCS Agent Pool** (`vcsAgentPoolReset`)
 - Added **VCS Integrations → Azure DevOps → Get Azure DevOps Integration** (`azureDevOpsRepoIntegration`)
 - Added **VCS Integrations → Azure DevOps → Create Azure DevOps Integration** (`azureDevOpsRepoIntegrationCreate`)
-- Added **VCS Integrations → Azure DevOps → Update Azure DevOps Integration** (`azureDevOpsRepoIntegrationUpdate`)
 - Added **VCS Integrations → Azure DevOps → Delete Azure DevOps Integration** (`azureDevOpsRepoIntegrationDelete`)
 - Added **VCS Integrations → Azure DevOps → Test Azure DevOps Integration** (`azureDevOpsRepoIntegrationTest`)
 - Added **VCS Integrations → Azure DevOps → Get Webhooks Endpoint** (`azureDevOpsWebhooksEndpoint`)
 - Added **VCS Integrations → Bitbucket Cloud → Get Bitbucket Cloud Integration** (`bitbucketCloudIntegration`)
 - Added **VCS Integrations → Bitbucket Cloud → Create Bitbucket Cloud Integration** (`bitbucketCloudIntegrationCreate`)
-- Added **VCS Integrations → Bitbucket Cloud → Update Bitbucket Cloud Integration** (`bitbucketCloudIntegrationUpdate`)
 - Added **VCS Integrations → Bitbucket Cloud → Delete Bitbucket Cloud Integration** (`bitbucketCloudIntegrationDelete`)
 - Added **VCS Integrations → Bitbucket Cloud → Test Bitbucket Cloud Integration** (`bitbucketCloudIntegrationTest`)
 - Added **VCS Integrations → Bitbucket Cloud → Regenerate Webhook Secret** (`bitbucketCloudIntegrationRegenerateWebhookSecret`)
@@ -670,7 +733,6 @@ changes to the Spacelift API itself, see the
 - Added **VCS Integrations → Bitbucket Cloud → Update Bitbucket Cloud Integration V2** (`bitbucketCloudIntegrationUpdateV2`)
 - Added **VCS Integrations → Bitbucket Datacenter → Get Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegration`)
 - Added **VCS Integrations → Bitbucket Datacenter → Create Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegrationCreate`)
-- Added **VCS Integrations → Bitbucket Datacenter → Update Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegrationUpdate`)
 - Added **VCS Integrations → Bitbucket Datacenter → Delete Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegrationDelete`)
 - Added **VCS Integrations → Bitbucket Datacenter → Test Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegrationTest`)
 - Added **VCS Integrations → Bitbucket Datacenter → Regenerate Webhook Secret** (`bitbucketDatacenterIntegrationRegenerateWebhookSecret`)
@@ -679,14 +741,12 @@ changes to the Spacelift API itself, see the
 - Added **VCS Integrations → GitHub → Update GitHub Integration** (`githubIntegrationUpdate`)
 - Added **VCS Integrations → GitHub Enterprise → Get GitHub Enterprise Integration** (`githubEnterpriseIntegration`)
 - Added **VCS Integrations → GitHub Enterprise → Create GitHub Enterprise Integration** (`githubEnterpriseIntegrationCreate`)
-- Added **VCS Integrations → GitHub Enterprise → Update GitHub Enterprise Integration** (`githubEnterpriseIntegrationUpdate`)
 - Added **VCS Integrations → GitHub Enterprise → Delete GitHub Enterprise Integration** (`githubEnterpriseIntegrationDelete`)
 - Added **VCS Integrations → GitHub Enterprise → Test GitHub Enterprise Integration** (`githubEnterpriseIntegrationTest`)
 - Added **VCS Integrations → GitHub Enterprise → Regenerate Webhook Secret** (`githubEnterpriseIntegrationRegenerateWebhookSecret`)
 - Added **VCS Integrations → GitHub Enterprise → Get Webhooks Endpoint** (`githubEnterpriseWebhooksEndpoint`)
 - Added **VCS Integrations → GitLab → Get GitLab Integration** (`gitlabIntegration`)
 - Added **VCS Integrations → GitLab → Create GitLab Integration** (`gitlabIntegrationCreate`)
-- Added **VCS Integrations → GitLab → Update GitLab Integration** (`gitlabIntegrationUpdate`)
 - Added **VCS Integrations → GitLab → Delete GitLab Integration** (`gitlabIntegrationDelete`)
 - Added **VCS Integrations → GitLab → Test GitLab Integration** (`gitlabIntegrationTest`)
 - Added **VCS Integrations → GitLab → Regenerate Webhook Secret** (`gitlabIntegrationRegenerateWebhookSecret`)
@@ -721,7 +781,15 @@ changes to the Spacelift API itself, see the
 - Added **Worker Pools → Cycle Worker Pool** (`workerPoolCycle`)
 - Added **Worker Pools → Reset Worker Pool** (`workerPoolReset`)
 - Added **Worker Pools → Set Worker Drain** (`workerDrainSet`)
+- Added **Audit Trail → Delete Audit Trail Webhook** (`auditTrailDeleteWebhook`)
+- Added **Audit Trail → Delete Webhook Headers** (`auditTrailWebhookDeleteHeaders`)
+- Added **Audit Trail → Set Webhook Headers** (`auditTrailWebhookSetHeaders`)
 - Added **Runs → Delete Run State Summary** (`deleteRunStateSummary`)
 - Added **Runs → Delete Run Summary** (`deleteRunSummary`)
 - Added **Runs → Summarize Run** (`summarizeRun`)
 - Added **Runs → Summarize Run State** (`summarizeRunState`)
+- Added **VCS Integrations → Azure DevOps → Update Azure DevOps Integration** (`azureDevOpsRepoIntegrationUpdate`)
+- Added **VCS Integrations → Bitbucket Cloud → Update Bitbucket Cloud Integration** (`bitbucketCloudIntegrationUpdate`)
+- Added **VCS Integrations → Bitbucket Datacenter → Update Bitbucket Datacenter Integration** (`bitbucketDatacenterIntegrationUpdate`)
+- Added **VCS Integrations → GitHub Enterprise → Update GitHub Enterprise Integration** (`githubEnterpriseIntegrationUpdate`)
+- Added **VCS Integrations → GitLab → Update GitLab Integration** (`gitlabIntegrationUpdate`)
