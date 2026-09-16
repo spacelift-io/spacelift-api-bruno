@@ -13,6 +13,11 @@ A [Bruno](https://www.usebruno.com/) collection covering the Spacelift GraphQL A
 
 ### 1. Get the Collection
 
+> [!IMPORTANT]
+> Options A and B are desktop-only, and both shell out to `git`, so it must be
+> installed and on your `PATH`. The VS Code extension has no clone option — use
+> option C there.
+
 #### Option A — Fetch in Bruno (recommended)
 
 [<img src="https://fetch.usebruno.com/button.svg" alt="Fetch in Bruno" width="128" height="32">](https://fetch.usebruno.com?url=https://github.com/spacelift-io/spacelift-api-bruno.git "target=_blank rel=noopener noreferrer")
@@ -30,9 +35,6 @@ The same thing, without the button:
 2. Paste `https://github.com/spacelift-io/spacelift-api-bruno.git` and click **Clone**.
 3. Choose a location to clone into, optionally pick a branch, and click **Clone**.
 4. Bruno scans the clone and lists the collections it finds. Select **Spacelift** and click **Open**.
-
-Options A and B both shell out to `git`, so it must be installed and on your `PATH`, and
-both are desktop-only. The VS Code extension has no clone option — use option C there.
 
 The collection lives in the `Spacelift/` subfolder rather than at the repository root; Bruno's clone scans the whole repository, so it finds it either way.
 
@@ -60,8 +62,7 @@ Leave `jwt` alone — the collection mints and refreshes it for you.
 
 `SPACELIFT_API_KEY_SECRET` and `jwt` are **secret variables**. Bruno keeps their values in
 its own encrypted store and writes only their names into `my-account.bru`, so the file
-stays safe to commit and your credentials never reach git. That is why the environment can
-ship with the collection at all.
+stays safe to commit and your credentials never reach git.
 
 Working with more than one Spacelift account? Duplicate the environment and name the copies
 after your accounts. Only `my-account` is tracked in git; anything else you add is ignored.
