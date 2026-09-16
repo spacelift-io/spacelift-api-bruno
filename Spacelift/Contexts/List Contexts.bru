@@ -9,8 +9,7 @@ docs {
 
   <!-- notes: hand-written, preserved by sync-docs -->
 
-  Sets `{{contextId}}` to the first context in the response, which **Add Config**
-  then uses without you copying anything.
+  A context's `id` from this response is what **Add Config** asks for.
 }
 
 post {
@@ -31,8 +30,4 @@ body:graphql {
       updatedAt
     }
   }
-}
-
-vars:post-response {
-  contextId: res.body.data.contexts?.[0]?.id
 }

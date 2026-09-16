@@ -87,20 +87,17 @@ body:graphql:vars {
 
 `auth: inherit` means "use the collection's auth", resolved by Bruno's `prepare-request.js`: a request whose mode is `inherit` takes the collection's `auth { mode: bearer }` and gets `Authorization: Bearer {{jwt}}`. New requests should use `inherit` and carry no `auth:bearer` block of their own — the token is configured in exactly one place, `collection.bru`. `Auth/Get Token.bru` is the sole exception, at `auth: none`.
 
-### Chained Requests
+### No Chained Requests
 
-The workflows documented in the README run end to end without copying IDs between requests. A list request captures the first result into a runtime variable with a `vars:post-response` block, and the requests downstream of it use `{{thatVariable}}` where they would otherwise carry a placeholder:
+No request passes an ID to another. Every ID argument is a placeholder the user replaces, and no `.bru` file carries a `vars:post-response` block.
 
-| Sets                     | Variable        | Used by                                            |
-| ------------------------ | --------------- | -------------------------------------------------- |
-| `Stacks/List Stacks`     | `{{stackId}}`   | Get Stack, Trigger Run, Confirm Run, Attach Policy |
-| `Runs/Trigger Run`       | `{{runId}}`     | Confirm Run                                        |
-| `Policies/List Policies` | `{{policyId}}`  | Attach Policy                                      |
-| `Contexts/List Contexts` | `{{contextId}}` | Add Config                                         |
+It was built the other way first: `List Stacks` captured `res.body.data.stacks?.[0]?.id` into `{{stackId}}`, which `Get Stack`, `Trigger Run`, `Confirm Run` and `Attach Policy` then used, with the same shape for `policyId`, `contextId` and `runId`. The README called it "typical workflows" and it did save copying.
 
-The expressions use optional chaining (`res.body.data.stacks?.[0]?.id`) so an empty list leaves the variable unset rather than throwing inside Bruno's var evaluation.
+What it cost was worse. The captured ID is whatever the API returned first, and the API guarantees no order, so "the first stack" is not a choice anyone made. Nothing in Bruno's UI shows the dependency — the requests look independent in the sidebar, and the variable is set silently. Send the run workflow in order without reading the list and `Confirm Run` applies a run against a stack the user never picked (`Trigger Run` defaults to `PROPOSED`, so the trigger itself only plans).
 
-This is deliberately limited to the documented workflows. Chaining every request that takes an ID would mean 352 files silently depending on execution order, and a request whose variable was never set fails less legibly than one still holding `STACK_ID_HERE` — the placeholder at least says what it wants. Each chained request carries a note saying which request feeds it.
+A placeholder is also the better failure. `STACK_ID_HERE` reaching the API says what the request wanted; an unset variable does not.
+
+Where an ID comes from belongs in the request's notes instead — see **Hand-Written Notes in Request Docs**. Each of the affected requests says which list request produces the ID it needs.
 
 ### No Response Examples
 

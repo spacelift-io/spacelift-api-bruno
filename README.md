@@ -82,35 +82,33 @@ exactly which variables are still missing, rather than a bare 401.
 
 ## Typical Workflows
 
-These run start to finish without copying an ID between requests. Each list request
-stores the first result's ID in a variable that the next request already uses, so you
-just send them in order.
+Each request is one operation, so a task is usually two or three of them in order. The
+list request shows you the IDs; copy the one you want into the next request's
+**Variables** panel.
 
 **Trigger and confirm a run:**
 
-1. **Stacks → List Stacks** — stores `{{stackId}}`
-2. **Runs → Trigger Run** — uses `{{stackId}}`, stores `{{runId}}`
-3. **Runs → Confirm Run** — uses both
+1. **Stacks → List Stacks** — copy the `id` of the stack you want
+2. **Runs → Trigger Run** — paste it into `stack`; the response's `id` is the new run
+3. **Runs → Confirm Run** — `stack` and `run` are those two IDs
 
 **Attach a policy to a stack:**
 
-1. **Policies → List Policies** — stores `{{policyId}}`
-2. **Stacks → List Stacks** — stores `{{stackId}}`
-3. **Policies → Attach Policy** — uses both
+1. **Policies → List Policies** — copy the policy's `id`
+2. **Stacks → List Stacks** — copy the stack's `id`
+3. **Policies → Attach Policy** — `id` is the policy, `stack` is the stack
 
 **Add an environment variable to a context:**
 
-1. **Contexts → List Contexts** — stores `{{contextId}}`
-2. **Contexts → Add Config** — uses `{{contextId}}`; set `config.type` to `ENVIRONMENT_VARIABLE`
-
-Working on a specific resource rather than the first one in the list? Replace the
-variable in the **Variables** panel with the ID you want. The chaining is a default,
-not a constraint.
+1. **Contexts → List Contexts** — copy the context's `id`
+2. **Contexts → Add Config** — paste it into `context`, and set `config.type` to
+   `ENVIRONMENT_VARIABLE`
 
 ## Placeholder Values
 
-Outside those workflows, requests that need an ID use an obvious placeholder like
-`STACK_ID_HERE`. Replace it in the **Variables** panel before sending.
+Requests that need an ID use an obvious placeholder like `STACK_ID_HERE`. Replace it in
+the **Variables** panel before sending. Each request's **Docs** pane says which request
+lists the IDs it wants.
 
 ## Destructive Requests
 

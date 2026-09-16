@@ -10,9 +10,8 @@ docs {
 
   <!-- notes: hand-written, preserved by sync-docs -->
 
-  Takes both IDs from the variables **List Stacks** and **Trigger Run** set, so the
-  three requests run in order with no copying. Replace either with a literal ID to
-  confirm a different run.
+  `stack` is the stack, from **Stacks → List Stacks**; `run` is the run to confirm,
+  whose `id` **Trigger Run** returns.
 
   Omit `run` entirely to confirm whichever run is currently blocking the stack.
 }
@@ -35,8 +34,8 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "stack": "{{stackId}}",
-    "run": "{{runId}}",
+    "stack": "STACK_ID_HERE",
+    "run": "RUN_ID_HERE",
     "note": "Approved"
   }
 }

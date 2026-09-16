@@ -9,8 +9,7 @@ docs {
 
   <!-- notes: hand-written, preserved by sync-docs -->
 
-  Takes `id` from `{{stackId}}`, which **Stacks → List Stacks** sets. Replace it with
-  a literal ID for a specific stack.
+  `id` is a stack ID. **Stacks → List Stacks** lists them.
 }
 
 post {
@@ -38,6 +37,6 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "{{stackId}}"
+    "id": "STACK_ID_HERE"
   }
 }
