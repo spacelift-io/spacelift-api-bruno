@@ -11,7 +11,7 @@
  *
  *     "id": "{{?Stack ID}}"
  *
- * Bruno opens a dialog at send time asking for each one, and cancelling the
+ * Bruno opens a dialog at send time asking for each one, and canceling the
  * dialog cancels the request. Deleting something therefore takes a deliberate
  * act — you cannot destroy anything by opening a request and hitting send.
  *

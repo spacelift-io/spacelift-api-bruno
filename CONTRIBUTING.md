@@ -139,7 +139,7 @@ Requests whose name contains `Delete`, `Destroy`, `Revoke`, `Reset`, `Yank`, `Un
 "id": "{{?Stack ID}}"
 ```
 
-Bruno asks for each one at send time, and cancelling the dialog cancels the request. It also means the collection runner and CLI skip these requests, since neither can prompt — so a collection run can't delete anything.
+Bruno asks for each one at send time, and canceling the dialog cancels the request. It also means the collection runner and CLI skip these requests, since neither can prompt — so a collection run can't delete anything.
 
 Add a destructive request the normal way, then run `npm run destructive-prompts` to convert its placeholders. The pre-commit hook and CI fail if you forget.
 

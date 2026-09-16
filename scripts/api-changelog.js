@@ -8,7 +8,7 @@
  *
  * The changelog is free-form prose with no feed and no topic tags, so this
  * script does no matching — it just narrows the page down to what has not
- * been reviewed yet and leaves the judgement to a human (or to /sync-schema).
+ * been reviewed yet and leaves the judgment to a human (or to /sync-schema).
  *
  * Entries are delimited by `<h2 id="YYYY-MM-DD">` headings.
  *

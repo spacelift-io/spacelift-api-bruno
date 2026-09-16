@@ -120,7 +120,7 @@ ask:
 "id": "{{?Stack ID}}"
 ```
 
-Bruno opens a dialog for each of these when you hit send, and cancelling the dialog
+Bruno opens a dialog for each of these when you hit send, and canceling the dialog
 cancels the request — so you can't destroy anything by opening a request and sending it
 out of curiosity.
 

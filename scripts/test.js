@@ -342,7 +342,7 @@ async function exerciseScript() {
   }
 }
 
-function assertScriptBehaviour() {
+function assertScriptBehavior() {
   suite("The token refresh script");
 
   test("mints a token when the environment has none", () => {
@@ -409,7 +409,7 @@ function assertScriptBehaviour() {
 function assertResponseExamples() {
   suite("Response examples say what they are");
 
-  test("every generated example is labelled illustrative", () => {
+  test("every generated example is labeled illustrative", () => {
     const bad = [];
     let found = 0;
 
@@ -441,7 +441,7 @@ function assertResponseExamples() {
 // ---------------------------------------------------------------------------
 
 exerciseScript()
-  .then(assertScriptBehaviour)
+  .then(assertScriptBehavior)
   .then(assertResponseExamples)
   .then(() => {
     console.log(`\n${"─".repeat(60)}`);

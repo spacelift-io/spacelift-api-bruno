@@ -148,7 +148,7 @@ Requests whose name contains a destructive verb take their IDs as Bruno **prompt
 
 Two things follow from that, and both are the point:
 
-- Bruno opens a dialog at send time, and cancelling it cancels the request. Deleting something takes a deliberate act rather than an idle send.
+- Bruno opens a dialog at send time, and canceling it cancels the request. Deleting something takes a deliberate act rather than an idle send.
 - Bruno's collection runner and CLI **skip** any request containing a prompt variable, because neither can prompt. A collection run therefore cannot delete anything, whatever it is pointed at.
 
 `scripts/destructive-prompts.js` both applies and checks this, with `DESTRUCTIVE_VERBS` deciding what counts — matched whole-word against the request name, so `Delete`, `Revoke`, `Reset`, `Yank`, `Unlink`, `Clean`, `Purge`, `Eject` and `Destroy` all qualify. The match is coarse on purpose: `Create Scheduled Delete` is caught because it schedules a stack's destruction, and being wrong in the cautious direction costs one dialog.
@@ -244,7 +244,7 @@ Two, for two different changelogs. Keep them straight:
 
 ### Coverage Baseline
 
-`.coverage-baseline` holds a single integer: the maximum acceptable count of missing non-deprecated schema operations. Advanced operations count here like any other — labelling an operation does not excuse it from coverage. `npm run coverage -- --check-baseline` fails CI if live coverage regresses past it. The count is always computed over non-deprecated operations, independent of whether `--ignore-deprecated` was passed for display purposes. After adding requests, lower this number to the missing count reported by `npm run coverage -- --ignore-deprecated`, otherwise a later run treats your own improvement as headroom.
+`.coverage-baseline` holds a single integer: the maximum acceptable count of missing non-deprecated schema operations. Advanced operations count here like any other — labeling an operation does not excuse it from coverage. `npm run coverage -- --check-baseline` fails CI if live coverage regresses past it. The count is always computed over non-deprecated operations, independent of whether `--ignore-deprecated` was passed for display purposes. After adding requests, lower this number to the missing count reported by `npm run coverage -- --ignore-deprecated`, otherwise a later run treats your own improvement as headroom.
 
 ### Deprecated Operations
 
@@ -281,7 +281,7 @@ What `scripts/advanced-operations.js` does is _label_ them, so nobody mistakes t
 - `npm run coverage -- --check-advanced-marks` fails if a covered advanced operation's `.bru` file has no marker — the same shape as `--check-deprecated-marks`. The fix is always `npm run sync-docs`.
 - Unlike `DEPRECATED_MARKER`, which is duplicated in `sync-docs.js` and `coverage.js`, `ADVANCED_MARKER` and the operation list live in one module both import. Nothing to keep in sync by hand.
 
-Being advanced is never a CI failure — it is a label, like deprecation. Add new entries to the appropriate category when an operation is clearly administrative or internal plumbing; when in doubt, leave it unlabelled, since a wrong label discourages legitimate use.
+Being advanced is never a CI failure — it is a label, like deprecation. Add new entries to the appropriate category when an operation is clearly administrative or internal plumbing; when in doubt, leave it unlabeled, since a wrong label discourages legitimate use.
 
 The `Advanced/` folder is pinned to the bottom of the sidebar by `seq: 99` in its `folder.bru` — the same policy applied to navigation rather than to docs. It holds roughly 200 of the collection's requests, so alphabetical order would otherwise park all of it between `Account` and `AI Integrations`, in front of everyone looking for `Contexts` or `Runs`.
 

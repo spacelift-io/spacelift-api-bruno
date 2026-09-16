@@ -209,7 +209,7 @@ async function main() {
   // The set the baseline check measures against: non-deprecated ops, collected
   // regardless of --ignore-deprecated so the CLI flag can't change what the
   // baseline compares against. Advanced operations are in scope and counted
-  // here like any other — they are labelled, not excluded.
+  // here like any other — they are labeled, not excluded.
   const baselineOps = new Set();
 
   for (const typeName of ["Query", "Mutation"]) {
@@ -287,7 +287,7 @@ async function main() {
   );
   console.log(`Scanned:  ${bruFiles.length} .bru files`);
   console.log(
-    `Advanced: ${advancedInSchema.size} operation(s) in ${Object.keys(CATEGORIES).length} categories are in scope but labelled advanced\n`,
+    `Advanced: ${advancedInSchema.size} operation(s) in ${Object.keys(CATEGORIES).length} categories are in scope but labeled advanced\n`,
   );
 
   if (advancedStale.length > 0) {
@@ -464,7 +464,7 @@ async function main() {
         `  New schema operations have no .bru file. Run 'npm run coverage -- --ignore-deprecated --show-covered'`,
       );
       console.log(
-        `  to see what's new, add .bru files (labelling any niche ones in scripts/advanced-operations.js`,
+        `  to see what's new, add .bru files (labeling any niche ones in scripts/advanced-operations.js`,
       );
       console.log(
         `  ones), then update .coverage-baseline to ${totalMissing}.`,

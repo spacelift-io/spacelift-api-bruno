@@ -62,7 +62,7 @@ Use **Get Token** when you want a token to use elsewhere — in curl, a script, 
   "Blob Storage": `Integration that keeps large run artifacts in your own object storage rather
 than Spacelift's.`,
 
-  Blueprints: `Blueprints stamp out stacks from a parameterised definition. **Get Blueprint
+  Blueprints: `Blueprints stamp out stacks from a parameterized definition. **Get Blueprint
 Schema** tells you which inputs one expects, **Parse Template** checks a
 definition before you save it, and **Create Stack from Blueprint** is the payoff.
 
@@ -73,18 +73,18 @@ New work should start in **Templates**.`,
   "Blueprints/Deployments": `Tracks what a blueprint has deployed, and attaches those deployments to
 integrations.
 
-⚠ Deprecated in favour of **Templates → Deployments**.`,
+⚠ Deprecated in favor of **Templates → Deployments**.`,
 
   "Blueprints/Groups": `Blueprints grouped so related definitions stay together.`,
 
   "Blueprints/Versioned Groups": `Blueprint groups that carry versions.
 
-⚠ Deprecated in favour of **Templates**.`,
+⚠ Deprecated in favor of **Templates**.`,
 
   "Blueprints/Versions": `Individual versions of a versioned blueprint, and creating a stack from a
 specific one.
 
-⚠ Deprecated in favour of **Templates → Versions**.`,
+⚠ Deprecated in favor of **Templates → Versions**.`,
 
   "Cloud Integrations": `Credentials Spacelift assumes when your runs talk to a cloud provider, so no
 stack has to hold long-lived keys.
@@ -162,7 +162,7 @@ Created, then enabled or disabled.`,
 
   Plugins: `Plugins installed into the account, and their lifecycle.`,
 
-  "Plugins/Templates": `The catalogue of templates a plugin can be installed from.`,
+  "Plugins/Templates": `The catalog of templates a plugin can be installed from.`,
 
   Policies: `Rego policies that decide what Spacelift allows: which runs proceed, who may
 approve them, what a plan is permitted to change.
@@ -260,7 +260,7 @@ up.`,
   "Stacks/Webhooks": `Webhooks scoped to one stack, which Spacelift posts that stack's run events to.
 Account-wide webhooks live in the top-level **Webhooks** folder.`,
 
-  Templates: `Templates are the successor to **Blueprints**: a parameterised, versioned stack
+  Templates: `Templates are the successor to **Blueprints**: a parameterized, versioned stack
 definition, with deployments recording what came out of it.
 
 New work belongs here. The equivalent Blueprint requests are deprecated and name

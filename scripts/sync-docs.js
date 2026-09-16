@@ -63,7 +63,7 @@ const ENDPOINT =
   endpointFlag !== -1 ? args[endpointFlag + 1] : DEFAULT_ENDPOINT;
 const DRY_RUN = args.includes("--dry-run");
 const CHECK_FOLDERS = args.includes("--check-folders");
-// --check-folders is a narrower --check, so it implies the no-write behaviour.
+// --check-folders is a narrower --check, so it implies the no-write behavior.
 const CHECK = args.includes("--check") || CHECK_FOLDERS;
 
 // ---------------------------------------------------------------------------
