@@ -154,6 +154,13 @@ docs {
 
   ✚ added · ✎ corrected · ⚠ deprecated · ✖ removed
 
+  **2026-09-16**
+
+  - ✎ Scans → Search Scans — `integration` moved onto `providerConfigs`; selecting it at the top level no longer validates
+  - ✎ Scans → Get Scan — `integration` moved onto `providerConfigs`; selecting it at the top level no longer validates
+  - ✎ Scans → Create Scan — `integration` now goes inside each `providerConfigs` entry, not at the top level
+  - ✎ Scans → Update Scan — `integration` now goes inside each `providerConfigs` entry, not at the top level
+
   **2026-09-15**
 
   - ✖ Runs → Delete Run State Summary
@@ -164,10 +171,6 @@ docs {
   - ⚠ Blueprints → Deployments → Get Deployment — Use templateDeployment instead
   - ⚠ Blueprints → Deployments → Create Deployment — Use templateDeploymentCreate instead
   - ⚠ Blueprints → Deployments → Update Deployment — Use templateDeploymentUpdate instead
-  - ⚠ Blueprints → Deployments → Delete Deployment — Use templateDeploymentDelete instead
-  - ⚠ Blueprints → Versioned Groups → List Versioned Groups — Use searchTemplates instead
-  - ⚠ Blueprints → Versioned Groups → Get Versioned Group — Use template instead
-  - ⚠ Blueprints → Versioned Groups → Create Versioned Group — Use templateCreate instead
 
-  _… and 697 earlier changes — see the [full changelog](https://github.com/spacelift-io/spacelift-api-bruno/blob/main/CHANGELOG.md)._
+  _… and 701 earlier changes — see the [full changelog](https://github.com/spacelift-io/spacelift-api-bruno/blob/main/CHANGELOG.md)._
 }

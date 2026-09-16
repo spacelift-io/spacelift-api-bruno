@@ -4,6 +4,13 @@ Every request added, corrected, deprecated or removed in this collection. For
 changes to the Spacelift API itself, see the
 [Spacelift changelog](https://docs.spacelift.io/product/changelog).
 
+## 2026-09-16
+
+- Fixed **Scans → Search Scans** (`searchScans`) — `integration` moved onto `providerConfigs`; selecting it at the top level no longer validates
+- Fixed **Scans → Get Scan** (`scan`) — `integration` moved onto `providerConfigs`; selecting it at the top level no longer validates
+- Fixed **Scans → Create Scan** (`scanCreate`) — `integration` now goes inside each `providerConfigs` entry, not at the top level
+- Fixed **Scans → Update Scan** (`scanUpdate`) — `integration` now goes inside each `providerConfigs` entry, not at the top level
+
 ## 2026-09-15
 
 - Removed **Runs → Delete Run State Summary** (`deleteRunStateSummary`)
