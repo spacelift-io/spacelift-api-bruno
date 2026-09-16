@@ -76,6 +76,41 @@ script:pre-request {
     );
   }
 
+  // Bruno interpolates {{SPACELIFT_ENDPOINT}} into every request URL straight
+  // from the environment, so a mistake here breaks the whole collection at
+  // once — and it has to be repaired out here, because with a valid token in
+  // hand the block below never reads the endpoint at all.
+  //
+  // Only two shapes are touched: a missing scheme, and a host with no path.
+  // Anything carrying a path is left exactly as typed, so a self-hosted
+  // install serving GraphQL from somewhere other than /graphql passes through
+  // untouched rather than being "corrected" into something broken — which the
+  // next send would then reapply, leaving no way to type the right value.
+  //
+  // A host with no dot in it is left alone too. Expanding "acme" into
+  // "acme.app.spacelift.io" would guess at intent, and guess wrong for a
+  // self-hosted install reached by an internal hostname or by localhost.
+  function normalizeEndpoint(raw) {
+    // Strip the trailing slash before the bare-host test below, not after:
+    // "https://acme.app.spacelift.io/" carries a path as far as that regex is
+    // concerned, so leaving the slash on would skip the repair and point every
+    // request at the account root.
+    let value = (raw || "").trim().replace(/\/+$/, "");
+    if (!value) return "";
+    if (!/^https?:\/\//i.test(value)) value = `https://${value}`;
+    if (/^https?:\/\/[^/]+$/i.test(value)) value += "/graphql";
+    return value;
+  }
+
+  // Writing it back is what reaches the URL: this runs before Bruno
+  // interpolates the request, the same ordering the jwt below relies on. The
+  // variable is secret, so the value lands in Bruno's encrypted store and
+  // nothing is written to a tracked file.
+  const endpoint = normalizeEndpoint(bru.getEnvVar("SPACELIFT_ENDPOINT"));
+  if (endpoint && endpoint !== bru.getEnvVar("SPACELIFT_ENDPOINT")) {
+    bru.setEnvVar("SPACELIFT_ENDPOINT", endpoint);
+  }
+
   // These three manage the token themselves; running this first would mint a
   // token only to have them immediately replace or discard it.
   const MANAGES_ITS_OWN_TOKEN = ["Get Token", "Refresh Token", "Logout"];
@@ -120,7 +155,6 @@ script:pre-request {
   }
 
   if (!MANAGES_ITS_OWN_TOKEN.includes(req.getName()) && needsRefresh(bru.getEnvVar("jwt"))) {
-    const endpoint = bru.getEnvVar("SPACELIFT_ENDPOINT");
     const apiKeyId = bru.getEnvVar("SPACELIFT_API_KEY_ID");
     const apiKeySecret = bru.getEnvVar("SPACELIFT_API_KEY_SECRET");
 

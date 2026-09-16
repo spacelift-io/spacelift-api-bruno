@@ -231,6 +231,12 @@ Details that matter if you touch it:
 - **A token it cannot read counts as unusable**, not as good. Being wrong in that direction costs one round trip; the other direction is the authentication failure the script exists to prevent.
 - **`MANAGES_ITS_OWN_TOKEN` skips `Get Token`, `Refresh Token` and `Logout`** by `req.getName()`. Without that, the script would mint a token purely for those requests to replace or discard.
 - **An unconfigured environment throws with the missing variable names**, before any network call. The default `SPACELIFT_ENDPOINT` counts as unset — otherwise the failure is a DNS error for the literal host `myaccount.app.spacelift.io`.
+- **`normalizeEndpoint` repairs `SPACELIFT_ENDPOINT` and writes it back**, which is the only way to reach the URL: every request interpolates `{{SPACELIFT_ENDPOINT}}` straight from the environment, so a missing `/graphql` is not one broken request but the whole collection. The write lands before Bruno interpolates, the same ordering `jwt` already depends on.
+
+  It sits **above** the refresh check, not inside it. Within that block it would only run when a token is being minted, leaving every request made with a valid token pointing at the unrepaired value.
+
+  It repairs exactly two shapes — a missing scheme, and a host with no path — and the trailing-slash strip has to happen before the bare-host test, or `https://acme.app.spacelift.io/` reads as having a path and the repair is skipped. Anything already carrying a path is returned untouched, including a dotless or `localhost` host. That restraint is the point: a wrong repair is written back and reapplied on every send, so the user cannot type their way out of it. `npm test` drives a table of typed inputs through the real script and asserts both the stored value and the URL the token call used.
+
 - **`npm run validate` checks the mutation inside the script.** It has no `body:graphql` block, so the file loop would skip it; `extractCollectionScriptGraphQL` pulls the `GET_TOKEN` template literal out instead. Renaming that variable fails the run on purpose rather than silently dropping the check — the alternative is a rename of `apiKeyUser` breaking authentication for every user while CI stays green.
 
 `Auth/Get Token.bru` remains, as the explicit way to obtain a token (to copy one out for use elsewhere), and is still the only request with `auth: none`.

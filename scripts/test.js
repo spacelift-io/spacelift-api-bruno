@@ -248,6 +248,30 @@ const TOKEN_RESPONSE = {
   data: { apiKeyUser: { jwt: jwtExpiringIn(3600) } },
 };
 
+// What the script should make of each shape somebody might type into the
+// environment. Bruno interpolates the endpoint into every request URL, so the
+// right-hand side is what the whole collection ends up pointing at — getting
+// it wrong is not one broken request but all of them.
+const ENDPOINT_INPUTS = {
+  "https://acme.app.spacelift.io/graphql":
+    "https://acme.app.spacelift.io/graphql",
+  "https://acme.app.spacelift.io/graphql/":
+    "https://acme.app.spacelift.io/graphql",
+  "https://acme.app.spacelift.io": "https://acme.app.spacelift.io/graphql",
+  // The trailing slash is the case that breaks if the strip is ever moved
+  // after the bare-host test: it reads as a path, and the repair is skipped.
+  "https://acme.app.spacelift.io/": "https://acme.app.spacelift.io/graphql",
+  "acme.app.spacelift.io": "https://acme.app.spacelift.io/graphql",
+  "acme.app.spacelift.io/": "https://acme.app.spacelift.io/graphql",
+  "  https://acme.app.spacelift.io  ": "https://acme.app.spacelift.io/graphql",
+  // A path already there is somebody's deliberate choice — a self-hosted
+  // install need not serve GraphQL where the SaaS one does. Appending to it
+  // would break a working setup on every send, with no way to type the right
+  // value, so these have to come back untouched.
+  "https://spacelift.corp/api/graphql": "https://spacelift.corp/api/graphql",
+  "https://spacelift.corp/graphql/v2": "https://spacelift.corp/graphql/v2",
+};
+
 /**
  * Run the collection's pre-request script the way Bruno does: inside an async
  * wrapper, with require() limited to the modules Safe Mode allows.
@@ -381,6 +405,21 @@ async function exerciseScript() {
   } catch (err) {
     scriptResults.badCredentials = err;
   }
+
+  scriptResults.endpoints = {};
+  for (const typed of Object.keys(ENDPOINT_INPUTS)) {
+    const { calls, env } = await runPreRequest({
+      requestName: "List Stacks",
+      env: { ...CREDENTIALS, SPACELIFT_ENDPOINT: typed },
+      tokenResponse: TOKEN_RESPONSE,
+    });
+    // Both matter: the stored value is what Bruno interpolates into the
+    // request URL, the call is what the token mint itself used.
+    scriptResults.endpoints[typed] = {
+      stored: env.SPACELIFT_ENDPOINT,
+      url: calls[0]?.url,
+    };
+  }
 }
 
 function assertScriptBehavior() {
@@ -424,6 +463,14 @@ function assertScriptBehavior() {
         err.message.includes(name),
         `error does not mention ${name}: ${err.message}`,
       );
+    }
+  });
+
+  test("points every request at a usable endpoint, whatever was typed", () => {
+    for (const [typed, expected] of Object.entries(ENDPOINT_INPUTS)) {
+      const got = scriptResults.endpoints[typed];
+      equal(got.stored, expected, `stored for ${JSON.stringify(typed)}`);
+      equal(got.url, expected, `token call for ${JSON.stringify(typed)}`);
     }
   });
 

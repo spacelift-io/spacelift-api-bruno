@@ -61,6 +61,10 @@ The **Variables** tab beside it is empty, and stays that way:
 
 Leave `jwt` alone — the collection mints and refreshes it for you.
 
+`SPACELIFT_ENDPOINT` is forgiving: `acme.app.spacelift.io` works as well as the full URL,
+and the scheme and the `/graphql` path are filled in for you if you leave them out. A
+self-hosted endpoint that already has a path of its own is used exactly as you typed it.
+
 All of these are **secret variables**. Bruno keeps their values in its own encrypted store
 and writes only their names into `my-account.bru`. Your credentials never reach git — and
 filling the environment in leaves every file in the collection untouched, which is what
