@@ -74,7 +74,9 @@ If Claude Code is not available, add requests manually:
 
 ## File Format
 
-All request files follow this structure:
+These are `.bru` files — [Bruno's own plain-text format](https://docs.usebruno.com/bru-lang/overview),
+which the app reads and writes, so a request created through Bruno's UI comes out
+the same as one written by hand. All of them follow this structure:
 
 ```
 meta {
