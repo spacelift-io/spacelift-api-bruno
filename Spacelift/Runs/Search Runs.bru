@@ -8,6 +8,10 @@ docs {
   Paginated, account-wide run history ordered newest-first.
   Scope the window with a TimeInRange predicate on the `createdAt` field.
 
+  Orderable by `createdAt`, `triggeredBy` and `state`. Ordering by `state`
+  follows the internal state ordinal, so equal states group together but the
+  sequence is not alphabetical.
+
   Paginate with either input.after (keyset cursor, sequential) or offset
   (random-access, for loading pages concurrently), not both. offset skips
   that many rows in the ordered result; use input.first as the page size and
