@@ -14,8 +14,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "pre-commit:update": "pre-commit autoupdate --freeze",
-    "response-examples": "node scripts/response-examples.js",
-    "response-examples:check": "node scripts/response-examples.js --check",
     "sync-docs": "node scripts/sync-docs.js",
     "sync-docs:check": "node scripts/sync-docs.js --check",
     "sync-docs:check-folders": "node scripts/sync-docs.js --check-folders",

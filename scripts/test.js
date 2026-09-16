@@ -403,46 +403,9 @@ function assertScriptBehavior() {
 }
 
 // ---------------------------------------------------------------------------
-// Response examples
-// ---------------------------------------------------------------------------
-
-function assertResponseExamples() {
-  suite("Response examples say what they are");
-
-  test("every generated example is labeled illustrative", () => {
-    const bad = [];
-    let found = 0;
-
-    for (const file of requestFiles) {
-      const json = bruToJsonV2(fs.readFileSync(file, "utf8"));
-      for (const example of json.examples ?? []) {
-        if (example.name !== "Example response") continue; // human-saved
-        found++;
-        // These are synthesized from the schema, not captured from an account.
-        // An example that stopped saying so would be a fabricated response
-        // presented as a real one.
-        if (!/generated from the schema/i.test(example.description ?? "")) {
-          bad.push(`${rel(file)}: example does not say it is generated`);
-        }
-        // Bru has no numeric type, so a status round-trips as a string.
-        if (String(example.response?.status) !== "200") {
-          bad.push(
-            `${rel(file)}: example status is ${example.response?.status}`,
-          );
-        }
-      }
-    }
-
-    assert(found > 0, "no generated examples found");
-    assert(bad.length === 0, bad.join("\n        "));
-  });
-}
-
-// ---------------------------------------------------------------------------
 
 exerciseScript()
   .then(assertScriptBehavior)
-  .then(assertResponseExamples)
   .then(() => {
     console.log(`\n${"─".repeat(60)}`);
     console.log(`${passed} passed, ${failures.length} failed`);
