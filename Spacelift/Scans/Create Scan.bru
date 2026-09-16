@@ -35,7 +35,11 @@ body:graphql {
         id
       }
       workerPool
-      integration
+      providerConfigs {
+        type
+        integration
+        integrationName
+      }
       runnerImage
       createdAt
       updatedAt
@@ -53,6 +57,7 @@ body:graphql:vars {
       "providerConfigs": [
         {
           "version": "6",
+          "integration": "AWS_INTEGRATION_ID_HERE",
           "aws": {
             "region": "eu-west-1"
           }
@@ -69,8 +74,7 @@ body:graphql:vars {
           ]
         }
       ],
-      "workerPool": "WORKER_POOL_ID_HERE",
-      "integration": "AWS_INTEGRATION_ID_HERE"
+      "workerPool": "WORKER_POOL_ID_HERE"
     }
   }
 }

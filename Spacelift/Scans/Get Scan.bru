@@ -25,7 +25,11 @@ body:graphql {
         id
       }
       workerPool
-      integration
+      providerConfigs {
+        type
+        integration
+        integrationName
+      }
       runnerImage
       createdAt
       updatedAt
