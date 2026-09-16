@@ -69,10 +69,9 @@ after your accounts. Only `my-account` is tracked in git; anything else you add 
 
 ### 3. Send a Request
 
-That's it — open any request and send it. The collection authenticates itself: a
-collection-level pre-request script mints a token the first time you need one and
-replaces it a couple of minutes before it expires, so you should never see an
-authentication error or have to think about tokens.
+That's it — open any request and send it. The collection authenticates itself: it gets a
+token the first time you need one and replaces it before it expires, so you should never
+see an authentication error or have to think about tokens.
 
 **Auth → Get Token** is still there if you want a token explicitly — to copy one out for
 use elsewhere, say — but nothing requires you to run it.

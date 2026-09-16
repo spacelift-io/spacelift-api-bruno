@@ -6,8 +6,8 @@ changes to the Spacelift API itself, see the
 
 ## 2026-09-16
 
-- Fixed **Scans → Search Scans** (`searchScans`) — `integration` moved onto `providerConfigs`; selecting it at the top level no longer validates
-- Fixed **Scans → Get Scan** (`scan`) — `integration` moved onto `providerConfigs`; selecting it at the top level no longer validates
+- Fixed **Scans → Search Scans** (`searchScans`) — `integration` moved onto `providerConfigs`; the API rejects it at the top level
+- Fixed **Scans → Get Scan** (`scan`) — `integration` moved onto `providerConfigs`; the API rejects it at the top level
 - Fixed **Scans → Create Scan** (`scanCreate`) — `integration` now goes inside each `providerConfigs` entry, not at the top level
 - Fixed **Scans → Update Scan** (`scanUpdate`) — `integration` now goes inside each `providerConfigs` entry, not at the top level
 

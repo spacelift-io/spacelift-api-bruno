@@ -5,11 +5,14 @@ meta {
 docs {
   Security and compliance scans over your infrastructure.
 
-  Create the scan definition, **Trigger Scan Run** to execute it, then read results
-  with **Get Scan Run**. **List Scan Provider Schemas** tells you which providers can
-  be scanned and what each one accepts — anything absent there cannot be scanned.
+  1. **Create Scan** — the scan definition
+  2. **Trigger Scan Run** — execute it
+  3. **Get Scan Run** — read the results
+
+  **List Scan Provider Schemas** tells you which providers can be scanned and what
+  each one accepts — anything absent there cannot be scanned.
 
   ⚠ `ScanProviderConfigInput.version` is typed as a plain `String` but only accepts
-  particular values, so a wrong one passes validation and fails against a real
-  account. See `docs/backend-lookups.md` in the repository.
+  particular values. Take them from **List Scan Provider Schemas**; anything else is
+  rejected when the scan runs.
 }

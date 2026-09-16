@@ -9,10 +9,14 @@ docs {
   applies it or **Discard Run** throws it away — and if you omit the run ID, both
   act on whichever run is currently blocking the stack.
 
-  Three requests end a run, at different stages: **Cancel Run** for one that has not
-  started yet, **Stop Run** for one in progress, and **Kill Run** when a stopped run's
-  process has not terminated. **Review Run** records an approval decision on a
-  policy-gated run; **Retry Run** re-runs a failed one.
+  Three requests end a run, at different stages:
+
+  - **Cancel Run** — one that has not started yet
+  - **Stop Run** — one in progress
+  - **Kill Run** — a stopped run whose process has not terminated
+
+  **Review Run** records an approval decision on a policy-gated run; **Retry Run**
+  re-runs a failed one.
 
   Most requests here need both a stack ID and a run ID.
 }

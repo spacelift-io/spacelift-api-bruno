@@ -9,13 +9,12 @@ docs {
 
   <!-- notes: hand-written, preserved by sync-docs -->
 
-  ⚠ **`providerConfigs[].version`** is typed `String` but only accepts particular
-  values decided in the backend. A wrong one passes `npm run validate` and fails
-  against your account. See `docs/backend-lookups.md` in the repository for how to
-  find the accepted values.
+  Send **List Scan Provider Schemas** first. It reports which providers can be
+  scanned and what each one accepts; anything absent there cannot be scanned.
 
-  Send **List Scan Provider Schemas** first: it reports which providers can be
-  scanned and what each one accepts. Anything absent there cannot be scanned.
+  ⚠ **`providerConfigs[].version`** is typed `String` but only accepts the values
+  that request lists. A wrong one is rejected when the scan runs, not when you
+  send this.
 }
 
 post {

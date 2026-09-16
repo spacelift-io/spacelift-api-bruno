@@ -54,9 +54,8 @@ The webhook delete and both header requests are in **Danger Zone**.`,
 
   Auth: `Getting a token by hand.
 
-You normally don't need this. The collection authenticates itself: a
-collection-level pre-request script mints a token when one is missing and
-replaces it shortly before it expires. See the collection's Docs pane.
+You normally don't need this. The collection keeps a token for you, minting one
+on your first request and replacing it before it expires.
 
 Use **Get Token** when you want a token to use elsewhere — in curl, a script, or
 \`spacectl\`. **Logout** invalidates the current session.`,
@@ -215,10 +214,14 @@ group membership then does the work.`,
 applies it or **Discard Run** throws it away — and if you omit the run ID, both
 act on whichever run is currently blocking the stack.
 
-Three requests end a run, at different stages: **Cancel Run** for one that has not
-started yet, **Stop Run** for one in progress, and **Kill Run** when a stopped run's
-process has not terminated. **Review Run** records an approval decision on a
-policy-gated run; **Retry Run** re-runs a failed one.
+Three requests end a run, at different stages:
+
+- **Cancel Run** — one that has not started yet
+- **Stop Run** — one in progress
+- **Kill Run** — a stopped run whose process has not terminated
+
+**Review Run** records an approval decision on a policy-gated run; **Retry Run**
+re-runs a failed one.
 
 Most requests here need both a stack ID and a run ID.`,
 
@@ -226,13 +229,16 @@ Most requests here need both a stack ID and a run ID.`,
 
   Scans: `Security and compliance scans over your infrastructure.
 
-Create the scan definition, **Trigger Scan Run** to execute it, then read results
-with **Get Scan Run**. **List Scan Provider Schemas** tells you which providers can
-be scanned and what each one accepts — anything absent there cannot be scanned.
+1. **Create Scan** — the scan definition
+2. **Trigger Scan Run** — execute it
+3. **Get Scan Run** — read the results
+
+**List Scan Provider Schemas** tells you which providers can be scanned and what
+each one accepts — anything absent there cannot be scanned.
 
 ⚠ \`ScanProviderConfigInput.version\` is typed as a plain \`String\` but only accepts
-particular values, so a wrong one passes validation and fails against a real
-account. See \`docs/backend-lookups.md\` in the repository.`,
+particular values. Take them from **List Scan Provider Schemas**; anything else is
+rejected when the scan runs.`,
 
   Spaces: `Spaces are the unit of isolation and access control. Every stack, context and
 integration lives in exactly one, and spaces inherit from their parent.
@@ -289,10 +295,15 @@ breaking deployments already on it.`,
   "Terraform Providers": `The private Terraform provider registry.
 
 Publishing is a sequence, and skipping a step leaves a version nobody can
-install: create the provider, create a version, **Register Platform** once per
-OS/architecture, optionally **Upload Version Docs**, then **Publish Provider
-Version**. **Revoke Provider Version** withdraws one that should no longer be
-used.`,
+install:
+
+1. **Create Terraform Provider**
+2. **Create Provider Version**
+3. **Register Platform** — once per OS/architecture
+4. **Upload Version Docs** — optional
+5. **Publish Provider Version**
+
+**Revoke Provider Version** withdraws one that should no longer be used.`,
 
   "Tofu Workspaces": `OpenTofu workspaces inside a stack, with unlock requests for a workspace left
 locked by an interrupted run.`,
