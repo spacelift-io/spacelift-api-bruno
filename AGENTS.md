@@ -129,7 +129,7 @@ This exists because `validate` cannot see any of it. A search-and-replace once p
 
 The obvious thing to add is a smoke run: tag a handful of read-only requests and point `@usebruno/cli` at a real account on a schedule. It is not worth building, and this has been weighed rather than overlooked.
 
-A read-only canary reaches a fraction of 649 requests and none of the arguments that matter, because the failures worth catching — `docs/backend-lookups.md`'s backend-validated `String` values, a wrong enum member, a renamed input field — all live on mutations a smoke run must not send. What it would actually prove is that authentication works end to end, and that does not pay for a live account, an admin-scoped key in CI (`apiKeys` and `outgoingIPAddresses` are admin reads), a credential whose rotation breaks the build, and a weekly session and audit-trail entry on somebody's account.
+A read-only canary reaches a fraction of the collection and none of the arguments that matter, because the failures worth catching — `docs/backend-lookups.md`'s backend-validated `String` values, a wrong enum member, a renamed input field — all live on mutations a smoke run must not send. What it would actually prove is that authentication works end to end, and that does not pay for a live account, an admin-scoped key in CI (`apiKeys` and `outgoingIPAddresses` are admin reads), a credential whose rotation breaks the build, and a weekly session and audit-trail entry on somebody's account.
 
 If that verification is ever wanted, build the version that earns it: a disposable account, mutations creating and destroying real objects in order, cleanup on failure. The read-only half was never the useful one.
 
@@ -157,7 +157,7 @@ Some requests have no placeholder to convert, so a dialog cannot cover them and 
 `Spacelift/Danger Zone`, pinned below `Advanced` by `seq: 100`, holds the requests that are **hard or impossible to revert**, and the collection's pre-request script refuses each one unless `CONFIRM_DESTRUCTIVE` holds the request's exact name:
 
 ```js
-const REQUIRES_CONFIRMATION = [ /* 14 names */ ];
+const REQUIRES_CONFIRMATION = [ /* the Danger Zone request names */ ];
 
 if (REQUIRES_CONFIRMATION.includes(req.getName()) &&
     bru.getEnvVar("CONFIRM_DESTRUCTIVE") !== req.getName()) {
@@ -200,7 +200,7 @@ A schema description says what an operation does. It does not say where to get t
 - Text **above** the marker is regenerated every run. Editing it there is pointless; the edit is lost at the next sync.
 - Text **below** it is never touched, including by `--check`, which compares the whole block and so sees notes as part of the expected output.
 - The marker is an HTML comment because Bruno renders these blocks as markdown: it is invisible in the Docs pane.
-- `sync-docs.js` never adds the marker. A human (or Bruno's own Docs editor) does, which is why nothing changed for the ~640 requests that have no notes.
+- `sync-docs.js` never adds the marker. A human (or Bruno's own Docs editor) does, which is why nothing changed for the requests that have no notes.
 
 Notes are for what the schema cannot express. If the schema _could_ say it, fix it there instead and let `sync-docs` pick it up.
 
@@ -216,7 +216,7 @@ These are hand-written, and have to be: a schema describes one operation at a ti
 
 Two invariants in `buildFolderBru` protect the sidebar, and both are easy to break by accident:
 
-- **`seq` is preserved, never invented.** Bruno orders folders alphabetically and splices only the ones carrying a `seq` in at `seq - 1`. Writing a `seq` into a folder that had none would move it; dropping `Advanced`'s would move 196 administrative requests to the top of the sidebar.
+- **`seq` is preserved, never invented.** Bruno orders folders alphabetically and splices only the ones carrying a `seq` in at `seq - 1`. Writing a `seq` into a folder that had none would move it; dropping `Advanced`'s would move every administrative request to the top of the sidebar.
 - **`meta.name` defaults to the directory name.** Bruno sorts on the meta name when a folder has one, so a name that differs from its directory reorders the sidebar just as effectively.
 
 When changing either, verify by dumping the sidebar order before and after and diffing — the rules are reimplemented in `collection-changelog.js`'s `buildSidebarOrder`.
@@ -317,6 +317,6 @@ What `scripts/advanced-operations.js` does is _label_ them, so nobody mistakes t
 
 Being advanced is never a CI failure — it is a label, like deprecation. Add new entries to the appropriate category when an operation is clearly administrative or internal plumbing; when in doubt, leave it unlabeled, since a wrong label discourages legitimate use.
 
-The `Advanced/` folder is pinned to the bottom of the sidebar by `seq: 99` in its `folder.bru` — the same policy applied to navigation rather than to docs. It holds roughly 200 of the collection's requests, so alphabetical order would otherwise park all of it between `Account` and `AI Integrations`, in front of everyone looking for `Contexts` or `Runs`.
+The `Advanced/` folder is pinned to the bottom of the sidebar by `seq: 99` in its `folder.bru` — the same policy applied to navigation rather than to docs. It holds a large share of the collection's requests, so alphabetical order would otherwise park all of it between `Account` and `AI Integrations`, in front of everyone looking for `Contexts` or `Runs`.
 
 `99` is deliberately far above the folder count: with every other folder seq-less, any `seq` past the end of the list appends, so adding folders later cannot displace `Advanced`, whereas a `seq` equal to today's count would leave it second-to-last the moment a folder sorting after "Advanced" appears. Deleting the file does not just lose a number — it puts the whole administrative surface back at the top. `CHANGELOG.md` follows the same order, since `buildSidebarOrder` reads this file too.
