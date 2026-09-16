@@ -22,6 +22,7 @@ const {
   bruToJsonV2,
   collectionBruToJson,
   bruToEnvJsonV2,
+  envJsonToBruV2,
 } = require("@usebruno/lang");
 const fs = require("fs");
 const path = require("path");
@@ -156,16 +157,28 @@ test("my-account.bru is the only tracked environment", () => {
   );
 });
 
-test("the API key secret and the jwt are both secret variables", () => {
+test("every variable a user can set is a secret variable", () => {
   const file = envFiles.find((f) => path.basename(f) === "my-account.bru");
   const env = bruToEnvJsonV2(fs.readFileSync(file, "utf8"));
-  // A plain `jwt` would mean every token refresh writes a live credential into
-  // a tracked file. This is the assertion that keeps that from regressing.
-  for (const name of ["SPACELIFT_API_KEY_SECRET", "jwt"]) {
-    const variable = env.variables.find((v) => v.name === name);
-    assert(variable, `${name} is missing from the environment`);
-    assert(variable.secret, `${name} is not marked secret`);
+  // Two things ride on this. A plain `jwt` would write a live credential into
+  // a tracked file on every refresh. And a plain anything-else would mean
+  // filling in the environment — the documented first step — leaves the user
+  // holding a local modification to a tracked file, which Bruno's free tier
+  // can neither commit nor resolve, so their next update just fails.
+  assert(env.variables.length > 0, "the environment has no variables");
+  for (const variable of env.variables) {
+    assert(variable.secret, `${variable.name} is not marked secret`);
   }
+});
+
+test("the environment file is what Bruno itself would write", () => {
+  const file = envFiles.find((f) => path.basename(f) === "my-account.bru");
+  const source = fs.readFileSync(file, "utf8");
+  // Round-tripping through Bruno's own serializer is the difference between
+  // "no value is stored here" and "no write happens here". If the file differs
+  // from Bruno's output in any byte, Bruno rewrites it the first time the
+  // environment is touched, and the tracked file is dirty again.
+  equal(envJsonToBruV2(bruToEnvJsonV2(source)), source, "serialized form");
 });
 
 // ---------------------------------------------------------------------------

@@ -1,9 +1,11 @@
 node_modules
 
 # Environment files hold per-account values, so they stay out of git — except
-# "my-account", the one every user starts from. Tracking it leaks nothing:
-# Bruno keeps secret-marked variables (the API key secret and the JWT) in its
-# own encrypted store and writes only their names into the file.
+# "my-account", the one every user starts from. Tracking it leaks nothing, and
+# costs nothing: every variable in it is secret-marked, so Bruno keeps the
+# values in its own encrypted store and writes only their names into the file.
+# Filling it in therefore changes no tracked file at all, which is what keeps a
+# user's setup from blocking their next pull.
 #
 # Note the glob rather than a trailing slash. Git cannot re-include a file
 # inside an excluded *directory*, so the negation below only works because the

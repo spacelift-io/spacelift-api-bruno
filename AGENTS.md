@@ -46,11 +46,18 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 
 `Spacelift/` is the Bruno collection root (`bruno.json` marks it). It contains:
 
-- `environments/my-account.bru` — the one environment that ships with the collection, and the only one tracked in git (`.gitignore` excludes every other file in that directory). It holds `SPACELIFT_ENDPOINT` and `SPACELIFT_API_KEY_ID` as plain vars, and `SPACELIFT_API_KEY_SECRET` and `jwt` as **secret** vars.
+- `environments/my-account.bru` — the one environment that ships with the collection, and the only one tracked in git (`.gitignore` excludes every other file in that directory). **Every** variable in it is a **secret** var, so the file carries names and `@description` annotations and no values at all.
 
-  Tracking it is safe because of how Bruno serializes secrets: `jsonToEnv` filters every variable marked secret out of the `vars { }` block and emits only its _name_ into `vars:secret [ ]`, keeping the value in an OS-encrypted store outside the collection. A committed environment therefore cannot leak a key secret or a token, however many times `bru.setEnvVar("jwt", …)` runs.
+  That is possible because of how Bruno serializes secrets: `jsonToEnv` filters every variable marked secret out of the `vars { }` block and emits only its _name_ into `vars:secret [ ]`, keeping the value in an OS-encrypted store outside the collection. With no plain vars left, the block is omitted entirely and the file is **byte-stable**: no value a user types, and no `bru.setEnvVar(…)` the pre-request script makes, can change a tracked file.
 
-  This is load-bearing, not incidental. It is what lets setup be "fill in three fields in the app" instead of "find the clone on disk, copy a template, create an environment by hand" — the step users dropped out at. Never move `jwt` out of `vars:secret`: it would start writing live tokens into a tracked file.
+  Two separate things ride on that, and only the first is about secrecy:
+
+  - A committed environment cannot leak a key secret or a token, however many times `bru.setEnvVar("jwt", …)` runs. Never move `jwt` out of `vars:secret`.
+  - Filling in the environment — the documented first step, which every user performs — leaves the working tree clean. This is what makes updating work. Bruno's free tier can clone, diff and **pull**, but commit, push and merge-conflict resolution are paid, so a user holding a local modification to a tracked file has no in-app way forward at all: the pull refuses, and the fix is a terminal in a directory they never chose. A plain var here would put every user in that state on day one, since this file does change (`CONFIRM_DESTRUCTIVE` was added to it after release).
+
+  Setup stays "fill in three fields in the app" rather than "find the clone on disk, copy a template, create an environment by hand" — the step users dropped out at. `npm test` asserts both properties: every variable is secret, and the file round-trips byte-identically through Bruno's own serializer, so Bruno will not rewrite it on first touch.
+
+  The cost is paid in Bruno's UI. Its environment editor has two tabs, `Variables` and `Secrets` (`useEnvironmentTabs`), and it opens on `Variables` — which, with nothing plain left, is now permanently empty. So every piece of text that tells somebody where to fill this in has to name the **Secrets** tab: the README, the getting-started block in `collection-changelog.js`, and the two errors the pre-request script throws. The tab carries a superscript count, so the populated one is at least visibly populated. Adding a plain variable back to fill that tab would trade this for the update problem above; don't.
 
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
 - `collection.bru` — collection-level settings. It holds a `script:pre-request` block (see **Authentication Flow**) and a `docs { }` block written by `collection-changelog.js --sync`, which is what Bruno shows in the collection's Docs pane. Do not hand-edit the docs block; `--sync` replaces it wholesale and leaves every other block alone, so the script, and any auth, headers or vars added through Bruno's UI, survive.
@@ -112,7 +119,7 @@ is one misreading away from looking like somebody's data. Don't add them back.
 `npm test` (`scripts/test.js`) — offline, no credentials, about a second. It uses Bruno's own parser rather than a reimplementation, and runs the pre-request script the way Bruno runs it: in an async wrapper with `require()` limited to the Safe Mode allowlist. It asserts that
 
 - every `.bru` file parses and has a `meta.name`, and every `folder.bru` has docs;
-- `SPACELIFT_API_KEY_SECRET` and `jwt` are both **secret** variables — the assertion that stops a token ever being written into a tracked file;
+- every variable in the shipped environment is **secret**, and the file round-trips byte-identically through Bruno's own serializer — the pair of assertions that stop a token ever being written into a tracked file, and stop filling in the environment from dirtying one;
 - every request resolves to a bearer token through `inherit`, with exactly one at `auth: none`;
 - the token script mints, refreshes, skips and fails in the ten ways it is supposed to.
 

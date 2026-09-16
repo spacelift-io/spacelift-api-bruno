@@ -151,6 +151,6 @@ Add a destructive request the normal way, then run `npm run destructive-prompts`
 npm test   # offline, no credentials, about a second
 ```
 
-This checks the things `npm run validate` cannot see: that Bruno can actually parse every file, that authentication still resolves through the collection, that the API key secret and JWT are still secret variables, and that the token-refresh script behaves. It runs in pre-commit and on every pull request.
+This checks the things `npm run validate` cannot see: that Bruno can actually parse every file, that authentication still resolves through the collection, that the shipped environment still stores no values of its own, and that the token-refresh script behaves. It runs in pre-commit and on every pull request.
 
 Nothing in this repository sends a request to a real Spacelift account, in CI or otherwise — every check works from public schema introspection, with no credentials. Please keep it that way; it is why anyone can clone this and run the full suite.

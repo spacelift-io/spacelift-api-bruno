@@ -647,7 +647,7 @@ function buildCollectionDocs() {
     "",
     "## Start here",
     "",
-    "1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the `my-account` environment (top-right dropdown).",
+    "1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the `my-account` environment (top-right dropdown), under its **Secrets** tab.",
     "2. Send any request.",
     "",
     "There is no token step. The collection mints a token the first time it needs one and replaces it shortly before it expires, so authentication stays out of your way. **Auth → Get Token** is still there if you want one explicitly.",

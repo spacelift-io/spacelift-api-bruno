@@ -50,7 +50,8 @@ Then in Bruno click **Open Collection** and select the `Spacelift/` folder.
 
 The collection ships with an environment called `my-account`, already selected in the
 environment dropdown at the top right. Nothing to copy or create — open it (gear icon →
-Environments → my-account) and fill in three values:
+Environments → my-account) and switch to its **Secrets** tab, where all three values live.
+The **Variables** tab beside it is empty, and stays that way:
 
 | Variable                   | Description                                                                        |
 | -------------------------- | ---------------------------------------------------------------------------------- |
@@ -60,9 +61,10 @@ Environments → my-account) and fill in three values:
 
 Leave `jwt` alone — the collection mints and refreshes it for you.
 
-`SPACELIFT_API_KEY_SECRET` and `jwt` are **secret variables**. Bruno keeps their values in
-its own encrypted store and writes only their names into `my-account.bru`, so the file
-stays safe to commit and your credentials never reach git.
+All of these are **secret variables**. Bruno keeps their values in its own encrypted store
+and writes only their names into `my-account.bru`. Your credentials never reach git — and
+filling the environment in leaves every file in the collection untouched, which is what
+keeps updates from ever colliding with your setup.
 
 Working with more than one Spacelift account? Duplicate the environment and name the copies
 after your accounts. Only `my-account` is tracked in git; anything else you add is ignored.
@@ -78,6 +80,21 @@ use elsewhere, say — but nothing requires you to run it.
 
 If the environment isn't filled in yet, the first request stops with a message naming
 exactly which variables are still missing, rather than a bare 401.
+
+### 4. Keep It Up to Date
+
+The collection grows as the API does. To bring down new requests:
+
+- **Bruno desktop** — open the collection's git panel and click **Pull**. Cloning, viewing
+  diffs and pulling are all in Bruno's free version.
+- **Anywhere** — `git pull` in the clone.
+
+Nothing you have set up is in the files being updated, so an update never asks you to
+re-enter credentials or reconfigure anything.
+
+Edits you have made to requests are kept, too. If you have edited a request that also
+changed upstream, git will stop rather than overwrite your copy; discarding your version of
+that one file (`git checkout -- <file>`) lets the update through.
 
 ## Typical Workflows
 

@@ -72,7 +72,7 @@ script:pre-request {
     throw new Error(
       `"${req.getName()}" destroys something and takes no ID, so nothing prompts ` +
         `before it runs. To send it, set CONFIRM_DESTRUCTIVE to exactly that name ` +
-        `in the "my-account" environment, then clear it afterwards.`
+        `in the "my-account" environment, under its Secrets tab, then clear it afterwards.`
     );
   }
 
@@ -136,7 +136,8 @@ script:pre-request {
     if (missing.length) {
       throw new Error(
         `Spacelift credentials are not set up yet. Fill in ${missing.join(", ")} ` +
-          `in the "my-account" environment (top right), then send this request again. ` +
+          `in the "my-account" environment (top right), under its Secrets tab, then ` +
+          `send this request again. ` +
           `See the collection's Docs tab for where to find these values.`
       );
     }
@@ -158,7 +159,7 @@ script:pre-request {
         "the API returned no token";
       throw new Error(
         `Could not authenticate with Spacelift: ${reason}. ` +
-          `Check SPACELIFT_API_KEY_ID and SPACELIFT_API_KEY_SECRET in the "my-account" environment.`
+          `Check SPACELIFT_API_KEY_ID and SPACELIFT_API_KEY_SECRET in the "my-account" environment, under its Secrets tab.`
       );
     }
 
@@ -193,7 +194,7 @@ docs {
 
   ## Start here
 
-  1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the `my-account` environment (top-right dropdown).
+  1. Fill in `SPACELIFT_ENDPOINT`, `SPACELIFT_API_KEY_ID` and `SPACELIFT_API_KEY_SECRET` in the `my-account` environment (top-right dropdown), under its **Secrets** tab.
   2. Send any request.
 
   There is no token step. The collection mints a token the first time it needs one and replaces it shortly before it expires, so authentication stays out of your way. **Auth → Get Token** is still there if you want one explicitly.
