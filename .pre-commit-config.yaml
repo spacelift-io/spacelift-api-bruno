@@ -9,10 +9,21 @@ repos:
       - id: mixed-line-ending
       - id: trailing-whitespace
 
-  - repo: https://github.com/rhysd/actionlint
-    rev: 914e7df21a07ef503a81201c76d2b11c789d3fca # frozen: v1.7.12
+  # actionlint runs shellcheck on every `run:` script, but only when it finds
+  # shellcheck on PATH, and says nothing when it does not. GitHub's runners
+  # have it and most machines do not, so the upstream hook passed locally and
+  # failed in CI. Installing both from PyPI makes the check the same
+  # everywhere. `pre-commit autoupdate` does not bump these; edit the pins.
+  - repo: local
     hooks:
       - id: actionlint
+        name: Lint GitHub Actions workflow files
+        language: python
+        entry: actionlint
+        additional_dependencies:
+          - actionlint-py==1.7.12.25
+          - shellcheck-py==0.11.0.1
+        files: ^\.github/workflows/
 
   - repo: local
     hooks:
