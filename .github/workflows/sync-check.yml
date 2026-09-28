@@ -1,9 +1,35 @@
 name: Weekly Sync Check
 
+# Checks the collection against the live schema and, when it has drifted,
+# opens a pull request that fixes it: the mechanical fixes by script, the rest
+# by a Claude run. What cannot be fixed is listed in the pull request instead.
+# An issue is opened only when there was nothing to fix, such as the schema
+# fetch itself failing.
+#
+# Needs one secret, ANTHROPIC_API_KEY, for the Claude run.
+#
+# The pull request is opened with GITHUB_TOKEN, and nothing GITHUB_TOKEN does
+# triggers a workflow — except workflow_dispatch. So once the pull request is
+# open, this job dispatches Validate Schema on its branch itself.
+
 on:
   schedule:
     - cron: "0 9 * * 1" # Every Monday at 09:00 UTC
   workflow_dispatch:
+
+permissions:
+  actions: write # dispatch Validate Schema on the pull request's branch
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: sync-check
+  cancel-in-progress: false
+
+env:
+  BRANCH: sync/schema-drift
+  COVERAGE_FLAGS: --ignore-deprecated --check-baseline --check-deprecated-marks --check-advanced-marks
 
 jobs:
   sync-check:
@@ -16,52 +42,281 @@ jobs:
           node-version: lts/*
           cache: npm
 
-      - run: npm ci
+      - id: install
+        run: npm ci
 
-      - uses: pre-commit/action@v3.0.1
+      # validate-schema runs as its own step below, where its output can be
+      # quoted. Everything else pre-commit checks stays here.
+      - id: precommit
+        uses: pre-commit/action@v3.0.1
+        continue-on-error: true
+        env:
+          SKIP: validate-schema
 
-      - name: Check coverage
-        run: npm run coverage -- --ignore-deprecated --check-baseline --check-deprecated-marks --check-advanced-marks
+      # Every check runs even when an earlier one failed, so one report covers
+      # all of the drift, and tees its output to a log sync-check-report.js
+      # quotes from. continue-on-error keeps the job going; the outcome still
+      # records the failure.
+      - id: validate
+        name: Validate requests against the schema
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: npm run validate 2>&1 | tee "$RUNNER_TEMP/validate.log"
+
+      - id: coverage
+        name: Check coverage
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: npm run coverage -- $COVERAGE_FLAGS 2>&1 | tee "$RUNNER_TEMP/coverage.log"
 
       # Request docs are copied from schema descriptions, so they go stale when
       # Spacelift rewords one. That is drift, not a defect in a pull request —
-      # it belongs here, where a failure opens an issue.
-      - name: Check docs are in sync with the schema
-        run: npm run sync-docs:check
+      # it belongs here.
+      - id: syncdocs
+        name: Check docs are in sync with the schema
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: npm run sync-docs:check 2>&1 | tee "$RUNNER_TEMP/syncdocs.log"
 
-      - name: Open issue on failure
-        if: failure()
+      # A pull request that is still open may hold a maintainer's own commits,
+      # so it is never rewritten. The new findings go on it as a comment, and
+      # the next run after it merges starts fresh.
+      - id: state
+        name: Decide what to do
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRIFT: ${{ steps.validate.outcome == 'failure' || steps.coverage.outcome == 'failure' || steps.syncdocs.outcome == 'failure' }}
+        run: |
+          open_pr=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number')
+          echo "open_pr=$open_pr" >> "$GITHUB_OUTPUT"
+          echo "fix=$([ "$DRIFT" = true ] && [ -z "$open_pr" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Apply the mechanical fixes
+        if: steps.state.outputs.fix == 'true'
+        run: |
+          npm run sync-docs
+          npm run destructive-prompts
+
+      # What is left after the mechanical fixes is what needs judgment.
+      - id: validate_mid
+        if: steps.state.outputs.fix == 'true'
+        continue-on-error: true
+        shell: bash
+        run: npm run validate > "$RUNNER_TEMP/validate.mid.log" 2>&1
+
+      - id: coverage_mid
+        if: steps.state.outputs.fix == 'true'
+        continue-on-error: true
+        shell: bash
+        run: npm run coverage -- $COVERAGE_FLAGS > "$RUNNER_TEMP/coverage.mid.log" 2>&1
+
+      - id: prompt
+        if: steps.validate_mid.outcome == 'failure' || steps.coverage_mid.outcome == 'failure'
         uses: actions/github-script@v9
+        env:
+          OUTCOMES: |
+            {
+              "validate": "${{ steps.validate_mid.outcome }}",
+              "coverage": "${{ steps.coverage_mid.outcome }}"
+            }
         with:
           script: |
-            const title = `Schema sync failure — ${new Date().toISOString().slice(0, 10)}`;
-            const body = [
-              "The weekly schema sync check failed. One or more of the following may have changed in the Spacelift API:",
-              "",
-              "- A field or argument was renamed or removed (validation failure)",
-              "- New operations were added that have no `.bru` file (coverage regressed past `.coverage-baseline`)",
-              "- An operation was newly deprecated and its `.bru` file isn't marked yet (run `npm run sync-docs`)",
-              "- A schema description changed, so a request's `docs { }` block is stale (run `npm run sync-docs`)",
-              "",
-              `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              "",
-              "Run `/sync-schema` locally to investigate and fix.",
-            ].join("\n");
+            const fs = require("fs");
+            const { buildDrift } = require("./scripts/sync-check-report.js");
+            const prompt =
+              fs.readFileSync(".github/sync-schema-prompt.md", "utf8") +
+              buildDrift({
+                outcomes: JSON.parse(process.env.OUTCOMES),
+                logDir: process.env.RUNNER_TEMP,
+                suffix: ".mid",
+              });
+            core.setOutput("prompt", prompt);
 
+      # Tools are limited to reading and editing the checkout, the repository's
+      # own scripts, and introspection through scripts/introspect.js. Schema
+      # descriptions are text from outside this repository, so nothing that
+      # could reach another host is allowed.
+      - id: claude
+        if: steps.prompt.outcome == 'success'
+        uses: anthropics/claude-code-action@v1
+        continue-on-error: true
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ github.token }}
+          prompt: ${{ steps.prompt.outputs.prompt }}
+          claude_args: >-
+            --max-turns 80
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(node scripts/introspect.js:*),Bash(npm run validate),Bash(npm run coverage:*),Bash(npm run sync-docs),Bash(npm run destructive-prompts),Bash(npm test)"
+            --disallowedTools "WebFetch,WebSearch"
+            --json-schema '{"type":"object","properties":{"summary":{"type":"string"}},"required":["summary"]}'
+
+      # Run again whatever the Claude run did, so the result never depends on
+      # it having remembered to.
+      - name: Reapply the mechanical fixes
+        if: steps.claude.outcome != 'skipped'
+        run: |
+          npm run destructive-prompts
+          npm run sync-docs
+
+      - name: Reject changes outside the collection
+        if: steps.state.outputs.fix == 'true'
+        shell: bash
+        run: |
+          outside=$({ git diff --name-only -z HEAD; git ls-files -z --others --exclude-standard; } \
+            | tr '\0' '\n' \
+            | grep -vE '^(Spacelift/|scripts/folder-docs\.js$|scripts/advanced-operations\.js$)' || true)
+          if [ -n "$outside" ]; then
+            echo "::error::Changes outside the collection:"
+            echo "$outside"
+            exit 1
+          fi
+
+      - id: precommit_after
+        if: steps.state.outputs.fix == 'true'
+        continue-on-error: true
+        shell: bash
+        env:
+          SKIP: validate-schema
+        run: pre-commit run --all-files --color=never 2>&1 | tee "$RUNNER_TEMP/precommit.after.log"
+
+      - id: validate_after
+        if: steps.state.outputs.fix == 'true'
+        continue-on-error: true
+        shell: bash
+        run: npm run validate 2>&1 | tee "$RUNNER_TEMP/validate.after.log"
+
+      - id: coverage_after
+        if: steps.state.outputs.fix == 'true'
+        continue-on-error: true
+        shell: bash
+        run: npm run coverage -- $COVERAGE_FLAGS 2>&1 | tee "$RUNNER_TEMP/coverage.after.log"
+
+      - id: syncdocs_after
+        if: steps.state.outputs.fix == 'true'
+        continue-on-error: true
+        shell: bash
+        run: npm run sync-docs:check 2>&1 | tee "$RUNNER_TEMP/syncdocs.after.log"
+
+      - id: changed
+        if: steps.state.outputs.fix == 'true'
+        run: echo "any=$([ -n "$(git status --porcelain)" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - id: report
+        name: Write the report
+        if: ${{ !cancelled() }}
+        uses: actions/github-script@v9
+        env:
+          BEFORE: |
+            {
+              "precommit": "${{ steps.precommit.outcome }}",
+              "validate": "${{ steps.validate.outcome }}",
+              "coverage": "${{ steps.coverage.outcome }}",
+              "syncdocs": "${{ steps.syncdocs.outcome }}"
+            }
+          AFTER: |
+            {
+              "precommit": "${{ steps.precommit_after.outcome }}",
+              "validate": "${{ steps.validate_after.outcome }}",
+              "coverage": "${{ steps.coverage_after.outcome }}",
+              "syncdocs": "${{ steps.syncdocs_after.outcome }}"
+            }
+          SUMMARY: ${{ steps.claude.outputs.structured_output && fromJSON(steps.claude.outputs.structured_output).summary || '' }}
+          INSTALL: ${{ steps.install.outcome }}
+          CHANGED: ${{ steps.changed.outputs.any }}
+          OPEN_PR: ${{ steps.state.outputs.open_pr }}
+        with:
+          script: |
+            const fs = require("fs");
+            const path = require("path");
+            const { buildReport } = require("./scripts/sync-check-report.js");
+
+            const before = JSON.parse(process.env.BEFORE);
+            const after = JSON.parse(process.env.AFTER);
+            const logDir = process.env.RUNNER_TEMP;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const failed = (o) => Object.values(o).includes("failure");
+
+            // The pull request, when there is something to propose.
+            if (process.env.CHANGED === "true") {
+              const body = buildReport({ before, after, logDir, runUrl, summary: process.env.SUMMARY });
+              fs.writeFileSync(path.join(logDir, "pr-body.md"), body);
+              // The subject becomes the reason on any Fixed changelog entry.
+              core.setOutput(
+                "commit",
+                before.validate === "failure"
+                  ? "fix: repair requests the schema no longer accepts"
+                  : before.coverage === "failure"
+                    ? "feat: add requests for new schema operations"
+                    : "chore: sync request docs from the schema",
+              );
+              core.setOutput("failed", failed(after));
+              return;
+            }
+
+            // A failed install skips every check, which is still worth a report.
+            if (!failed(before) && process.env.INSTALL === "success") return;
+            const body = buildReport({ before, logDir, runUrl });
+            core.setOutput("failed", true);
+
+            // An open pull request gets the findings as a comment.
+            if (process.env.OPEN_PR) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: Number(process.env.OPEN_PR),
+                body,
+              });
+              return;
+            }
+
+            // Nothing to propose: fall back to one open issue at a time, with
+            // a later failure added to it as a comment.
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "open",
               labels: "schema-drift",
             });
-
-            // Don't open a duplicate if one is already open
-            if (issues.length === 0) {
+            if (issues.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body,
+              });
+            } else {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title,
+                title: `Schema sync failure — ${new Date().toISOString().slice(0, 10)}`,
                 body,
                 labels: ["schema-drift"],
               });
             }
+
+      - id: pr
+        if: steps.changed.outputs.any == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: ${{ env.BRANCH }}
+          delete-branch: true
+          sign-commits: true
+          commit-message: ${{ steps.report.outputs.commit }}
+          title: "Sync the collection with the schema"
+          body-path: ${{ runner.temp }}/pr-body.md
+          labels: schema-drift
+
+      - name: Run Validate Schema on the pull request
+        if: steps.pr.outputs.pull-request-head-sha
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run validate-schema.yml --ref "$BRANCH"
+
+      # Red when anything is still broken, so the run itself says whether the
+      # pull request or issue needs more than a review.
+      - name: Fail if checks still fail
+        if: steps.report.outputs.failed == 'true'
+        run: exit 1

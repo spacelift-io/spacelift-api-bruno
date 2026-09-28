@@ -213,7 +213,7 @@ These are hand-written, and have to be: a schema describes one operation at a ti
 
 - `npm run sync-docs` writes them, alongside the request docs it takes from the schema.
 - `npm run sync-docs:check-folders` fails if a folder has no entry, has an entry but no folder, or has a stale file. It touches no network, so it runs in pre-commit and on pull requests.
-- `npm run sync-docs:check` is the same plus request docs, which do need the schema. That one runs in the weekly job, where schema drift is expected and opens an issue rather than failing somebody's PR.
+- `npm run sync-docs:check` is the same plus request docs, which do need the schema. That one runs in the weekly job, where schema drift is expected and opens a fix PR rather than failing somebody's.
 
 Two invariants in `buildFolderBru` protect the sidebar, and both are easy to break by accident:
 
@@ -264,6 +264,8 @@ Details that matter if you touch it:
 
 **`introspect.js`**: Prints the SDL for the types and root fields named on the command line, fetched by public introspection. It exists so the weekly job's Claude run can introspect through one allowlisted command rather than `curl | python3`, which would mean allowing arbitrary code in a job holding an API key.
 
+**`sync-check-report.js`**: Writes up what the weekly sync check found: the text Claude is given to fix, the fix PR's description, and the issue when there was nothing to fix. It quotes only failed checks, each with the part of its output that names what drifted. Preview one locally with `node scripts/sync-check-report.js <logDir> validate=failure … [--after …] [--summary <file>]`. See **Weekly Sync Check**.
+
 **`collection-changelog.js`**: Maintains the collection's own changelog — `CHANGELOG.md` for the full history, and a "What's New" `docs { }` block in `Spacelift/collection.bru` for the newest `DEFAULT_ENTRIES` of it, which is what a user sees in Bruno without leaving the app. Three modes: `--collect` derives entries from git and appends them, `--sync` rewrites the docs block, `--check` fails if either is stale.
 
 Entries are derived, not written, because per-request granularity is only sustainable if a coverage sprint doesn't cost two hundred hand-written lines: a `.bru` file appearing is `Added`, disappearing is `Removed`, gaining `DEPRECATED_MARKER` in its docs block is `Deprecated`, and changing in a `fix:` commit is `Fixed` with the reason taken from the commit subject. A change that leaves the file identical once its docs block is stripped produces nothing — a resynced description is not news.
@@ -280,6 +282,24 @@ Two, for two different changelogs. Keep them straight:
 
 - `.api-changelog-checkpoint` holds a single ISO date — the newest _Spacelift product_ changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed; `npm run api-changelog` prints what is still pending.
 - `.collection-changelog-commit` holds a commit SHA — the last commit whose request changes are in `CHANGELOG.md`. `npm run collection-changelog:collect` reads `<sha>..HEAD` and advances it, from `changelog.yml` on `main`. Run anywhere else, a rebase merge can orphan that SHA; the script says so and asks for a re-point rather than failing with a raw git error. Emptying the file means "from the first commit" — a range needs a commit on its left and the first commit has no parent, so this is the only way to rebuild the whole history. Emptying it does not clear `CHANGELOG.md`; delete the entries first or the rebuild lands on top of them.
+
+### Weekly Sync Check
+
+`sync-check.yml` runs every Monday against the live schema. When the collection has drifted, it proposes the fix as a pull request on `sync/schema-drift` rather than reporting it:
+
+1. **Check.** Pre-commit (without `validate-schema`), then `validate`, `coverage` and `sync-docs:check`, each teeing its output to a log, and each running even when an earlier one failed, so one report covers all of it.
+2. **Fix mechanically.** `sync-docs` and `destructive-prompts`.
+3. **Fix with judgment.** If `validate` or `coverage` still fail, a `claude-code-action` run gets `.github/sync-schema-prompt.md` plus the failures. It repairs requests and adds one for each missing operation, making the Danger Zone and advanced calls per this file, and returns a summary of those decisions for the reviewer. Its tools are file reads and edits, the repository's npm scripts, and `scripts/introspect.js`, and nothing that reaches another host, since schema descriptions are text from outside this repository.
+4. **Guard.** Any change outside `Spacelift/`, `scripts/folder-docs.js` and `scripts/advanced-operations.js` fails the job. Then every check runs again.
+5. **Propose.** `create-pull-request` opens the PR, its description built by `sync-check-report.js`: what drifted, what Claude changed, and what still fails.
+
+Details that matter if you touch it:
+
+- **The PR is opened with `GITHUB_TOKEN`, so the job dispatches `validate-schema.yml` on its branch itself.** Nothing `GITHUB_TOKEN` does triggers a workflow, with `workflow_dispatch` as the exception, so without that step the PR would carry no CI. A GitHub App or a personal token would trigger it naturally, but an App has to be created at the org level and a token acts as one person; neither is worth it for one dispatch. Anything pushed to the branch later — a maintainer's own commits — triggers `pull_request` as usual. The only secret the job needs is `ANTHROPIC_API_KEY`.
+- **An open PR is never rewritten**, since it may hold a maintainer's commits. The new findings go on it as a comment, and the run after it merges starts fresh.
+- **An issue is opened only when there was nothing to fix** — the schema fetch failing, say. One `schema-drift` issue at a time; later failures are added to it as comments.
+- **The job goes red whenever a check still fails**, so the run says on its own whether the PR needs more than a review.
+- **The commit subject is chosen by what drifted** — `fix:` when a request stopped validating — because `collection-changelog.js` takes a `Fixed` entry's reason from it.
 
 ### Coverage Baseline
 
