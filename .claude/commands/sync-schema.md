@@ -54,10 +54,8 @@ Validate all Bruno requests against the live Spacelift GraphQL schema, fix any f
 
 ## Step 6 — Record What Changed
 
-20. If Step 1 fixed any request, or requests were added or removed, those changes belong in `CHANGELOG.md`. Entries are derived from commits, so this step only works once the request changes are committed — if they are still in the working tree, say so and stop here rather than committing on the user's behalf.
-21. Run `npm run collection-changelog:collect`, then `npm run collection-changelog:sync`.
-22. Read the `Fixed` entries it wrote. Each one takes its reason from the commit subject, which describes the repository rather than the request — reword it to say what was wrong with the request itself, since anyone who copied it is still holding the broken version. "correct invalid variable payloads in 34 requests" becomes "its sample variables used values the API rejects".
-23. Re-run `npm run collection-changelog:sync` after rewording, and report the entries added.
+20. Do not run `npm run collection-changelog:collect` here. Entries are derived from commits, and `changelog.yml` collects them on `main` after merge — collected anywhere else, the checkpoint can name a commit a rebase merge never puts on `main`.
+21. If Step 1 fixed any request, say so, and point out that its `Fixed` entry takes its reason from the commit subject, which describes the repository rather than the request. Once it lands on `main`, reword it to say what was wrong with the request itself, since anyone who copied it is still holding the broken version. "correct invalid variable payloads in 34 requests" becomes "its sample variables used values the API rejects".
 
 ## How to Introspect
 

@@ -21,7 +21,7 @@ npm run coverage -- --show-advanced            # list the advanced operations by
 npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
 npm run coverage -- --check-deprecated-marks   # exit 1 if a deprecated op's .bru file isn't marked deprecated
 npm run coverage -- --check-advanced-marks     # exit 1 if an advanced op's .bru file isn't marked advanced
-npm run collection-changelog:collect            # write changelog entries for new commits
+npm run collection-changelog:collect            # write changelog entries for new commits (CI does this on main)
 npm run collection-changelog:sync              # mirror the newest entries into Bruno's docs pane
 npm run collection-changelog:check             # exit 1 if either of those is out of date
 npm run api-changelog                          # Spacelift's own changelog since .api-changelog-checkpoint
@@ -272,12 +272,14 @@ Ordering, within a date section: grouped by kind as `Removed`, `Deprecated`, `Fi
 
 `--collect` never rewrites the text of an entry, so wording polished by hand survives; it only ever moves lines, re-sorting every section on each run. That makes it idempotent — running it with nothing new to collect is how a hand-edit that landed in the wrong place gets put back. Polish is expected on `Fixed` entries in particular: a commit subject describes the repository, and the reader needs to know what was wrong with the request they may have copied.
 
+`--collect` and `--sync` run in CI, not by hand: `changelog.yml` runs both on every push to `main` that touches `Spacelift/` or `CHANGELOG.md` and pushes the result. It has to be after merge. `--collect` records `HEAD` as its checkpoint, and this repository merges by rebase, which gives a pull request's commits new SHAs on `main` — a checkpoint written inside a pull request names a commit `main` never has. For the same reason no pull request is expected to carry changelog entries, and `validate-schema.yml` does not run `--check`. Reword a `Fixed` entry in a follow-up commit once it lands.
+
 ### Changelog Checkpoints
 
 Two, for two different changelogs. Keep them straight:
 
 - `.api-changelog-checkpoint` holds a single ISO date — the newest _Spacelift product_ changelog entry that has been reviewed. `/sync-schema` prints everything after it and advances it once reviewed; `npm run api-changelog` prints what is still pending.
-- `.collection-changelog-commit` holds a commit SHA — the last commit whose request changes are in `CHANGELOG.md`. `npm run collection-changelog:collect` reads `<sha>..HEAD` and advances it. A squash or rebase merge can orphan that SHA; the script says so and asks for a re-point rather than failing with a raw git error. Emptying the file means "from the first commit" — a range needs a commit on its left and the first commit has no parent, so this is the only way to rebuild the whole history. Emptying it does not clear `CHANGELOG.md`; delete the entries first or the rebuild lands on top of them.
+- `.collection-changelog-commit` holds a commit SHA — the last commit whose request changes are in `CHANGELOG.md`. `npm run collection-changelog:collect` reads `<sha>..HEAD` and advances it, from `changelog.yml` on `main`. Run anywhere else, a rebase merge can orphan that SHA; the script says so and asks for a re-point rather than failing with a raw git error. Emptying the file means "from the first commit" — a range needs a commit on its left and the first commit has no parent, so this is the only way to rebuild the whole history. Emptying it does not clear `CHANGELOG.md`; delete the entries first or the rebuild lands on top of them.
 
 ### Coverage Baseline
 

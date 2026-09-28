@@ -1,0 +1,67 @@
+name: Collect Changelog
+
+# Collects CHANGELOG.md entries for request changes as they land on main, and
+# mirrors the newest into Bruno's What's New pane.
+#
+# This has to run after merge. `collect` records HEAD as its checkpoint, and
+# this repository merges by rebase, which gives a pull request's commits new
+# SHAs on main: a checkpoint written inside a pull request would name a commit
+# main never has.
+#
+# The commit is pushed with GITHUB_TOKEN, which triggers no workflows, so this
+# cannot trigger itself.
+
+on:
+  push:
+    branches: [main]
+    paths: ["Spacelift/**", "CHANGELOG.md"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: changelog
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          # collect reads history back to .collection-changelog-commit
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
+      - name: Collect and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3; do
+            npm run collection-changelog:collect
+            npm run collection-changelog:sync
+            # collect advances the checkpoint even when it finds nothing. Leave
+            # it behind then: the commits it skips hold no entries, so reading
+            # them again next time adds none, and main gets no empty commit.
+            if git diff --quiet -- CHANGELOG.md Spacelift/collection.bru; then
+              echo "Nothing to collect."
+              exit 0
+            fi
+            git add CHANGELOG.md .collection-changelog-commit Spacelift/collection.bru
+            git commit -m "chore: collect the pending changelog entries"
+            git push origin HEAD:main && exit 0
+
+            # main moved while this ran. Start over from where it is now.
+            git fetch origin main
+            git reset --hard origin/main
+          done
+          exit 1
