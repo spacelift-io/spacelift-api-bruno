@@ -223,7 +223,9 @@ Three requests end a run, at different stages:
 **Review Run** records an approval decision on a policy-gated run; **Retry Run**
 re-runs a failed one.
 
-Most requests here need both a stack ID and a run ID.`,
+Most requests here need both a stack ID and a run ID.
+
+**Delete Run Logs** is in **Danger Zone**.`,
 
   "Saved Filters": `Named, shareable filter sets for the list views in the Spacelift web UI.`,
 
@@ -378,6 +380,7 @@ Some destroy something outright:
 - **Session Delete All** — ends every session in the account
 - **Saml Delete** — removes the SSO configuration
 - **Account Confirm Delete** — finishes deleting the account
+- **Delete Run Logs** — erases a run's logs before retention would
 
 The rest overwrite account-wide settings with whatever is in the request body:
 
@@ -393,7 +396,7 @@ name. It arms that request and no other, and everything else here stays refused 
 including during a run of the whole collection. Clear it when you are done.
 
 Reading is unaffected, and the create and read requests these belong with are
-still under **Advanced → SSO**, **VCS Integrations**, **Audit Trail** and the rest.`,
+still under **Advanced → SSO**, **VCS Integrations**, **Audit Trail**, **Runs** and the rest.`,
 
   // ---------------------------------------------------------------------
   // Advanced — administrative and in-app plumbing, pinned to the bottom of

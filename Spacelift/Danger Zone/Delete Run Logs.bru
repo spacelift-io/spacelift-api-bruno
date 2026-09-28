@@ -1,0 +1,33 @@
+meta {
+  name: Delete Run Logs
+  type: graphql
+  seq: 31
+}
+
+docs {
+  Permanently delete the stored logs of a finished Run, ahead of the account's
+  log retention period. Restricted to root space admins.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation DeleteRunLogs($stack: ID!, $run: ID!) {
+    runLogsDelete(stack: $stack, run: $run) {
+      id
+      state
+      type
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "stack": "{{?Stack ID}}",
+    "run": "{{?Run ID}}"
+  }
+}
