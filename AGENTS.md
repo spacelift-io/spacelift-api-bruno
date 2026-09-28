@@ -21,6 +21,7 @@ npm run coverage -- --show-advanced            # list the advanced operations by
 npm run coverage -- --check-baseline           # exit 1 if coverage regressed past .coverage-baseline
 npm run coverage -- --check-deprecated-marks   # exit 1 if a deprecated op's .bru file isn't marked deprecated
 npm run coverage -- --check-advanced-marks     # exit 1 if an advanced op's .bru file isn't marked advanced
+npm run coverage:check                         # all three checks above, over non-deprecated ops (what CI runs)
 npm run collection-changelog:collect            # write changelog entries for new commits (CI does this on main)
 npm run collection-changelog:sync              # mirror the newest entries into Bruno's docs pane
 npm run collection-changelog:check             # exit 1 if either of those is out of date

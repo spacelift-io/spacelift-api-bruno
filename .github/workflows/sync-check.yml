@@ -29,7 +29,6 @@ concurrency:
 
 env:
   BRANCH: sync/schema-drift
-  COVERAGE_FLAGS: --ignore-deprecated --check-baseline --check-deprecated-marks --check-advanced-marks
 
 jobs:
   sync-check:
@@ -69,7 +68,7 @@ jobs:
         if: steps.install.outcome == 'success'
         continue-on-error: true
         shell: bash
-        run: npm run coverage -- $COVERAGE_FLAGS 2>&1 | tee "$RUNNER_TEMP/coverage.log"
+        run: npm run coverage:check 2>&1 | tee "$RUNNER_TEMP/coverage.log"
 
       # Request docs are copied from schema descriptions, so they go stale when
       # Spacelift rewords one. That is drift, not a defect in a pull request —
@@ -111,7 +110,7 @@ jobs:
         if: steps.state.outputs.fix == 'true'
         continue-on-error: true
         shell: bash
-        run: npm run coverage -- $COVERAGE_FLAGS > "$RUNNER_TEMP/coverage.mid.log" 2>&1
+        run: npm run coverage:check > "$RUNNER_TEMP/coverage.mid.log" 2>&1
 
       - id: prompt
         if: steps.validate_mid.outcome == 'failure' || steps.coverage_mid.outcome == 'failure'
@@ -192,7 +191,7 @@ jobs:
         if: steps.state.outputs.fix == 'true'
         continue-on-error: true
         shell: bash
-        run: npm run coverage -- $COVERAGE_FLAGS 2>&1 | tee "$RUNNER_TEMP/coverage.after.log"
+        run: npm run coverage:check 2>&1 | tee "$RUNNER_TEMP/coverage.after.log"
 
       - id: syncdocs_after
         if: steps.state.outputs.fix == 'true'

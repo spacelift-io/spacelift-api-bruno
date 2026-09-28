@@ -46,7 +46,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          for attempt in 1 2 3; do
+          for _ in 1 2 3; do
             npm run collection-changelog:collect
             npm run collection-changelog:sync
             # collect advances the checkpoint even when it finds nothing. Leave

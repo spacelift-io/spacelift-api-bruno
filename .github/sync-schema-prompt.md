@@ -46,7 +46,7 @@ Run, in order, and fix anything they report:
 1. `npm run destructive-prompts`
 2. `npm run sync-docs`
 3. `npm run validate`
-4. `npm run coverage -- --ignore-deprecated --check-baseline --check-deprecated-marks --check-advanced-marks`
+4. `npm run coverage:check`
 5. `npm test`
 
 Do not commit, and do not touch `CHANGELOG.md`, `.collection-changelog-commit`,
