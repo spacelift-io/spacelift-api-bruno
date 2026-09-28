@@ -215,8 +215,10 @@ function commitReason(subject) {
 //
 // Entries are listed in the order Bruno draws them, so scanning the changelog
 // and scanning the sidebar are the same motion. That order is not alphabetical
-// and not file order — it is Bruno's own, reimplemented here from
-// sortItemsBySidebarOrder and sortByNameThenSequence in the Bruno source:
+// and not file order — it is Bruno's own.
+//
+// KLUDGE: reimplemented here from sortItemsBySidebarOrder and
+// sortByNameThenSequence in the Bruno source:
 //
 //   at every level, folders come first, then requests
 //   folders sort alphabetically, then each folder carrying a valid seq is

@@ -19,8 +19,9 @@ jobs:
 
       - run: npm ci
 
-      # What pre-commit/action did, on current actions. It is maintenance-only
-      # and pins actions/cache@v4, which targets a deprecated Node.
+      # KLUDGE: what pre-commit/action did, on current actions. It is
+      # maintenance-only and pins actions/cache@v4, which targets a deprecated
+      # Node.
       - uses: actions/setup-python@v7
         with:
           python-version: "3.x"

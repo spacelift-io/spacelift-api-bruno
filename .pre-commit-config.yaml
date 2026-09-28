@@ -9,10 +9,10 @@ repos:
       - id: mixed-line-ending
       - id: trailing-whitespace
 
-  # actionlint runs shellcheck on every `run:` script, but only when it finds
-  # shellcheck on PATH, and says nothing when it does not. GitHub's runners
-  # have it and most machines do not, so the upstream hook passed locally and
-  # failed in CI. Installing both from PyPI makes the check the same
+  # KLUDGE: actionlint runs shellcheck on every `run:` script, but only when it
+  # finds shellcheck on PATH, and says nothing when it does not. GitHub's
+  # runners have it and most machines do not, so the upstream hook passed
+  # locally and failed in CI. Installing both from PyPI makes the check the same
   # everywhere. `pre-commit autoupdate` does not bump these; edit the pins.
   - repo: local
     hooks:

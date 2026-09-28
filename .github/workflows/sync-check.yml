@@ -8,9 +8,9 @@ name: Weekly Sync Check
 #
 # Needs one secret, ANTHROPIC_API_KEY, for the Claude run.
 #
-# The pull request is opened with GITHUB_TOKEN, and nothing GITHUB_TOKEN does
-# triggers a workflow — except workflow_dispatch. So once the pull request is
-# open, this job dispatches Validate Schema on its branch itself.
+# KLUDGE: the pull request is opened with GITHUB_TOKEN, and nothing GITHUB_TOKEN
+# does triggers a workflow — except workflow_dispatch. So once the pull request
+# is open, this job dispatches Validate Schema on its branch itself.
 
 on:
   schedule:
@@ -44,8 +44,9 @@ jobs:
       - id: install
         run: npm ci
 
-      # What pre-commit/action did, on current actions. It is maintenance-only
-      # and pins actions/cache@v4, which targets a deprecated Node.
+      # KLUDGE: what pre-commit/action did, on current actions. It is
+      # maintenance-only and pins actions/cache@v4, which targets a deprecated
+      # Node.
       - uses: actions/setup-python@v7
         with:
           python-version: "3.x"
