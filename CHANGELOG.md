@@ -4,6 +4,10 @@ Every request added, corrected, deprecated or removed in this collection. For
 changes to the Spacelift API itself, see the
 [Spacelift changelog](https://docs.spacelift.io/product/changelog).
 
+## 2026-09-28
+
+- Added **Danger Zone → Delete Run Logs** (`runLogsDelete`)
+
 ## 2026-09-16
 
 - Removed **Advanced → Account Settings → Account Confirm Delete** (`accountConfirmDelete`) — moved to **Danger Zone**
