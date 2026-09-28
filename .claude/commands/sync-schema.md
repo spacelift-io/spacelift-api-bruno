@@ -61,7 +61,7 @@ Validate all Bruno requests against the live Spacelift GraphQL schema, fix any f
 
 ## How to Introspect
 
-Use a single `curl` to batch-check multiple types or mutations at once rather than one call per issue. Examples:
+`node scripts/introspect.js` prints the SDL of any number of types and root fields in one call — `node scripts/introspect.js Run Mutation.runLogsDelete`. For anything it does not cover, use a single `curl` to batch-check multiple types or mutations at once rather than one call per issue. Examples:
 
 ```bash
 # Check a type's kind (OBJECT, UNION, ENUM, SCALAR, INPUT_OBJECT, INTERFACE) and its fields

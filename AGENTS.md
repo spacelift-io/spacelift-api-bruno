@@ -25,6 +25,7 @@ npm run collection-changelog:collect            # write changelog entries for ne
 npm run collection-changelog:sync              # mirror the newest entries into Bruno's docs pane
 npm run collection-changelog:check             # exit 1 if either of those is out of date
 npm run api-changelog                          # Spacelift's own changelog since .api-changelog-checkpoint
+node scripts/introspect.js Run Mutation.runLogsDelete   # print the SDL of types and root fields
 
 npm run format                                 # format js/json/yaml/md files with prettier
 npm run format:check                           # check formatting without writing
@@ -260,6 +261,8 @@ Details that matter if you touch it:
 **`folder-docs.js`**: Hand-written docs for every folder, keyed by path relative to `Spacelift/`. Imported by `sync-docs.js`, which both writes them and checks them, so a folder cannot be added without documenting it. Same one-module-for-writer-and-checker shape as `advanced-operations.js`.
 
 **`sync-docs.js`**: Builds a map of root field name → docs text, then for each .bru file inserts or replaces a `docs { ... }` block using `upsertDocsBlock`. Also writes each folder's `folder.bru` from `folder-docs.js`. The docs text is the schema field's `deprecationReason` (as a `⚠ **DEPRECATED** — ...` first line, when present), then the `ℹ **ADVANCED** — ...` note if the operation is listed in `advanced-operations.js`, then its `description`. The block is placed after `meta { }` if it doesn't exist yet. Lines are indented with 2 spaces. Idempotent.
+
+**`introspect.js`**: Prints the SDL for the types and root fields named on the command line, fetched by public introspection. It exists so the weekly job's Claude run can introspect through one allowlisted command rather than `curl | python3`, which would mean allowing arbitrary code in a job holding an API key.
 
 **`collection-changelog.js`**: Maintains the collection's own changelog — `CHANGELOG.md` for the full history, and a "What's New" `docs { }` block in `Spacelift/collection.bru` for the newest `DEFAULT_ENTRIES` of it, which is what a user sees in Bruno without leaving the app. Three modes: `--collect` derives entries from git and appends them, `--sync` rewrites the docs block, `--check` fails if either is stale.
 
