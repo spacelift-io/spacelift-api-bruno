@@ -12,6 +12,9 @@ docs {
   follows the internal state ordinal, so equal states group together but the
   sequence is not alphabetical.
 
+  `command` is only set on Tasks. It returns no possible values, so match it
+  with `fullTextSearch` or a `stringMatches` predicate.
+
   Paginate with either input.after (keyset cursor, sequential) or offset
   (random-access, for loading pages concurrently), not both. offset skips
   that many rows in the ordered result; use input.first as the page size and
