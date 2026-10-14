@@ -63,9 +63,9 @@ No credentials are required. All scripts introspect `https://demo.app.spacelift.
 
 - Subfolders of `.bru` request files grouped by resource type, one operation per file. `npm run validate` reports the current file count.
 - `collection.bru` — collection-level settings. It holds a `script:pre-request` block (see **Authentication Flow**) and a `docs { }` block written by `collection-changelog.js --sync`, which is what Bruno shows in the collection's Docs pane. Do not hand-edit the docs block; `--sync` replaces it wholesale and leaves every other block alone, so the script, and any auth, headers or vars added through Bruno's UI, survive.
-- A `folder.bru` in every folder, holding a `meta { }` block and the folder's `docs { }`. Written by `sync-docs.js` from `scripts/folder-docs.js` — see **Folder Docs** below. `Advanced/folder.bru` additionally carries `seq: 99`, which pins `Advanced` to the bottom of the sidebar; see **Advanced Operations**.
+- A `folder.bru` in every folder, holding a `meta { }` block and the folder's `docs { }`. Written by `sync-docs.js` from `scripts/folder-docs.js` — see **Folder Docs** below. Three carry a `seq` as well, which pins them to the bottom of the sidebar in this order: `Cookbook` (`98`), `Advanced` (`99`) and `Danger Zone` (`100`); see **Cookbook**, **Advanced Operations** and **Danger Zone**.
 
-Bruno sorts folders alphabetically and then splices any folder carrying a valid `seq` in at index `seq - 1`, so a folder's position is settled entirely by its `folder.bru` — no instruction in this file can move it. Every folder but `Advanced` is deliberately seq-less and therefore alphabetical.
+Bruno sorts folders alphabetically and then splices any folder carrying a valid `seq` in at index `seq - 1`, so a folder's position is settled entirely by its `folder.bru` — no instruction in this file can move it. Every other folder is deliberately seq-less and therefore alphabetical.
 
 The README tells users to install the collection with Bruno's **Import Collection → Git Repository** clone, which scans the whole cloned repository for `bruno.json` files. That is why `Spacelift/` can sit in a subfolder alongside `scripts/` and `docs/` — nothing requires the collection at the repository root.
 
@@ -123,7 +123,8 @@ is one misreading away from looking like somebody's data. Don't add them back.
 - every `.bru` file parses and has a `meta.name`, and every `folder.bru` has docs;
 - every variable in the shipped environment is **secret**, and the file round-trips byte-identically through Bruno's own serializer — the pair of assertions that stop a token ever being written into a tracked file, and stop filling in the environment from dirtying one;
 - every request resolves to a bearer token through `inherit`, with exactly one at `auth: none`;
-- the token script mints, refreshes, skips and fails in the ten ways it is supposed to.
+- the token script mints, refreshes, skips and fails in the ten ways it is supposed to;
+- every bold sidebar path — `**Runs → Search Runs**` — in the README, `collection.bru`'s docs and any request or folder docs names a folder or request that exists. Link text is skipped, since `**Settings → API Keys**` inside a link to Spacelift's docs is a path in Spacelift's UI. Before this, renaming a request silently broke every recipe and note that pointed at it.
 
 This exists because `validate` cannot see any of it. A search-and-replace once put backticks inside a template literal in `collection.bru`, breaking authentication for every user, while `npm run validate` stayed green.
 
@@ -222,6 +223,24 @@ Two invariants in `buildFolderBru` protect the sidebar, and both are easy to bre
 - **`meta.name` defaults to the directory name.** Bruno sorts on the meta name when a folder has one, so a name that differs from its directory reorders the sidebar just as effectively.
 
 When changing either, verify by dumping the sidebar order before and after and diffing — the rules are reimplemented in `collection-changelog.js`'s `buildSidebarOrder`.
+
+### Cookbook
+
+`Spacelift/Cookbook/` holds recipes: jobs that take more than one request, like triggering a run and confirming it once the plan is in. Each subfolder is one recipe. Its folder docs, in `folder-docs.js`, list the steps and which value to carry from each response into the next, and its requests are those steps, ordered by `seq`.
+
+The steps are real `.bru` requests rather than GraphQL quoted in markdown, so `validate`, `sync-docs`, `destructive-prompts` and `npm test` cover them like any other. A recipe written as prose would keep reading correctly after the schema moved out from under it, and the weekly sync job could not repair it, since its guard rejects changes outside `Spacelift/`.
+
+Rules for a recipe:
+
+- **Copies, trimmed.** A step is a copy of a request from its resource folder, selecting only the fields the recipe needs. Every operation a recipe uses must also have a request in its resource folder. Coverage counts root fields wherever they appear, so a recipe would otherwise hide a gap.
+- **No chaining**, exactly as in **No Chained Requests**: every ID is a placeholder, and the request notes say which earlier step produces it. A cookbook is where a post-response script is most tempting, and it is still wrong.
+- **Doable by hand in Bruno.** No loops, no files written, no scripts. Paging through a run's logs by copying `nextToken` is not a recipe; one `logsDownloadURL` per phase is.
+- **Nothing from Danger Zone.** The guard matches on request name, so a copy of a Danger Zone request would be guarded too, and `destructive-prompts --check` rejects the duplicate name.
+- **Warn where a step acts.** `Trigger and Confirm a Run` triggers `TRACKED`, because a proposed run can never be confirmed, and both its folder docs and its `List Stacks` notes say that a stack with `autodeploy` applies without waiting.
+
+`seq: 98` puts the folder just above `Advanced`. It works the same way as `Advanced`'s `99`: past the end of the list, so new folders cannot displace it, and lower than `99`, so it sits above.
+
+Recipes reference other requests by their names in bold (**List Stacks**), and requests outside the recipe by sidebar path (**Runs → Search Runs**). `npm test` checks the second kind resolves.
 
 ### Authentication Flow
 

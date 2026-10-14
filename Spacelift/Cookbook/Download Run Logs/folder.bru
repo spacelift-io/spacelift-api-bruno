@@ -1,0 +1,20 @@
+meta {
+  name: Download Run Logs
+}
+
+docs {
+  Download the log of every phase a run went through: initializing, planning,
+  applying and the rest.
+
+  1. **Get Run History** — paste the run ID into `id`. Each `history` entry with
+     `hasLogs: true` is a phase with a log.
+  2. **Get Run Logs Download URL** — send once per phase, with that entry's `state`
+     and `stateVersion`, and open the `url` in the response.
+
+  The run ID is the last part of the run's URL in Spacelift, or an `id` from
+  **Runs → Search Runs**.
+
+  `expired` or `deleted` means the log is gone: it outlived the account's retention
+  period, or somebody sent **Danger Zone → Delete Run Logs**. `ongoing` means the
+  run is still in that phase and the log is not complete yet.
+}

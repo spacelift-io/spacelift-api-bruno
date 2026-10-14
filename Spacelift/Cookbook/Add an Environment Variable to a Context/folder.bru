@@ -1,0 +1,14 @@
+meta {
+  name: Add an Environment Variable to a Context
+}
+
+docs {
+  Put a variable where every stack the context is attached to will see it.
+
+  1. **List Contexts** — copy the context's `id`.
+  2. **Add Config** — paste it into `context`, and set `config.id` to the variable's
+     name and `config.value` to its value.
+
+  Only stacks the context is attached to see the variable. To attach it, use
+  **Contexts → Attach Context**.
+}

@@ -1,0 +1,45 @@
+meta {
+  name: Get Run Logs Download URL
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Run by ID, without needing to know the stack.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `id` is the run ID; `state` and `stateVersion` come from one entry of
+  **Get Run History**. Send once per phase, then open `url` to download that
+  phase's log.
+
+  `stateVersion` tells repeats of a state apart, such as a second `PLANNING`
+  after a replan. It may be null on older runs, and null is accepted.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query GetRunLogsDownloadURL($id: ID!, $state: RunState!, $stateVersion: Int) {
+    run(id: $id) {
+      logsDownloadURL(state: $state, stateVersion: $stateVersion) {
+        url
+        ongoing
+        expired
+        deleted
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "RUN_ID_HERE",
+    "state": "PLANNING",
+    "stateVersion": 1
+  }
+}

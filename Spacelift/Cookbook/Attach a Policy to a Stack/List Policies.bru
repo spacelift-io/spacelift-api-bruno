@@ -1,0 +1,31 @@
+meta {
+  name: List Policies
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the polices in the account.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Copy the `id` of the policy you want into **Attach Policy**.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  {
+    policies {
+      id
+      name
+      type
+      space
+      labels
+    }
+  }
+}

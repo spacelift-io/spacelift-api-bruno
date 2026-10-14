@@ -367,6 +367,67 @@ way to take it out of service. **Cycle Worker Pool** rotates the whole pool, and
 **Get Worker Usage** shows how busy it has been.`,
 
   // ---------------------------------------------------------------------
+  // Cookbook — recipes that combine requests, pinned just above Advanced by
+  // Cookbook/folder.bru's seq. Each recipe's steps are its own requests, so
+  // validate checks them like any other.
+  // ---------------------------------------------------------------------
+
+  Cookbook: `Recipes for jobs that take more than one request.
+
+Each folder is one recipe. Its Docs pane lists the steps and which value to carry
+from each response into the next, and its requests are those steps, in order.
+
+Nothing is carried over for you. Every ID is a placeholder you fill in from the
+step before, so each request does exactly what you see in it.
+
+The steps are copies of requests from the resource folders, trimmed to the fields
+the recipe needs.`,
+
+  "Cookbook/Add an Environment Variable to a Context": `Put a variable where every stack the context is attached to will see it.
+
+1. **List Contexts** — copy the context's \`id\`.
+2. **Add Config** — paste it into \`context\`, and set \`config.id\` to the variable's
+   name and \`config.value\` to its value.
+
+Only stacks the context is attached to see the variable. To attach it, use
+**Contexts → Attach Context**.`,
+
+  "Cookbook/Attach a Policy to a Stack": `Make a policy apply to one stack.
+
+1. **List Policies** — copy the policy's \`id\`.
+2. **List Stacks** — copy the stack's \`id\`.
+3. **Attach Policy** — \`id\` is the policy, \`stack\` is the stack.`,
+
+  "Cookbook/Download Run Logs": `Download the log of every phase a run went through: initializing, planning,
+applying and the rest.
+
+1. **Get Run History** — paste the run ID into \`id\`. Each \`history\` entry with
+   \`hasLogs: true\` is a phase with a log.
+2. **Get Run Logs Download URL** — send once per phase, with that entry's \`state\`
+   and \`stateVersion\`, and open the \`url\` in the response.
+
+The run ID is the last part of the run's URL in Spacelift, or an \`id\` from
+**Runs → Search Runs**.
+
+\`expired\` or \`deleted\` means the log is gone: it outlived the account's retention
+period, or somebody sent **Danger Zone → Delete Run Logs**. \`ongoing\` means the
+run is still in that phase and the log is not complete yet.`,
+
+  "Cookbook/Trigger and Confirm a Run": `Start a deployment, and apply it once you have seen what it will change.
+
+1. **List Stacks** — copy the stack's \`id\`, and check its \`autodeploy\`.
+2. **Trigger Run** — paste the stack ID into \`stack\`. The response's \`id\` is the
+   run.
+3. **Get Run** — paste the run ID into \`id\`, and send it until \`state\` is
+   \`UNCONFIRMED\`. \`delta\` counts what will be added, changed and deleted.
+4. **Confirm Run** — \`stack\` and \`run\` are those two IDs. The run applies.
+
+⚠ On a stack with \`autodeploy\` set there is nothing to confirm: the run applies
+as soon as its plan succeeds, so step 2 alone changes your infrastructure. To see
+a plan without that risk, set \`runType\` to \`PROPOSED\` in step 2 and stop at
+step 3.`,
+
+  // ---------------------------------------------------------------------
   // Danger Zone — the destructive requests nothing can prompt for, pinned
   // below Advanced by Danger Zone/folder.bru's seq.
   // ---------------------------------------------------------------------

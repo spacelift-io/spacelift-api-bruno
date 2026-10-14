@@ -1,0 +1,45 @@
+meta {
+  name: Get Run History
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Details of a single Run by ID, without needing to know the stack.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `id` is the run ID: the last part of the run's URL in Spacelift, or an `id`
+  from **Runs → Search Runs**.
+
+  Each `history` entry with `hasLogs: true` is a phase you can download. Copy its
+  `state` and `stateVersion` into **Get Run Logs Download URL**.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query GetRunHistory($id: ID!) {
+    run(id: $id) {
+      id
+      stackId
+      state
+      history {
+        state
+        stateVersion
+        hasLogs
+        timestamp
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "RUN_ID_HERE"
+  }
+}
