@@ -398,6 +398,25 @@ Only stacks the context is attached to see the variable. To attach it, use
 2. **List Stacks** — copy the stack's \`id\`.
 3. **Attach Policy** — \`id\` is the policy, \`stack\` is the stack.`,
 
+  "Cookbook/Download Policy Evaluation Samples": `Fetch what a policy actually saw when it was evaluated: the input, the policy
+body at the time, and the result.
+
+1. **List Policy Evaluation Records** — paste the policy ID into \`id\`. Each
+   \`evaluationRecords\` entry is one sampled evaluation.
+2. **Get Policy Evaluation Sample** — send once per sample, with that entry's
+   \`key\`, and save the parts of the response you need.
+
+The policy ID is an \`id\` from **Policies → List Policies**.
+
+Only evaluations the policy chose to sample are recorded. A policy samples when
+its \`sample\` rule returns true, so a policy without one has nothing here; add
+\`sample if true\` to capture every evaluation. Spacelift's docs say it keeps the
+100 most recent samples from the past 7 days, and that samples are visible to
+account administrators only.
+
+A sample's \`input\` replays in **Policies → Simulate Policy**, which is the way to
+test a policy change against real traffic before saving it.`,
+
   "Cookbook/Download Run Logs": `Download the log of every phase a run went through: initializing, planning,
 applying and the rest.
 

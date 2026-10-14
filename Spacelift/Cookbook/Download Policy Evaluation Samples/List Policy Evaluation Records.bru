@@ -1,0 +1,48 @@
+meta {
+  name: List Policy Evaluation Records
+  type: graphql
+  seq: 1
+}
+
+docs {
+  Details of a single Policy.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `id` is the policy ID, from **Policies → List Policies**.
+
+  Each `evaluationRecords` entry is one sampled evaluation. Copy the `key` of the
+  one you want into **Get Policy Evaluation Sample**; `outcome` and `timestamp`
+  tell them apart.
+
+  An empty list means nothing was sampled: the policy needs a `sample` rule that
+  returns true for the evaluations you want kept.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query ListPolicyEvaluationRecords($id: ID!) {
+    policy(id: $id) {
+      id
+      name
+      type
+      sampleCount
+      evaluationRecords {
+        key
+        outcome
+        timestamp
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "POLICY_ID_HERE"
+  }
+}

@@ -1,0 +1,51 @@
+meta {
+  name: Get Policy Evaluation Sample
+  type: graphql
+  seq: 2
+}
+
+docs {
+  Details of a single Policy.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `id` is the policy ID; `key` comes from one `evaluationRecords` entry of
+  **List Policy Evaluation Records**. Send once per sample you want.
+
+  `input` is the JSON document the policy was evaluated against, as a string, so
+  it can be pasted unchanged into `input.input` of **Policies → Simulate Policy**
+  to replay the evaluation. `body` is the policy as it was at that moment, which
+  may differ from the current one, and `libraries` are the policy libraries it
+  imported.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query GetPolicyEvaluationSample($id: ID!, $key: String!) {
+    policy(id: $id) {
+      evaluationSample(key: $key) {
+        input
+        body
+        libraries {
+          Name
+          Body
+        }
+        outcome
+        results
+        error
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "POLICY_ID_HERE",
+    "key": "EVALUATION_KEY_HERE"
+  }
+}

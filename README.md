@@ -110,6 +110,7 @@ ones:
 - **Attach a Policy to a Stack**
 - **Add an Environment Variable to a Context**
 - **Download Run Logs** — the log of every phase a run went through
+- **Download Policy Evaluation Samples** — the input, policy body and result of a past evaluation
 
 Each recipe's **Docs** pane lists the steps, and its requests are those steps in order.
 Nothing is passed between them: the list request shows you the IDs, and you copy the one
