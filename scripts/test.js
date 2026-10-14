@@ -223,6 +223,60 @@ test("the collection supplies a bearer token", () => {
 });
 
 // ---------------------------------------------------------------------------
+// Docs name requests by sidebar path
+// ---------------------------------------------------------------------------
+
+suite("Docs point at requests that exist");
+
+/**
+ * Every bold sidebar path, like **Runs → Search Runs**, in a piece of markdown.
+ * Link text is dropped first: **Settings → API Keys** inside a link to
+ * Spacelift's docs is a path in Spacelift's UI, not in this collection.
+ */
+function sidebarPaths(markdown) {
+  const text = markdown.replace(/\[[^\]]*\]\([^)]*\)/g, "");
+  return [...text.matchAll(/\*\*([^*\n]+→[^*\n]+)\*\*/g)].map((m) =>
+    m[1].split("→").map((part) => part.trim()),
+  );
+}
+
+test("every **Folder → Request** in the docs and README resolves", () => {
+  const sources = [
+    [
+      "README.md",
+      fs.readFileSync(path.join(COLLECTION_DIR, "../README.md"), "utf8"),
+    ],
+    ["collection.bru", collection.docs],
+    ...requestFiles.map((f) => [
+      rel(f),
+      bruToJsonV2(fs.readFileSync(f, "utf8")).docs,
+    ]),
+    ...folderFiles.map((f) => [
+      rel(f),
+      collectionBruToJson(fs.readFileSync(f, "utf8")).docs,
+    ]),
+  ];
+
+  const bad = [];
+  let checked = 0;
+  for (const [source, markdown] of sources) {
+    for (const parts of sidebarPaths(markdown || "")) {
+      const target = path.join(COLLECTION_DIR, ...parts);
+      checked++;
+      if (!fs.existsSync(target) && !fs.existsSync(`${target}.bru`)) {
+        bad.push(`${source}: **${parts.join(" → ")}**`);
+      }
+    }
+  }
+
+  assert(
+    bad.length === 0,
+    `${bad.length} unresolved:\n        ${bad.join("\n        ")}`,
+  );
+  assert(checked > 0, "no references found; is the pattern still matching?");
+});
+
+// ---------------------------------------------------------------------------
 // The pre-request script, run the way Bruno runs it
 // ---------------------------------------------------------------------------
 

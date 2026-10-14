@@ -123,7 +123,8 @@ is one misreading away from looking like somebody's data. Don't add them back.
 - every `.bru` file parses and has a `meta.name`, and every `folder.bru` has docs;
 - every variable in the shipped environment is **secret**, and the file round-trips byte-identically through Bruno's own serializer — the pair of assertions that stop a token ever being written into a tracked file, and stop filling in the environment from dirtying one;
 - every request resolves to a bearer token through `inherit`, with exactly one at `auth: none`;
-- the token script mints, refreshes, skips and fails in the ten ways it is supposed to.
+- the token script mints, refreshes, skips and fails in the ten ways it is supposed to;
+- every bold sidebar path — `**Runs → Search Runs**` — in the README, `collection.bru`'s docs and any request or folder docs names a folder or request that exists. Link text is skipped, since `**Settings → API Keys**` inside a link to Spacelift's docs is a path in Spacelift's UI. Before this, renaming a request silently broke every recipe and note that pointed at it.
 
 This exists because `validate` cannot see any of it. A search-and-replace once put backticks inside a template literal in `collection.bru`, breaking authentication for every user, while `npm run validate` stayed green.
 
