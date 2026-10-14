@@ -12,6 +12,8 @@ changes to the Spacelift API itself, see the
 - Added **Cookbook → Attach a Policy to a Stack → List Policies** (`policies`)
 - Added **Cookbook → Attach a Policy to a Stack → List Stacks** (`stacks`)
 - Added **Cookbook → Attach a Policy to a Stack → Attach Policy** (`policyAttach`)
+- Added **Cookbook → Download Policy Evaluation Samples → List Policy Evaluation Records** (`policy`)
+- Added **Cookbook → Download Policy Evaluation Samples → Get Policy Evaluation Sample** (`policy`)
 - Added **Cookbook → Download Run Logs → Get Run History** (`run`)
 - Added **Cookbook → Download Run Logs → Get Run Logs Download URL** (`run`)
 - Added **Cookbook → Trigger and Confirm a Run → List Stacks** (`stacks`)
