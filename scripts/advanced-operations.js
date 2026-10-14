@@ -159,7 +159,6 @@ const CATEGORIES = {
       "tier",
       "tierFeatures",
       "usage",
-      "usageAspect",
     ],
   },
   "account-settings": {
