@@ -6,7 +6,7 @@ changes to the Spacelift API itself, see the
 
 ## 2026-10-14
 
-- Removed **Advanced → Billing → Usage Aspect** (`usageAspect`)
+- Removed **Advanced → Billing → Usage Aspect** (`usageAspect`) — removed from the Spacelift API; see **Runs → Run Minutes Usage** and **Worker Pools → Get Worker Usage**
 - Deprecated **Repos → List Revisions** (`searchRevisions`) — Use searchRepoCommits instead.
 - Deprecated **Repos → Get Revision** (`revision`) — Use repoCommit instead.
 - Deprecated **Repos → Create Revision** (`revisionCreate`) — Use repoCommitCreate instead.
