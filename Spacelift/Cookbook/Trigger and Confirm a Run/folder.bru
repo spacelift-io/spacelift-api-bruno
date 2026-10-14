@@ -1,0 +1,19 @@
+meta {
+  name: Trigger and Confirm a Run
+}
+
+docs {
+  Start a deployment, and apply it once you have seen what it will change.
+
+  1. **List Stacks** — copy the stack's `id`, and check its `autodeploy`.
+  2. **Trigger Run** — paste the stack ID into `stack`. The response's `id` is the
+     run.
+  3. **Get Run** — paste the run ID into `id`, and send it until `state` is
+     `UNCONFIRMED`. `delta` counts what will be added, changed and deleted.
+  4. **Confirm Run** — `stack` and `run` are those two IDs. The run applies.
+
+  ⚠ On a stack with `autodeploy` set there is nothing to confirm: the run applies
+  as soon as its plan succeeds, so step 2 alone changes your infrastructure. To see
+  a plan without that risk, set `runType` to `PROPOSED` in step 2 and stop at
+  step 3.
+}

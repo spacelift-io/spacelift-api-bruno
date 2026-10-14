@@ -100,35 +100,27 @@ Edits you have made to requests are kept, too. If you have edited a request that
 changed upstream, git will stop rather than overwrite your copy; discarding your version of
 that one file (`git checkout -- <file>`) lets the update through.
 
-## Typical Workflows
+## Cookbook
 
 Each request is one operation, so a task is usually two or three of them in order. The
-list request shows you the IDs; copy the one you want into the next request's
-**Variables** panel.
+**Cookbook** folder, just above **Advanced** in the sidebar, holds recipes for common
+ones:
 
-**Trigger and confirm a run:**
+- **Trigger and Confirm a Run** — start a deployment and apply it once you have seen the plan
+- **Attach a Policy to a Stack**
+- **Add an Environment Variable to a Context**
+- **Download Run Logs** — the log of every phase a run went through
 
-1. **Stacks → List Stacks** — copy the `id` of the stack you want
-2. **Runs → Trigger Run** — paste it into `stack`; the response's `id` is the new run
-3. **Runs → Confirm Run** — `stack` and `run` are those two IDs
-
-**Attach a policy to a stack:**
-
-1. **Policies → List Policies** — copy the policy's `id`
-2. **Stacks → List Stacks** — copy the stack's `id`
-3. **Policies → Attach Policy** — `id` is the policy, `stack` is the stack
-
-**Add an environment variable to a context:**
-
-1. **Contexts → List Contexts** — copy the context's `id`
-2. **Contexts → Add Config** — paste it into `context`, and set `config.type` to
-   `ENVIRONMENT_VARIABLE`
+Each recipe's **Docs** pane lists the steps, and its requests are those steps in order.
+Nothing is passed between them: the list request shows you the IDs, and you copy the one
+you want into the next request's variables (see **Placeholder Values** below).
 
 ## Placeholder Values
 
 Requests that need an ID use an obvious placeholder like `STACK_ID_HERE`. Replace it in
-the **Variables** panel before sending. Each request's **Docs** pane says which request
-lists the IDs it wants.
+the **Variables** pane at the bottom of the request's **Query** tab (click **Variables**
+to expand it if it is collapsed), then send. Not the **Vars** tab, which holds Bruno's own
+request variables. Each request's **Docs** pane says which request lists the IDs it wants.
 
 ## Destructive Requests
 

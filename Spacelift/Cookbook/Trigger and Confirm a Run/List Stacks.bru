@@ -1,0 +1,33 @@
+meta {
+  name: List Stacks
+  type: graphql
+  seq: 1
+}
+
+docs {
+  List of all the stacks in the account.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Copy the `id` of the stack you want into **Trigger Run** and **Confirm Run**.
+
+  Check `autodeploy` first. When it is true, a tracked run applies as soon as its
+  plan succeeds, so **Trigger Run** alone changes your infrastructure.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  {
+    stacks {
+      id
+      name
+      space
+      autodeploy
+    }
+  }
+}
