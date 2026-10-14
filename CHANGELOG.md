@@ -7,6 +7,17 @@ changes to the Spacelift API itself, see the
 ## 2026-10-14
 
 - Removed **Advanced → Billing → Usage Aspect** (`usageAspect`)
+- Deprecated **Repos → List Revisions** (`searchRevisions`) — Use searchRepoCommits instead.
+- Deprecated **Repos → Get Revision** (`revision`) — Use repoCommit instead.
+- Deprecated **Repos → Create Revision** (`revisionCreate`) — Use repoCommitCreate instead.
+- Deprecated **Advanced → Search Suggestions → Search Revisions Suggestions** (`searchRevisionsSuggestions`) — Use searchRepoCommitsSuggestions instead.
+- Added **Personal API Keys → List Personal API Keys** (`personalApiKeys`)
+- Added **Personal API Keys → Count Personal API Keys** (`personalApiKeysCount`)
+- Added **Policies → List Policy Input Captures** (`policyInputCaptures`)
+- Added **Policies → Get Policy Input Capture** (`policyInputCapture`)
+- Added **Repos → Get Repo Commit** (`repoCommit`)
+- Added **Repos → List Repo Commits** (`searchRepoCommits`)
+- Added **Repos → Create Repo Commit** (`repoCommitCreate`)
 - Added **Cookbook → Add an Environment Variable to a Context → List Contexts** (`contexts`)
 - Added **Cookbook → Add an Environment Variable to a Context → Add Config** (`contextConfigAdd`)
 - Added **Cookbook → Attach a Policy to a Stack → List Policies** (`policies`)
@@ -20,6 +31,10 @@ changes to the Spacelift API itself, see the
 - Added **Cookbook → Trigger and Confirm a Run → Trigger Run** (`runTrigger`)
 - Added **Cookbook → Trigger and Confirm a Run → Get Run** (`run`)
 - Added **Cookbook → Trigger and Confirm a Run → Confirm Run** (`runConfirm`)
+- Added **Advanced → Account Settings → Personal Api Keys Enabled** (`personalApiKeysEnabled`)
+- Added **Advanced → Account Settings → Account Request Personal Api Keys Enabling** (`accountRequestPersonalApiKeysEnabling`)
+- Added **Advanced → Search Suggestions → Search Repo Commits Suggestions** (`searchRepoCommitsSuggestions`)
+- Added **Danger Zone → Account Set Personal Api Keys Enabled** (`accountSetPersonalApiKeysEnabled`)
 
 ## 2026-09-28
 
