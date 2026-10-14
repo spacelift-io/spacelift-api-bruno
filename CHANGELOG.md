@@ -4,6 +4,20 @@ Every request added, corrected, deprecated or removed in this collection. For
 changes to the Spacelift API itself, see the
 [Spacelift changelog](https://docs.spacelift.io/product/changelog).
 
+## 2026-10-14
+
+- Added **Cookbook → Add an Environment Variable to a Context → List Contexts** (`contexts`)
+- Added **Cookbook → Add an Environment Variable to a Context → Add Config** (`contextConfigAdd`)
+- Added **Cookbook → Attach a Policy to a Stack → List Policies** (`policies`)
+- Added **Cookbook → Attach a Policy to a Stack → List Stacks** (`stacks`)
+- Added **Cookbook → Attach a Policy to a Stack → Attach Policy** (`policyAttach`)
+- Added **Cookbook → Download Run Logs → Get Run History** (`run`)
+- Added **Cookbook → Download Run Logs → Get Run Logs Download URL** (`run`)
+- Added **Cookbook → Trigger and Confirm a Run → List Stacks** (`stacks`)
+- Added **Cookbook → Trigger and Confirm a Run → Trigger Run** (`runTrigger`)
+- Added **Cookbook → Trigger and Confirm a Run → Get Run** (`run`)
+- Added **Cookbook → Trigger and Confirm a Run → Confirm Run** (`runConfirm`)
+
 ## 2026-09-28
 
 - Added **Danger Zone → Delete Run Logs** (`runLogsDelete`)
