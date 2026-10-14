@@ -495,7 +495,10 @@ reason to call these from your own tooling.`,
 The mutations change what you are charged. Read **Billing Subscription** and
 **Tier Features** before sending any of them.
 
-The subscription create, tier change and cancellation are in **Danger Zone**.`,
+The subscription create, tier change and cancellation are in **Danger Zone**.
+
+Usage over time is split by what is billed: **Runs → Run Minutes Usage** for
+run minutes, and **Worker Pools → Get Worker Usage** for private workers.`,
 
   "Advanced/CLI": `The confirmation token behind \`spacectl\`'s browser login flow.`,
 
