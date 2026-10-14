@@ -27,6 +27,6 @@
   "devDependencies": {
     "@usebruno/lang": "^0.40.0",
     "atob": "^2.1.2",
-    "prettier": "^3.9.9"
+    "prettier": "^3.9.10"
   }
 }
