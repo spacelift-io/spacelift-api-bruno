@@ -1,0 +1,38 @@
+meta {
+  name: List Personal API Keys
+  type: graphql
+  seq: 4
+}
+
+docs {
+  List of all personal API keys for the account with their owners. Root admins only.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  Every personal key in the account, whoever owns it. Root space admins only.
+
+  A key's `id` is what **Disable Personal API Key** asks for.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  {
+    personalApiKeys {
+      id
+      name
+      owner
+      type
+      description
+      disabled
+      disabledReason
+      createdAt
+      expiresAt
+      lastUsedAt
+    }
+  }
+}

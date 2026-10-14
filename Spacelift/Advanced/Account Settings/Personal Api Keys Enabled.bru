@@ -1,0 +1,27 @@
+meta {
+  name: Personal Api Keys Enabled
+  type: graphql
+  seq: 42
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Account-level setting indicating whether users may create personal API keys.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query PersonalApiKeysEnabled {
+    personalApiKeysEnabled
+  }
+}
+
+body:graphql:vars {
+  {}
+}

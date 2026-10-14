@@ -1,0 +1,42 @@
+meta {
+  name: Account Set Personal Api Keys Enabled
+  type: graphql
+  seq: 32
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Allow or refuse personal API key creation for the account. With enabled false
+  and disableExistingKeys true, every personal key on the account is disabled.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  In Danger Zone because of `disableExistingKeys`. With `enabled: false` and
+  `disableExistingKeys: true`, every personal key in the account stops working at
+  once, and only each key's owner can turn theirs back on with **Personal API Keys
+  → Enable Personal API Key**. Nobody can undo it for the whole account.
+
+  Sent with `disableExistingKeys: false`, it only allows or refuses new keys, and
+  existing ones keep working. Read the current value first with **Advanced →
+  Account Settings → Personal Api Keys Enabled**.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation AccountSetPersonalApiKeysEnabled($enabled: Boolean!, $disableExistingKeys: Boolean) {
+    accountSetPersonalApiKeysEnabled(enabled: $enabled, disableExistingKeys: $disableExistingKeys)
+  }
+}
+
+body:graphql:vars {
+  {
+    "enabled": false,
+    "disableExistingKeys": false
+  }
+}

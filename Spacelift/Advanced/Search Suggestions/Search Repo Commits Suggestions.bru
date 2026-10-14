@@ -1,0 +1,38 @@
+meta {
+  name: Search Repo Commits Suggestions
+  type: graphql
+  seq: 35
+}
+
+docs {
+  ℹ **ADVANCED** — Autocomplete helper that powers search filters in the UI.
+
+  Get field suggestions for Repo commit search
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query SearchRepoCommitsSuggestions($repoID: ID!, $input: SearchSuggestionsInput!) {
+    searchRepoCommitsSuggestions(repoID: $repoID, input: $input) {
+      filteredCount
+      fields {
+        name
+        orderable
+        filterable
+        type
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "repoID": "REPO_ID_HERE",
+    "input": {}
+  }
+}

@@ -1,0 +1,58 @@
+meta {
+  name: Create Repo Commit
+  type: graphql
+  seq: 14
+}
+
+docs {
+  Create a commit in a Repo
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `repoID` is a repo `id` from **List Repos**.
+
+  Each file's `content` is base64-encoded. The example is
+  `# Terraform configuration` followed by a newline. `action` is `UPDATE` by default,
+  which creates the file if it does not exist; `CREATE` fails if it does, and
+  `DELETE` removes it.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation CreateRepoCommit($input: RepoCommitCreateInput!) {
+    repoCommitCreate(input: $input) {
+      id
+      sha
+      message
+      description
+      authorName
+      authorEmail
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "repoID": "REPO_ID_HERE",
+      "message": "Add configuration",
+      "description": "Adds initial Terraform configuration",
+      "authorName": "Your Name",
+      "authorEmail": "you@example.com",
+      "files": [
+        {
+          "path": "main.tf",
+          "content": "IyBUZXJyYWZvcm0gY29uZmlndXJhdGlvbgo=",
+          "encrypt": false,
+          "action": "CREATE"
+        }
+      ]
+    }
+  }
+}

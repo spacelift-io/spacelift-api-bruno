@@ -1,0 +1,41 @@
+meta {
+  name: Get Repo Commit
+  type: graphql
+  seq: 12
+}
+
+docs {
+  Get a Repo commit by repo ID and SHA (returns latest if SHA not provided)
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `repoID` is a repo `id` from **List Repos**, and `sha` one from **List Repo
+  Commits**. Leave `sha` out to get the latest commit.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query GetRepoCommit($repoID: ID!, $sha: String) {
+    repoCommit(repoID: $repoID, sha: $sha) {
+      id
+      sha
+      message
+      description
+      authorName
+      authorEmail
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "repoID": "REPO_ID_HERE",
+    "sha": "COMMIT_SHA_HERE"
+  }
+}
