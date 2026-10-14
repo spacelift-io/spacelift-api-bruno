@@ -169,7 +169,11 @@ when the Origin app is not installed on the account.
 **Delete Origin Integration** is in **Danger Zone**.`,
 
   "Personal API Keys": `API keys scoped to you rather than to the account, for personal tooling.
-Created, then enabled or disabled.`,
+Created, then enabled or disabled.
+
+Whether users may create them at all is an account setting: read it with
+**Advanced → Account Settings → Personal Api Keys Enabled**. Changing it is
+**Account Set Personal Api Keys Enabled**, in **Danger Zone**.`,
 
   Plugins: `Plugins installed into the account, and their lifecycle.`,
 
@@ -182,10 +186,13 @@ Create the policy, then **Attach Policy** to a stack — or use **Autoattachment
 Labels** to attach it automatically to every stack carrying a label.
 
 **Simulate Policy** evaluates a policy against sample input without attaching it
-to anything. That is the safe way to develop one.`,
+to anything. That is the safe way to develop one. **List Policy Input Captures**
+and **Get Policy Input Capture** give you real inputs to simulate against.`,
 
-  Repos: `Source repositories and their revisions as Spacelift sees them, including file
-search and commit history. Everything here reads through your VCS integration.`,
+  Repos: `Source repositories and their commits as Spacelift sees them, including file
+search and commit history. Everything here reads through your VCS integration.
+
+The **Revision** requests are deprecated in favor of the **Repo Commit** ones.`,
 
   Resources: `Everything Spacelift knows about the infrastructure your stacks manage,
 searchable by stack, type or provider. Read-only, derived from run state.`,
@@ -468,6 +475,7 @@ The rest overwrite account-wide settings with whatever is in the request body:
 - **Slack App Config Set** — replaces secrets Spacelift will not show you again
 - **Migrate Vendor For All Stacks** — moves every stack to another vendor
 - **Billing Subscription Update Tier** — changes what you are charged
+- **Account Set Personal Api Keys Enabled** — can disable every personal key at once
 
 Putting any of them back needs values you may no longer have.
 
@@ -504,7 +512,8 @@ Most come in pairs — a query that reads the current value, and an \`account…
 mutation that sets it. Read before you write; these apply to everyone in the
 account.
 
-**Account Confirm Delete** is in **Danger Zone**.`,
+**Account Confirm Delete** and **Account Set Personal Api Keys Enabled** are in
+**Danger Zone**.`,
 
   "Advanced/Analytics": `Product analytics events the web UI emits. Present for completeness; there is no
 reason to call these from your own tooling.`,

@@ -1,0 +1,41 @@
+meta {
+  name: Get Policy Input Capture
+  type: graphql
+  seq: 17
+}
+
+docs {
+  One captured policy input, by an id from policyInputCaptures.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `id` comes from **List Policy Input Captures**.
+
+  `input` is a JSON document as a string, with the values the policy contract marks
+  as sensitive left out. It can be pasted unchanged into `input.input` of
+  **Simulate Policy** to try a policy against it. It is null when a newer capture
+  has replaced this one.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query GetPolicyInputCapture($id: ID!) {
+    policyInputCapture(id: $id) {
+      id
+      kind
+      capturedAt
+      input
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "CAPTURE_ID_HERE"
+  }
+}

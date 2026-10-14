@@ -1,0 +1,50 @@
+meta {
+  name: List Repo Commits
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Search Repo commits with filtering, ordering, and pagination
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `repoID` is a repo `id` from **List Repos**.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query ListRepoCommits($repoID: ID!, $input: SearchInput!) {
+    searchRepoCommits(repoID: $repoID, input: $input) {
+      edges {
+        node {
+          id
+          sha
+          message
+          description
+          authorName
+          authorEmail
+          createdAt
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "repoID": "REPO_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

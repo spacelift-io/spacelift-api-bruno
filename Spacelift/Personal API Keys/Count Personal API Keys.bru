@@ -1,0 +1,21 @@
+meta {
+  name: Count Personal API Keys
+  type: graphql
+  seq: 5
+}
+
+docs {
+  Number of personal API keys on the account that are not disabled. Space admins only.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  {
+    personalApiKeysCount
+  }
+}

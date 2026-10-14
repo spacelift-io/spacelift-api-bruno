@@ -1,0 +1,27 @@
+meta {
+  name: Account Request Personal Api Keys Enabling
+  type: graphql
+  seq: 43
+}
+
+docs {
+  ℹ **ADVANCED** — Account-wide administrative setting.
+
+  Request an admin to enable personal API keys for the account
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation AccountRequestPersonalApiKeysEnabling {
+    accountRequestPersonalApiKeysEnabling
+  }
+}
+
+body:graphql:vars {
+  {}
+}

@@ -1,0 +1,39 @@
+meta {
+  name: List Policy Input Captures
+  type: graphql
+  seq: 16
+}
+
+docs {
+  Policy inputs captured in the space for the policy type, newest first. Login inputs are listed under the root space.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `space` is a space `id` from **Spaces → List Spaces**. Login inputs are listed
+  under the root space, `root`.
+
+  Copy an `id` into **Get Policy Input Capture** to read the input itself.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query ListPolicyInputCaptures($space: ID!, $type: PolicyType!) {
+    policyInputCaptures(space: $space, type: $type) {
+      id
+      kind
+      capturedAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "space": "SPACE_ID_HERE",
+    "type": "PLAN"
+  }
+}
