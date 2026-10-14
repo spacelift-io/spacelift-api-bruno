@@ -6,6 +6,7 @@ changes to the Spacelift API itself, see the
 
 ## 2026-10-14
 
+- Removed **Advanced → Billing → Usage Aspect** (`usageAspect`)
 - Added **Cookbook → Add an Environment Variable to a Context → List Contexts** (`contexts`)
 - Added **Cookbook → Add an Environment Variable to a Context → Add Config** (`contextConfigAdd`)
 - Added **Cookbook → Attach a Policy to a Stack → List Policies** (`policies`)
@@ -280,7 +281,6 @@ changes to the Spacelift API itself, see the
 - Added **Advanced → Billing → Tier** (`tier`)
 - Added **Advanced → Billing → Tier Features** (`tierFeatures`)
 - Added **Advanced → Billing → Usage** (`usage`)
-- Added **Advanced → Billing → Usage Aspect** (`usageAspect`)
 - Added **Advanced → CLI → Cli Confirmation Token** (`cliConfirmationToken`)
 - Added **Advanced → Debug → Debug Info** (`debugInfo`)
 - Added **Advanced → Feature Flags → Evaluate Feature Flags** (`evaluateFeatureFlags`)
@@ -410,6 +410,7 @@ changes to the Spacelift API itself, see the
 - Added **Advanced → Billing → Billing Subscription Delete** (`billingSubscriptionDelete`)
 - Added **Advanced → Billing → Billing Subscription Update Tier** (`billingSubscriptionUpdateTier`)
 - Added **Advanced → Billing → Billing Subscription Update V2** (`billingSubscriptionUpdateV2`)
+- Added **Advanced → Billing → Usage Aspect** (`usageAspect`)
 - Added **Advanced → Sessions and Security Keys → Session Delete All** (`sessionDeleteAll`)
 - Added **Advanced → Sessions and Security Keys → User Security Key Delete All** (`userSecurityKeyDeleteAll`)
 - Added **Advanced → Slack → Slack App Config Delete** (`slackAppConfigDelete`)
