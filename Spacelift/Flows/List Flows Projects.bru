@@ -20,6 +20,16 @@ body:graphql {
     flowsProjects {
       id
       name
+      roleBindings {
+        id
+        space {
+          id
+        }
+        role {
+          id
+          name
+        }
+      }
     }
   }
 }

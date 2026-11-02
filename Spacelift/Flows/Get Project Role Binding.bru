@@ -1,0 +1,44 @@
+meta {
+  name: Get Project Role Binding
+  type: graphql
+  seq: 6
+}
+
+docs {
+  Returns a single Flows project role binding by its ID, or null if it does
+  not exist. Requires admin access to the binding's space.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  The binding's `id` comes from **List Flows Projects**, under each project's
+  `roleBindings`, or from the response of **Batch Create Project Role Bindings**.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query GetFlowsProjectRoleBinding($id: ID!) {
+    flowsProjectRoleBinding(id: $id) {
+      id
+      flowsProjectID
+      space {
+        id
+        name
+      }
+      role {
+        id
+        name
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "FLOWS_PROJECT_ROLE_BINDING_ID_HERE"
+  }
+}

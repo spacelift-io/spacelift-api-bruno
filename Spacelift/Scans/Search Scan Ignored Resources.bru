@@ -1,0 +1,56 @@
+meta {
+  name: Search Scan Ignored Resources
+  type: graphql
+  seq: 15
+}
+
+docs {
+  Details of a single Scan.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  The resources a scan currently ignores, a page at a time. `id` is a Scan's `id`,
+  from **Search Scans**.
+
+  Each resource's `identityHash` is what **Unignore Scan Resources** takes. For the
+  next page, set `after` to `pageInfo.endCursor`.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query SearchScanIgnoredResources($id: ID!, $input: SearchInput!) {
+    scan(id: $id) {
+      id
+      name
+      searchIgnoredResources(input: $input) {
+        edges {
+          node {
+            id
+            name
+            type
+            identityHash
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SCAN_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

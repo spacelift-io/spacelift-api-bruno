@@ -12,6 +12,11 @@ docs {
   **List Scan Provider Schemas** tells you which providers can be scanned and what
   each one accepts — anything absent there cannot be scanned.
 
+  **Ignore Scan Resources** leaves resources out of every run of a scan, past and
+  future; **Unignore Scan Resources** brings them back. Both take resource
+  `identityHash` values, from **Search Scan Run Resources** and **Search Scan Ignored
+  Resources** respectively.
+
   ⚠ `ScanProviderConfigInput.version` is typed as a plain `String` but only accepts
   particular values. Take them from **List Scan Provider Schemas**; anything else is
   rejected when the scan runs.

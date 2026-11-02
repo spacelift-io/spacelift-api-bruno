@@ -250,6 +250,7 @@ const CATEGORIES = {
     operations: [
       "githubAppCreateFromManifest",
       "githubAppGenerateManifest",
+      "isGovSlackAvailable",
       "slackAppConfig",
       "slackAppConfigDelete",
       "slackAppConfigSet",

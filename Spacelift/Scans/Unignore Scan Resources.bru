@@ -1,0 +1,40 @@
+meta {
+  name: Unignore Scan Resources
+  type: graphql
+  seq: 13
+}
+
+docs {
+  Stop ignoring resources of a Scan, by their identityHash.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  `scan` is a Scan's `id`, from **Search Scans**. The hashes are the
+  `identityHash` values **Search Scan Ignored Resources** lists, which are also
+  what **Ignore Scan Resources** returned.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation UnignoreScanResources($scan: ID!, $identityHashes: [String!]!) {
+    scanResourcesUnignore(scan: $scan, identityHashes: $identityHashes) {
+      id
+      name
+      type
+      identityHash
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "scan": "SCAN_ID_HERE",
+    "identityHashes": ["IDENTITY_HASH_HERE"]
+  }
+}
