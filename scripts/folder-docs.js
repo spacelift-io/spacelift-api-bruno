@@ -169,7 +169,11 @@ when the Origin app is not installed on the account.
 **Delete Origin Integration** is in **Danger Zone**.`,
 
   "Personal API Keys": `API keys scoped to you rather than to the account, for personal tooling.
-Created, then enabled or disabled.
+Each user creates their own.
+
+A root admin can revoke one with **Revoke Personal API Key**, in **Danger Zone**.
+Nothing turns a revoked key back on; its owner can only delete it with **API Keys
+→ Delete API Key** and create another.
 
 Whether users may create them at all is an account setting: read it with
 **Advanced → Account Settings → Personal Api Keys Enabled**. Changing it is
@@ -244,6 +248,11 @@ Most requests here need both a stack ID and a run ID.
 
 **List Scan Provider Schemas** tells you which providers can be scanned and what
 each one accepts — anything absent there cannot be scanned.
+
+**Ignore Scan Resources** leaves resources out of every run of a scan, past and
+future; **Unignore Scan Resources** brings them back. Both take resource
+\`identityHash\` values, from **Search Scan Run Resources** and **Search Scan Ignored
+Resources** respectively.
 
 ⚠ \`ScanProviderConfigInput.version\` is typed as a plain \`String\` but only accepts
 particular values. Take them from **List Scan Provider Schemas**; anything else is
@@ -468,6 +477,7 @@ Some destroy something outright:
 - **Saml Delete** — removes the SSO configuration
 - **Account Confirm Delete** — finishes deleting the account
 - **Delete Run Logs** — erases a run's logs before retention would
+- **Revoke Personal API Key** — revokes a personal key for good; it can only be deleted after
 
 The rest overwrite account-wide settings with whatever is in the request body:
 

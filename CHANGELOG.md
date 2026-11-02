@@ -4,6 +4,19 @@ Every request added, corrected, deprecated or removed in this collection. For
 changes to the Spacelift API itself, see the
 [Spacelift changelog](https://docs.spacelift.io/product/changelog).
 
+## 2026-11-02
+
+- Removed **Personal API Keys → Disable Personal API Key** (`personalApiKeyDisable`)
+- Removed **Personal API Keys → Enable Personal API Key** (`personalApiKeyEnable`)
+- Fixed **Flows → List Flows Projects** (`flowsProjects`) — sync the collection with the schema (#15)
+- Added **Flows → Get Project Role Binding** (`flowsProjectRoleBinding`)
+- Added **Scans → Ignore Scan Resources** (`scanResourcesIgnore`)
+- Added **Scans → Unignore Scan Resources** (`scanResourcesUnignore`)
+- Added **Scans → Search Scan Run Resources** (`scanRun`)
+- Added **Scans → Search Scan Ignored Resources** (`scan`)
+- Added **Advanced → Slack → Is Gov Slack Available** (`isGovSlackAvailable`)
+- Added **Danger Zone → Revoke Personal API Key** (`personalApiKeyDisable`)
+
 ## 2026-10-14
 
 - Removed **Advanced → Billing → Usage Aspect** (`usageAspect`) — removed from the Spacelift API; see **Runs → Run Minutes Usage** and **Worker Pools → Get Worker Usage**
@@ -194,8 +207,6 @@ changes to the Spacelift API itself, see the
 - Added **Origin Integration → Get Install URL** (`originIntegrationInstallURL`)
 - Added **Origin Integration → Update Origin Integration** (`originIntegrationUpdate`)
 - Added **Personal API Keys → Create Personal API Key** (`personalApiKeyCreate`)
-- Added **Personal API Keys → Disable Personal API Key** (`personalApiKeyDisable`)
-- Added **Personal API Keys → Enable Personal API Key** (`personalApiKeyEnable`)
 - Added **Runs → Trigger Run Batch** (`runTriggerBatch`)
 - Added **Runs → Get Run** (`run`)
 - Added **Runs → Search Runs** (`searchRuns`)
@@ -443,6 +454,8 @@ changes to the Spacelift API itself, see the
 - Added **OpenTofu Migration → Clean Migration Queue** (`openTofuMigrationQueueClean`)
 - Added **OpenTofu Migration → Migrate Stacks** (`openTofuMigrate`)
 - Added **Origin Integration → Delete Origin Integration** (`originIntegrationDelete`)
+- Added **Personal API Keys → Disable Personal API Key** (`personalApiKeyDisable`)
+- Added **Personal API Keys → Enable Personal API Key** (`personalApiKeyEnable`)
 - Added **Stacks → Migrate Vendor For All Stacks** (`stackMigrateVendorAll`)
 
 ## 2026-03-11
