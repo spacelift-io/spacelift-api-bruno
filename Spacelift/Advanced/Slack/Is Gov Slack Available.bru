@@ -1,0 +1,27 @@
+meta {
+  name: Is Gov Slack Available
+  type: graphql
+  seq: 8
+}
+
+docs {
+  ℹ **ADVANCED** — Account-level Slack or GitHub app configuration.
+
+  Indicates whether connecting to GovSlack workspaces is supported in this environment.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query IsGovSlackAvailable {
+    isGovSlackAvailable
+  }
+}
+
+body:graphql:vars {
+  {}
+}

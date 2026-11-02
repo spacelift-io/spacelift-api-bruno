@@ -1,0 +1,58 @@
+meta {
+  name: Search Scan Run Resources
+  type: graphql
+  seq: 14
+}
+
+docs {
+  Details of a single ScanRun.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  The resources one run discovered, a page at a time. `id` is a run's `id`, from
+  **Get Scan** (`latestRun`) or **Trigger Scan Run**.
+
+  Each resource's `identityHash` is what **Ignore Scan Resources** takes. For the
+  next page, set `after` to `pageInfo.endCursor`.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query SearchScanRunResources($id: ID!, $input: SearchInput!) {
+    scanRun(id: $id) {
+      id
+      state
+      searchResources(input: $input) {
+        edges {
+          node {
+            id
+            name
+            type
+            identityHash
+            isManaged
+            isIgnored
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "SCAN_RUN_ID_HERE",
+    "input": {
+      "first": 50
+    }
+  }
+}

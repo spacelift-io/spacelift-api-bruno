@@ -14,8 +14,8 @@ docs {
 
   In Danger Zone because of `disableExistingKeys`. With `enabled: false` and
   `disableExistingKeys: true`, every personal key in the account stops working at
-  once, and only each key's owner can turn theirs back on with **Personal API Keys
-  → Enable Personal API Key**. Nobody can undo it for the whole account.
+  once, and none of them can be turned back on: a disabled key can only be deleted,
+  with **API Keys → Delete API Key**, and its owner has to create a new one.
 
   Sent with `disableExistingKeys: false`, it only allows or refuses new keys, and
   existing ones keep working. Read the current value first with **Advanced →

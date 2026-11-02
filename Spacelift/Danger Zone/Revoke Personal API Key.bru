@@ -1,0 +1,44 @@
+meta {
+  name: Revoke Personal API Key
+  type: graphql
+  seq: 33
+}
+
+docs {
+  Revoke a personal API key. Root admins only. The owner can only delete it afterwards.
+
+  <!-- notes: hand-written, preserved by sync-docs -->
+
+  In Danger Zone because nothing turns a revoked key back on. Its tokens stop
+  working, and all that is left for the owner is to delete it with **API Keys →
+  Delete API Key** and create a new one with **Personal API Keys → Create
+  Personal API Key**.
+
+  The key's `id` comes from **Personal API Keys → List Personal API Keys**.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation RevokePersonalApiKey($id: ID!) {
+    personalApiKeyDisable(id: $id) {
+      id
+      name
+      type
+      description
+      createdAt
+      expiresAt
+      disabled
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{?API Key ID}}"
+  }
+}
