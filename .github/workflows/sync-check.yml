@@ -151,7 +151,12 @@ jobs:
       # Tools are limited to reading and editing the checkout, the repository's
       # own scripts, and introspection through scripts/introspect.js. Schema
       # descriptions are text from outside this repository, so nothing that
-      # could reach another host is allowed.
+      # could reach another host is allowed — which is why `npm run
+      # api-changelog`, reading docs.spacelift.io, stays off this list.
+      #
+      # `coverage:check` is named exactly: `Bash(npm run coverage:*)` matches
+      # `npm run coverage` followed by a space, so it allows `npm run coverage --
+      # …` but refuses `npm run coverage:check`, the one the prompt asks for.
       - id: claude
         if: steps.prompt.outcome == 'success'
         uses: anthropics/claude-code-action@v1
@@ -162,7 +167,7 @@ jobs:
           prompt: ${{ steps.prompt.outputs.prompt }}
           claude_args: >-
             --max-turns 80
-            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(node scripts/introspect.js:*),Bash(npm run validate),Bash(npm run coverage:*),Bash(npm run sync-docs),Bash(npm run destructive-prompts),Bash(npm test)"
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(node scripts/introspect.js:*),Bash(npm run validate),Bash(npm run coverage:*),Bash(npm run coverage:check),Bash(npm run sync-docs),Bash(npm run destructive-prompts),Bash(npm test)"
             --disallowedTools "WebFetch,WebSearch"
             --json-schema '{"type":"object","properties":{"summary":{"type":"string"}},"required":["summary"]}'
 
