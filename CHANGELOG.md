@@ -6,16 +6,16 @@ changes to the Spacelift API itself, see the
 
 ## 2026-11-02
 
-- Removed **Personal API Keys → Disable Personal API Key** (`personalApiKeyDisable`)
-- Removed **Personal API Keys → Enable Personal API Key** (`personalApiKeyEnable`)
-- Fixed **Flows → List Flows Projects** (`flowsProjects`) — sync the collection with the schema (#15)
+- Removed **Personal API Keys → Disable Personal API Key** (`personalApiKeyDisable`) — moved to **Danger Zone** as **Revoke Personal API Key**, since the API now revokes the key for good
+- Removed **Personal API Keys → Enable Personal API Key** (`personalApiKeyEnable`) — removed from the Spacelift API; nothing turns a revoked key back on
+- Fixed **Flows → List Flows Projects** (`flowsProjects`) — now returns each project's `roleBindings`, the ids **Get Project Role Binding** and **Delete Project Role Binding** take
 - Added **Flows → Get Project Role Binding** (`flowsProjectRoleBinding`)
 - Added **Scans → Ignore Scan Resources** (`scanResourcesIgnore`)
 - Added **Scans → Unignore Scan Resources** (`scanResourcesUnignore`)
 - Added **Scans → Search Scan Run Resources** (`scanRun`)
 - Added **Scans → Search Scan Ignored Resources** (`scan`)
 - Added **Advanced → Slack → Is Gov Slack Available** (`isGovSlackAvailable`)
-- Added **Danger Zone → Revoke Personal API Key** (`personalApiKeyDisable`)
+- Added **Danger Zone → Revoke Personal API Key** (`personalApiKeyDisable`) — was Disable Personal API Key, in Personal API Keys; moved here, and guarded: sending it needs `CONFIRM_DESTRUCTIVE`
 
 ## 2026-10-14
 
