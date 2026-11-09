@@ -1,0 +1,29 @@
+meta {
+  name: Confirm Azure Integration Consent
+  type: graphql
+  seq: 11
+}
+
+docs {
+  Records admin consent granted externally. Does not grant or verify Azure permissions.
+}
+
+post {
+  url: {{SPACELIFT_ENDPOINT}}
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation ConfirmAzureIntegrationConsent($id: ID!) {
+    azureIntegrationConsentConfirm(id: $id) {
+      adminConsentProvided
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "AZURE_INTEGRATION_ID_HERE"
+  }
+}
