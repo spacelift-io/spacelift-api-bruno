@@ -22,7 +22,7 @@
     "validate": "node scripts/validate-schema.js"
   },
   "dependencies": {
-    "graphql": "^17.0.2"
+    "graphql": "^17.1.0"
   },
   "devDependencies": {
     "@usebruno/lang": "^0.41.0",
